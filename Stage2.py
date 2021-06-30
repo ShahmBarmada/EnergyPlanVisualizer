@@ -1,4 +1,6 @@
-import tkinter, re, pandas, matplotlib, os
+import tkinter, re, os
+import matplotlib.pyplot as plt
+import pandas as pd
 from tkinter import filedialog
 
 rootWindow = tkinter.Tk()
@@ -196,7 +198,15 @@ if os.path.exists(outputPath2):
 if os.path.exists(outputPath3):
     os.remove(outputPath3)
 
-inputfile = pandas.read_csv(outputPath1, delimiter=',', names=headerList, low_memory=False)
-inputfile.to_csv (outputPath + '/Output.csv', index=False)
+dfObj = pd.read_csv(outputPath1, delimiter=',', names=headerList, low_memory=False)
+dfObj.to_csv (outputPath + '/Output.csv', index=True)
+
+xAxis = dfObj.loc[143:,'g0-Data1']
+yAxis = dfObj.loc[143:,'g2-ElectrDemand']
+
+plt.plot (xAxis, yAxis)
+plt.xlabel('Hourly Values')
+plt.ylabel('Electric Demand')
+plt.savefig(outputPath + '/Output.png')
 
 rootWindow.destroy()
