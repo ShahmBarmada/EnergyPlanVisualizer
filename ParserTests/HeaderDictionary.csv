@@ -1,0 +1,170 @@
+Index,Index
+g0-Data1,Data 1
+g0-Data2,Data 2
+g0-Data3,Data 3
+g1-DHP,DHP
+g1-CHP2,CHP2
+g1-CHP3,CHP3
+g1-Boiler2,Boiler 2
+g1-Boiler3,Boiler 3
+g1-PP,PP
+g1-Geo/Nu,Geo / Nu
+g1-Hydro,Hydro
+g1-Waste/HTL,Waste / HTL
+g1-CAES/ELT,CAES / ELT
+g1-BioCon,BioCon
+g1-EFuel,E-Fuel
+g1-VRES,VRES
+g1-SolarTh,Solar Th
+g1-Transp,Transportation
+g1-Househ,Households
+g1-Ind/Var,Ind / Var
+g1-Total,Total
+g2-ElectrDemand,Electricity  Demand
+g2-ElecdemCooling,Electricity  Demand Cooling
+g2-FixedExp/Imp,Fixed Exp / Imp
+g2-DHDemand,DH Demand
+g2-WindElectr,Wind Electricity
+g2-OffshoreElectr,OffShore Electricity
+g2-PVElectr,PV Electricity
+g2-CSPElectr,CSP Electricity
+g2-RiverElectr,River Electricity
+g2-WaveElectr,Water Electricity 
+g2-TidalElectr,Tidal Electricity 
+g2-CSP2Electr,CSP2 Electricity 
+g2-CSP2Storage,CSP2 Storage
+g2-CSP2loss,CSP2 Loss
+g2-HydroElectr,Hydro Electricity 
+g2-Hydropump,Hydro Pump
+g2-Hydrostorage,Hydro Storage
+g2-HydroWat-Sup,Hydro Watt Supply
+g2-HydroWat-Loss,Hydro Watt Loss
+g2-SolarHeat,Solar Heat
+g2-CSHP1Heat,CSHP1 Heat
+g2-Waste1Heat,Waste Heat
+g2-Boiler1Heat,Boiler 1 Heat
+g2-Solar1Heat,Solar 1 Heat
+g2-Sol1StrHeat,Solar 1 Str Heat
+g2-CSHP2Heat,CSHP 2 Heat
+g2-Waste2Heat,Waste 2 Heat
+g2-Geoth2Heat,GeoThermal 2 Heat
+g2-Geoth2Steam,GeoThermal 2 Steam
+g2-Geoth2Storage,GeoThermal 2 Storage
+g2-CHP2Heat,CHP 2 Heat
+g2-HP2Heat,HP 2 Heat
+g2-Boiler2Heat,Boiler 2 Heat
+g2-EH2Heat,EH 2 Heat
+g2-ELT2Heat,ELT 2 Heat
+g2-Solar2Heat,Solar 2 Heat
+g2-Sol2StrHeat,Solar 2 Str Heat
+g2-Storage2Heat,Storage 2 Heat
+g2-Balance2Heat,Balance 2 Heat
+g2-CSHP3Heat,CSHP 3 Heat
+g2-Waste3Heat,Waste 3 Heat
+g2-Geoth3Heat,GeoThermal 3 Heat
+g2-Geoth3Steam,GeoThermal 3 Steam
+g2-Geoth3Storage,GeoThermal 3 Storage
+g2-CHP3Heat,CHP3 Heat
+g2-HP3Heat,HP 3 Heat
+g2-Boiler3Heat,Boiler 3 Heat
+g2-EH3Heat,EH 3 Heat
+g2-ELT3Heat,ELT 3 Heat
+g2-Solar3Heat,Solar 3 Heat
+g2-Sol3StrHeat,Solar 3 Str Heat
+g2-Storage3Heat,Storage 3 Heat
+g2-Balance3Heat,Balance 3 Heat
+g2-FlexibleElectr,Flexible Electricity
+g2-HPElectr,HP Electricity
+g2-CSHPElectr,CSHP Electricity
+g2-CHPElectr,CHP Electricity
+g2-PPElectr,PP Electricity
+g2-PP2Electr,PP2 Electricity
+g2-NuclearElectr,Nuclear Electricity
+g2-GeotherElectr,GeoThermal Electricity
+g2-PumpElectr,Pump Electricity
+g2-TurbineElectr,Turbine Electricity
+g2-PumpedStorage,Pumped Storage
+g2-Pump2Electr,Pump 2 Electricity
+g2-Turbine2Electr,Turbine 2 Electricity
+g2-Pumped2Storage,Pumped 2 Storage
+g2-RockinElectr,Rock In Electricity
+g2-RockoutSteam,Rock Out Steam
+g2-RockstrStorage,Rock Str Storage
+g2-ELT2Electr,ELT 2 Electricity
+g2-ELT2H2ELT2,ELT2 H2 ELT2
+g2-ELT3Electr,ELT 3 Electricity
+g2-ELT3H2ELT3,ELT3 H2 ELT3
+g2-V2GDemand,V2G Demand
+g2-V2GCharge,V2G Charge
+g2-V2GDischa,V2G Discharge
+g2-V2GStorage,V2G Storage
+g2-H2Electr,H2 Electricity
+g2-H2Storage,H2 Storage
+g2-CO2HydroElectr,CO2 Hydro Electricity
+g2-NH3HydroElectr,NH3 Hydro Electricity
+g2-CO2Hydroliqfuel,CO2 Hydro Liquid Fuel
+g2-NH3HydroAmmonia,NH3 Hydro Ammonia
+g2-HH-CHPElectr,HH CHP Electricity
+g2-HH-HPElectr,HH HP Electricity
+g2-HH-HP/EBElectr,HH HP / EB Electricity
+g2-HH-EBElectr,HH EB Electricity
+g2-HH-H2Electr,HH H2 Electricity
+g2-HH-H2Storage,HH H2 Storage
+g2-HH-H2Prices,HH H2 Prices
+g2-HHDemHeat,HH Demand Heat
+g2-HHCHP+HPHeat,HH CHP + HP Heat
+g2-HHBoilHeat,HH Boiler Hear
+g2-HHSolarHeat,HH Solar Heat
+g2-HHStoreHeat,HH Storage Heat
+g2-HHBalanHeat,HH Balance Heat
+g2-StabilLoadPercent,Stability Load Percentage
+g2-ImportElectr,Imported Electricity
+g2-ExportElectr,Exported Electricity
+g2-CEEPElectr,CEEP Electricity
+g2-EEEPElectr,EEEP Electricity
+g2-ExMarketPrices,Ex-Market Prices
+g2-ExMarketProd,Ex-Market Production
+g2-SystemPrices,System Prices
+g2-InMarketPrices,In-Market Prices
+g2-Btl-neckPrices,Bottleneck Prices
+g2-ImportPayment,Import Payment
+g2-ExportPayment,Export Payment
+g2-BltneckPayment,Bottleneck Payment
+g2-AddexpPayment,Added Payment
+g2-Boilers,Boilers
+g2-CHP2+3,CHP 2 + 3
+g2-PPCAES,PPCAES
+g2-Indi-vidual,Individual
+g2-Transp,Trasnsportation
+g2-IndustVarious,Industrail Various
+g2-DemandSum,Demand Sum
+g2-Biogas,Bio Gas
+g2-Syngas,Synthetic Gas
+g2-CO2HyGas,CO2 Hydro Gas
+g2-SynHyGas,Synthetic Hydro Gas
+g2-SynFuel,Synthetic Fuel
+g2-Storage,Storage
+g2-StorageContent,Storage Content
+g2-Sum,Sum
+g2-ImportGas,Imported Gas
+g2-ExportGas,Exported Gas
+g2-FreshWDemand,Fresh Water Demand
+g2-FreshWStorage,Fresh Water Storage
+g2-SaltWDemand,Salt Water Demand
+g2-BrineProd,Brine Production
+g2-BrineStorage,Brine Storage
+g2-DesalPlElectr,Desal Pl Electricity
+g2-FWPumpElectr,FW Pump Electricity
+g2-TurbineElectrT,Turbine Electricity
+g2-PumpElectrT,Pump Electricity
+g2-CoolGr1Demand,Cooling Gr1 Demand
+g2-CoolGr2Demand,Cooling Gr2 Demand
+g2-CoolGr3Demand,Cooling Gr3 Demand
+g2-Cool-ElDemand,Cooling Electricity Demand
+g2-CoolGr1Natural,Cooling Gr1 Natural
+g2-CoolGr2Natural,Cooling Gr2 Natural
+g2-CoolGr3Natural,Cooling Gr3 Natural
+g2-CoolingDHgr1,Cooling DH Gr1
+g2-CoolingDHgr2,Cooling DH Gr2
+g2-CoolingDHgr3,Cooling DH Gr3
+g2-CoolingElectr,Cooling Electricity

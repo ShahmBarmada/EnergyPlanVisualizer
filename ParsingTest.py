@@ -1,44 +1,58 @@
-import tkinter
-from tkinter import filedialog
+import tkinter as tk
+from tkinter import *
+from tkinter import filedialog, ttk
+
+import pandas as pd
+import csv
 
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MultipleLocator
 
-import pandas as pd
+#rootWindow = tkinter.Tk()
+#rootWindow.withdraw()
 
+window = tk.Tk()
+window.title('Test App')
+window.geometry('1010x200')
 
-rootWindow = tkinter.Tk()
-rootWindow.withdraw()
+inPath = filedialog.askopenfilename()
+outPath = inPath[:inPath.rfind('/')] + '/test.png'
+headerPath = inPath[:inPath.rfind('/')] + '/HeaderDictionary.csv'
 
-inpath = filedialog.askopenfilename()
-outpath = inpath[:inpath.rfind('/')] + '/test.png'
+StudyDF = pd.read_csv(inPath, low_memory=False)
 
-dfObj = pd.read_csv(inpath, low_memory=False)
+with open(headerPath, 'r') as ipf:
+    aliasDict = {rows[0]:rows[1] for rows in csv.reader(ipf)}
 
-fig, ax = plt.subplots()
-ax.set_xlabel('Hourly Values')
-ax.set_ylabel('Electric Demand')
-ax.set_title('Electric Demand Jan, Feb, Mar')
+aliasList = list(aliasDict.values())
+headerList = list(aliasDict.keys())
 
-xAxis = dfObj.loc[143:311,'g0-Data1']
-yAxis = dfObj.loc[143:311,'g2-ElectrDemand']
-ax.plot(xAxis, yAxis)
+#fig, ax = plt.subplots()
+#ax.set_xlabel('Hourly Values')
+#ax.set_ylabel('Electric Demand')
+#ax.set_title('Electric Demand Jan, Feb, Mar')
+#
+#xAxis = StudyDF.loc[143:311,'g0-Data1']
+#yAxis = StudyDF.loc[143:311,'g2-ElectrDemand']
+#ax.plot(xAxis, yAxis)
+#
+#xAxis = StudyDF.loc[143:311,'g0-Data1']
+#yAxis = StudyDF.loc[816:984,'g2-ElectrDemand']
+#ax.plot(xAxis, yAxis)
+#
+#xAxis = StudyDF.loc[143:311,'g0-Data1']
+#yAxis = StudyDF.loc[1487:1655,'g2-ElectrDemand']
+#ax.plot(xAxis, yAxis)
+#
+#ax.legend(['January','February','March'])
+#ax.xaxis.set_major_locator(MultipleLocator(24))
+#ax.xaxis.set_minor_locator(MultipleLocator(12))
+#ax.yaxis.set_major_locator(MultipleLocator(5000))
+#
+#fig.set_size_inches(18.5,10.5)
+#
+#plt.savefig(outpath)
 
-xAxis = dfObj.loc[143:311,'g0-Data1']
-yAxis = dfObj.loc[816:984,'g2-ElectrDemand']
-ax.plot(xAxis, yAxis)
+#rootWindow.destroy()
 
-xAxis = dfObj.loc[143:311,'g0-Data1']
-yAxis = dfObj.loc[1487:1655,'g2-ElectrDemand']
-ax.plot(xAxis, yAxis)
-
-ax.legend(['January','February','March'])
-ax.xaxis.set_major_locator(MultipleLocator(24))
-ax.xaxis.set_minor_locator(MultipleLocator(12))
-ax.yaxis.set_major_locator(MultipleLocator(5000))
-
-fig.set_size_inches(18.5,10.5)
-
-plt.savefig(outpath)
-
-rootWindow.destroy()
+window.mainloop()
