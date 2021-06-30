@@ -3,7 +3,7 @@ from tkinter import filedialog, messagebox
 import subprocess, os
 
 window = Tk()
-window.title('Test App')
+window.title('EnergyPlanVisualizer Stage1')
 window.geometry('1010x200')
 
 lbl1 = Label(window, text="EnergyPlan.exe Path :", font=("Segoe UI",13), anchor='e', width=18)
