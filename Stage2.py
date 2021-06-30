@@ -204,9 +204,14 @@ dfObj.to_csv (outputPath + '/Output.csv', index=True)
 xAxis = dfObj.loc[143:,'g0-Data1']
 yAxis = dfObj.loc[143:,'g2-ElectrDemand']
 
-plt.plot (xAxis, yAxis)
+plt.plot (xAxis, yAxis, rasterize=True)
 plt.xlabel('Hourly Values')
 plt.ylabel('Electric Demand')
-plt.savefig(outputPath + '/Output.png')
+
+fig = plt.gcf()
+fig.set_size_inches(18.5, 10.5)
+fig.savefig(outputPath + '/Output.png', dpi=300)
+
+plt.close()
 
 rootWindow.destroy()
