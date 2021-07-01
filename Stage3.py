@@ -50,13 +50,13 @@ comboField2.grid(column=1, row=3, sticky='w', padx=10, pady=10)
 comboField2.current()
 
 def loadFile():
-    global inPath, outPath, loadStateBol
+    global inPath, loadStateBol
     inPath = filedialog.askopenfilename()
     txt1.delete(0, END)
     txt1.insert(0, inPath)
 
     if inPath.endswith('.txt'):
-        outPath = inPath[:inPath.rfind('/')] + '/test.png'
+        pass
 
     elif inPath.endswith('.csv'):
         loadStateStr.set('Study File Loaded')

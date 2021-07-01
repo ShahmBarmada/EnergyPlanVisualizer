@@ -13,15 +13,15 @@ rootWindow.withdraw()
 
 inPath = filedialog.askopenfilename()
 outPath = inPath[:inPath.rfind('/')] + '/test.png'
-headerPath = inPath[:inPath.rfind('/')] + '/HeaderDictionary.csv'
+#headerPath = inPath[:inPath.rfind('/')] + '/HeaderDictionary.csv'
 
 StudyDF = pd.read_csv(inPath, low_memory=False)
 
-with open(headerPath, 'r') as ipf:
-    aliasDict = {rows[0]:rows[1] for rows in csv.reader(ipf)}
-
-aliasList = list(aliasDict.values())
-headerList = list(aliasDict.keys())
+#with open(headerPath, 'r') as ipf:
+#    aliasDict = {rows[0]:rows[1] for rows in csv.reader(ipf)}
+#
+#aliasList = list(aliasDict.values())
+#headerList = list(aliasDict.keys())
 
 fig, ax = plt.subplots()
 ax.set_xlabel('Hourly Values')
