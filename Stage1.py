@@ -24,15 +24,18 @@ txt2.grid(column=1,row=1, padx=10, pady=10)
 txt3 = Entry(window,width=80, font=("Segoe UI",13), )
 txt3.grid(column=1,row=2, padx=10, pady=10)
 
+
 def clicked1():
     path_a = filedialog.askopenfilename()
     txt1.delete(0, END)
     txt1.insert(0, path_a)
 
+
 def clicked2():
     path_b = filedialog.askopenfilename()
     txt2.delete(0, END)
     txt2.insert(0, path_b)
+
 
 def clicked3():
     global path_c
@@ -40,10 +43,12 @@ def clicked3():
     txt3.delete(0, END)
     txt3.insert(0, path_c + "/Result.txt")
 
+
 def clicked4():
     messagebox.showinfo('Info', 'The ouput file will be named Result.txt')
     subprocess.run([str(txt1.get()), "-i", str(txt2.get()), "-ascii", str(txt3.get())])
     subprocess.run(['explorer', os.path.realpath(path_c)])
+
 
 btn1 = Button(window, text="Select", command=clicked1)
 btn1.grid(column=2, row=0, padx=10, pady=10)

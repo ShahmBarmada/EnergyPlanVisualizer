@@ -67,8 +67,10 @@ def loadFile():
     else:
         messagebox.showerror('Error','Please choose .txt or .csv file only')
 
+
 btn1 = ttk.Button(window, text="Load", command=loadFile)
 btn1.grid(column=2, row=0, padx=10, pady=10)
+
 
 def loadFileCSV():
     #global aliasList, headerList, StudyDF
