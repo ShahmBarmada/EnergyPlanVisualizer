@@ -9,21 +9,21 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
 
 
-class Ui_ui_AboutDialog(object):
-    def setupUi(self, ui_AboutDialog):
-        ui_AboutDialog.setObjectName("ui_AboutDialog")
-        ui_AboutDialog.resize(359, 41)
-        self.label = QtWidgets.QLabel(ui_AboutDialog)
+class Ui_DialogAbout(object):
+    def setupUi(self, DialogAbout):
+        DialogAbout.setObjectName("DialogAbout")
+        DialogAbout.resize(359, 41)
+        self.label = QtWidgets.QLabel(DialogAbout)
         self.label.setGeometry(QtCore.QRect(10, 10, 152, 18))
         font = QtGui.QFont()
         font.setPointSize(10)
         self.label.setFont(font)
         self.label.setObjectName("label")
 
-        self.retranslateUi(ui_AboutDialog)
-        QtCore.QMetaObject.connectSlotsByName(ui_AboutDialog)
+        self.retranslateUi(DialogAbout)
+        QtCore.QMetaObject.connectSlotsByName(DialogAbout)
 
-    def retranslateUi(self, ui_AboutDialog):
+    def retranslateUi(self, DialogAbout):
         _translate = QtCore.QCoreApplication.translate
-        ui_AboutDialog.setWindowTitle(_translate("ui_AboutDialog", "About"))
-        self.label.setText(_translate("ui_AboutDialog", "Hello there, I\'m Developer"))
+        DialogAbout.setWindowTitle(_translate("DialogAbout", "About"))
+        self.label.setText(_translate("DialogAbout", "Hello there, I\'m Developer"))
