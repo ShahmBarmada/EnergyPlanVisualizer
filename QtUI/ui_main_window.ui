@@ -36,7 +36,7 @@
      <rect>
       <x>0</x>
       <y>-1</y>
-      <width>802</width>
+      <width>801</width>
       <height>552</height>
      </rect>
     </property>
@@ -65,7 +65,7 @@
       <property name="lineWidth">
        <number>1</number>
       </property>
-      <widget class="QLabel" name="label_h1">
+      <widget class="QLabel" name="lbl_h1Config">
        <property name="geometry">
         <rect>
          <x>10</x>
@@ -84,7 +84,7 @@
         <string>Configuration:</string>
        </property>
       </widget>
-      <widget class="QLabel" name="label_1">
+      <widget class="QLabel" name="lbl_ExePath">
        <property name="geometry">
         <rect>
          <x>10</x>
@@ -97,7 +97,7 @@
         <string>EnergyPLAN.exe Path:</string>
        </property>
       </widget>
-      <widget class="QLabel" name="label_2">
+      <widget class="QLabel" name="lbl_IPF">
        <property name="geometry">
         <rect>
          <x>10</x>
@@ -110,7 +110,7 @@
         <string>Input File Path:</string>
        </property>
       </widget>
-      <widget class="QLabel" name="label_3">
+      <widget class="QLabel" name="lbl_OPD">
        <property name="geometry">
         <rect>
          <x>10</x>
@@ -123,7 +123,7 @@
         <string>Output Directory:</string>
        </property>
       </widget>
-      <widget class="QLineEdit" name="txt_energyplan">
+      <widget class="QLineEdit" name="txt_ExePath">
        <property name="geometry">
         <rect>
          <x>10</x>
@@ -133,7 +133,7 @@
         </rect>
        </property>
       </widget>
-      <widget class="QLineEdit" name="txt_ipf">
+      <widget class="QLineEdit" name="txt_IPF">
        <property name="geometry">
         <rect>
          <x>10</x>
@@ -143,7 +143,7 @@
         </rect>
        </property>
       </widget>
-      <widget class="QLineEdit" name="txt_opd">
+      <widget class="QLineEdit" name="txt_OPD">
        <property name="geometry">
         <rect>
          <x>10</x>
@@ -153,7 +153,7 @@
         </rect>
        </property>
       </widget>
-      <widget class="QPushButton" name="button_energyplan">
+      <widget class="QPushButton" name="btn_ExePath">
        <property name="geometry">
         <rect>
          <x>710</x>
@@ -166,7 +166,7 @@
         <string>Select</string>
        </property>
       </widget>
-      <widget class="QPushButton" name="button_ipf">
+      <widget class="QPushButton" name="btn_IPF">
        <property name="geometry">
         <rect>
          <x>710</x>
@@ -179,7 +179,7 @@
         <string>Select</string>
        </property>
       </widget>
-      <widget class="QPushButton" name="button_opd">
+      <widget class="QPushButton" name="btn_OPD">
        <property name="geometry">
         <rect>
          <x>710</x>
@@ -192,7 +192,7 @@
         <string>Browse</string>
        </property>
       </widget>
-      <widget class="QCheckBox" name="checkBox_opd">
+      <widget class="QCheckBox" name="checkBox_OPD">
        <property name="geometry">
         <rect>
          <x>30</x>
@@ -221,7 +221,7 @@
       <property name="frameShadow">
        <enum>QFrame::Raised</enum>
       </property>
-      <widget class="QLabel" name="label_h2">
+      <widget class="QLabel" name="lbl_h1Process">
        <property name="geometry">
         <rect>
          <x>10</x>
@@ -240,7 +240,7 @@
         <string>Process:</string>
        </property>
       </widget>
-      <widget class="QLabel" name="label_4">
+      <widget class="QLabel" name="lbl_Log">
        <property name="geometry">
         <rect>
          <x>10</x>
@@ -263,7 +263,7 @@
         </rect>
        </property>
       </widget>
-      <widget class="QPushButton" name="button_Exec">
+      <widget class="QPushButton" name="btn_Exec">
        <property name="enabled">
         <bool>false</bool>
        </property>
@@ -279,7 +279,7 @@
         <string>Execute</string>
        </property>
       </widget>
-      <widget class="QLabel" name="label_State">
+      <widget class="QLabel" name="lbl_State">
        <property name="geometry">
         <rect>
          <x>70</x>
@@ -306,6 +306,49 @@
      <attribute name="title">
       <string>Visualize Study Output</string>
      </attribute>
+     <widget class="QWidget" name="horizontalLayoutWidget">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>0</y>
+        <width>781</width>
+        <height>521</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <property name="sizeConstraint">
+        <enum>QLayout::SetDefaultConstraint</enum>
+       </property>
+       <item>
+        <widget class="QGroupBox" name="groupBox_1">
+         <property name="title">
+          <string>Study 1</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBox_2">
+         <property name="title">
+          <string>Study 2</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBox_3">
+         <property name="title">
+          <string>Study 3</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBox_4">
+         <property name="title">
+          <string>Study 4</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
     </widget>
    </widget>
   </widget>
