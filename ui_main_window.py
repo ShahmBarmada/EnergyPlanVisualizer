@@ -267,7 +267,7 @@ class Ui_MainWindow(object):
         self.groupBox_4.setTitle(_translate("MainWindow", "Study 2"))
         self.groupBox_5.setTitle(_translate("MainWindow", "Study 3"))
         self.groupBox_6.setTitle(_translate("MainWindow", "Study 4"))
-        self.btn_Page.setText(_translate("MainWindow", "\u2770\u2771"))
+        self.btn_Page.setText(_translate("MainWindow", "\u2B9C\u2B9E"))
         self.m_Menu.setTitle(_translate("MainWindow", "Menu"))
         self.actionAbout.setText(_translate("MainWindow", "About"))
         self.actionExit.setText(_translate("MainWindow", "Exit"))

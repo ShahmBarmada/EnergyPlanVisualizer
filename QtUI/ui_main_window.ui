@@ -634,7 +634,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>...</string>
+     <string>\u2B9C\u2B9E</string>
     </property>
     <property name="arrowType">
      <enum>Qt::NoArrow</enum>
