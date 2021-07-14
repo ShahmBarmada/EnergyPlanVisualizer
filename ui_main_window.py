@@ -146,7 +146,7 @@ class Ui_MainWindow(object):
         self.cb_Yseries1.setEditable(False)
         self.cb_Yseries1.setPlaceholderText("")
         self.cb_Yseries1.setFrame(True)
-        self.cb_Yseries1.setModelColumn(1)
+        self.cb_Yseries1.setModelColumn(0)
         self.cb_Yseries1.setObjectName("cb_Yseries1")
         self.lbl_Yseries1 = QtWidgets.QLabel(self.groupBox_3)
         self.lbl_Yseries1.setGeometry(QtCore.QRect(10, 70, 101, 20))
