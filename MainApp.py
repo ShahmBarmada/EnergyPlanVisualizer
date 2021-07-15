@@ -7,7 +7,6 @@ import plotly.express as pltx
 from datetime import datetime
 from PyQt6.QtCore import QFile, QUrl
 from PyQt6.QtWidgets import (QApplication, QMainWindow, QFileDialog, QMessageBox)
-#from pandas.core.frame import DataFrame
 from ui_main_window import Ui_MainWindow
 from CSV_Parser import csvParser
 
