@@ -160,25 +160,39 @@ class Window(QMainWindow, Ui_MainWindow):
             xSeries = xListM[xSeriesSt:xSeriesEn]
 
         try:
-            ySeries = yList.get(self.cb_Yseries1.currentText())
-            for columnX in std1f:
-                ySeriesMatch = str(columnX)
-                if ySeries == ySeriesMatch[:ySeriesMatch.find('_')]:
-                    ySeries = ySeriesMatch
+            yStructure = yList.get(self.cb_Yseries1.currentText())
+            ySeries = []
+            ySeries.clear()
+            
+            if yStructure[:2] == '00':
+                for column in std1f:
+                    colMatch = str(column)
+                    if yStructure == colMatch[:colMatch.find('_')]:
+                        ySeries.append(colMatch)
 
+            elif yStructure[:2] != '00':
+                for column in std1f:
+                    colMatch = str(column)
+                    if yStructure[:2] == colMatch[:2]:
+                        ySeries.append(colMatch)
+            
         except:
             pass
         finally:
             timeStamp = datetime.now().strftime('%y%m%d%H%M%S')
             std1fnew = std1f.loc[xSeries,ySeries]
+            pd.options.plotting.backend = "plotly"
 
             if self.rb_MV1.isChecked():
-                figStd1 = pltx.bar(std1fnew, width=1366, height=768, labels={ySeries:self.cb_Yseries1.currentText()})
-                figStd1.update_layout(title=self.cb_Yseries1.currentText(),xaxis_title= 'Month')
+                #figStd1 = pltx.bar(std1fnew,y=[ySeries], width=1366, height=768, labels={ySeries:self.cb_Yseries1.currentText()})
+                #figStd1.update_layout(title=self.cb_Yseries1.currentText(),xaxis_title= 'Month')
+                figStd1 = std1fnew.plot(kind='bar')
+
 
             elif self.rb_HV1.isChecked():
-                figStd1 = pltx.line(std1fnew, width=1366, height=768, labels={ySeries:self.cb_Yseries1.currentText()})
-                figStd1.update_layout(title=self.cb_Yseries1.currentText(),xaxis_title= 'Hours')
+                #figStd1 = pltx.line(std1fnew, width=1366, height=768, labels={ySeries:self.cb_Yseries1.currentText()})
+                #figStd1.update_layout(title=self.cb_Yseries1.currentText(),xaxis_title= 'Hours')
+                figStd1 = std1fnew.plot(kind='line')
 
             figStd1.write_image(os.getcwd() + '/plot_' + timeStamp + '.jpeg', scale=3, engine='kaleido')
 
