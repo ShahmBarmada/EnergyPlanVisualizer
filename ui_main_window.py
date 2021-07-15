@@ -188,6 +188,7 @@ class Ui_MainWindow(object):
         self.lbl_To1.setGeometry(QtCore.QRect(110, 260, 33, 20))
         self.lbl_To1.setObjectName("lbl_To1")
         self.btn_Plot1 = QtWidgets.QPushButton(self.groupBox_3)
+        self.btn_Plot1.setEnabled(False)
         self.btn_Plot1.setGeometry(QtCore.QRect(60, 380, 91, 24))
         self.btn_Plot1.setObjectName("btn_Plot1")
         self.cb_PlotType1 = QtWidgets.QComboBox(self.groupBox_3)
