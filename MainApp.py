@@ -187,12 +187,14 @@ class Window(QMainWindow, Ui_MainWindow):
                 #figStd1 = pltx.bar(std1fnew,y=[ySeries], width=1366, height=768, labels={ySeries:self.cb_Yseries1.currentText()})
                 #figStd1.update_layout(title=self.cb_Yseries1.currentText(),xaxis_title= 'Month')
                 figStd1 = std1fnew.plot(kind='bar')
+                figStd1.update_layout(title=self.cb_Yseries1.currentText(), xaxis_title= 'Month', width=1366, height=768)
 
 
             elif self.rb_HV1.isChecked():
                 #figStd1 = pltx.line(std1fnew, width=1366, height=768, labels={ySeries:self.cb_Yseries1.currentText()})
                 #figStd1.update_layout(title=self.cb_Yseries1.currentText(),xaxis_title= 'Hours')
                 figStd1 = std1fnew.plot(kind='line')
+                figStd1.update_layout(title=self.cb_Yseries1.currentText(), xaxis_title= 'Hours', width=1366, height=768)
 
             figStd1.write_image(os.getcwd() + '/plot_' + timeStamp + '.jpeg', scale=3, engine='kaleido')
 
