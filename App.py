@@ -1,6 +1,7 @@
 import sys
 import os
 import subprocess
+import re
 import pandas as pd
 
 from datetime import datetime
@@ -20,7 +21,64 @@ class Window(QMainWindow, Ui_MainWindow):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
+        self.InitialData()
+        self.SwitchHandelers()
         self.Connections()
+
+    def InitialData(self):
+        self.cb_FileFormat.addItems(['jpg','png','svg','html','json']) 
+        self.cb_FileFormat.setCurrentIndex(0)
+        self.cb_Trace.addItems(['Scatter', 'Bar', 'Pie'])   
+        self.cb_Trace.setCurrentIndex(0)
+        self.cb_Style.addItems(['Lines + Markers', 'Lines Only', 'Markers Only', 'Smooth Linear'])
+        self.cb_Style.setCurrentIndex(0)
+        #self.rb_AnnualVal.setEnabled(False)
+        #self.cb_FillArea.setEnabled(True)
+        #self.cb_TicksX.setEnabled(True)
+        #self.cb_TicksY.setEnabled(True)
+        #self.rb_Xtime.setChecked(True)
+        #self.cb_Xdata.setEnabled(False)
+
+    def SwitchHandelers(self):
+        self.cb_Trace.currentIndexChanged.connect(self.updateTrace)
+        
+    def updateTrace(self):
+        if self.cb_Trace.currentIndex() == 0:
+            self.rb_HourlyVal.setEnabled(True)
+            self.rb_MonthlyVal.setEnabled(True)
+            self.rb_AnnualVal.setEnabled(False)
+            self.rb_HourlyVal.setChecked(True)
+            self.cb_Style.clear()
+            self.cb_Style.addItems(['Lines + Markers', 'Lines Only', 'Markers Only', 'Smooth Linear'])
+            self.cb_Style.setCurrentIndex(0)
+            self.cb_FillArea.setEnabled(True)
+            self.cb_TicksX.setEnabled(True)
+            self.cb_TicksY.setEnabled(True)
+
+
+        elif self.cb_Trace.currentIndex() == 1:
+            self.rb_HourlyVal.setEnabled(True)
+            self.rb_MonthlyVal.setEnabled(True)
+            self.rb_AnnualVal.setEnabled(False)
+            self.rb_HourlyVal.setChecked(True)
+            self.cb_Style.clear()
+            self.cb_Style.addItems(['Stacked', 'Grouped'])
+            self.cb_Style.setCurrentIndex(0)
+            self.cb_FillArea.setEnabled(False)
+            self.cb_TicksX.setEnabled(False)
+            self.cb_TicksY.setEnabled(False)
+
+        elif self.cb_Trace.currentIndex() == 2:
+            self.rb_HourlyVal.setEnabled(False)
+            self.rb_MonthlyVal.setEnabled(False)
+            self.rb_AnnualVal.setEnabled(True)
+            self.rb_AnnualVal.setChecked(True)
+            self.cb_Style.clear()
+            self.cb_Style.addItems(['Domain'])
+            self.cb_Style.setCurrentIndex(0)
+            self.cb_FillArea.setEnabled(False)
+            self.cb_TicksX.setEnabled(False)
+            self.cb_TicksY.setEnabled(False)
 
     def Connections(self):
         self.actionExit.triggered.connect(self.close)
@@ -32,6 +90,8 @@ class Window(QMainWindow, Ui_MainWindow):
         self.btn_Exec.clicked.connect(self.ProcessFile)
         self.btn_StdLoad.clicked.connect(self.AddStudy)
         self.btn_StdRemove.clicked.connect(self.RemoveStudy)
+        self.btn_FigAdd.clicked.connect(self.AddFigure)
+        self.btn_FigDlt.clicked.connect(self.RemoveFigure)
 
     def openAboutDialog(self):
         QMessageBox.about(self, 'About', 'Hi, I\'m developer')
@@ -84,7 +144,6 @@ class Window(QMainWindow, Ui_MainWindow):
                 stdInt += 1
                 stdList.append(stdID)
                 self.lw_StdList.addItem(stdName)
-                print(stdList)
 
         else:
             QMessageBox.critical(self, 'Error', 'Error')
@@ -106,18 +165,52 @@ class Window(QMainWindow, Ui_MainWindow):
 
     def RemoveStudy(self):
         removeIndex = self.lw_StdList.currentRow()
+
         if self.lw_StdList.currentItem() is not None:
             removeName = self.lw_StdList.currentItem().text()
 
         self.lw_StdList.takeItem(removeIndex)
 
         for i in range(0, len(stdList)):
+
             if stdList[i]['name'] == removeName:
                 del stdList[i]
                 break
             else:
                 next
 
+    def AddFigure(self):
+        global figInt
+
+        figName = re.sub(r'\s+', r' ', self.txt_FigName.text().strip())
+
+        if re.match(r'\w+', figName):
+
+            if len(self.lw_FigList.findItems(figName, QtCore.Qt.MatchFlag.MatchExactly)) > 0:
+                figName = figName + '_' + str(figInt)
+
+            if int(self.txt_FigHeight.text()) != 0 and int(self.txt_FigWidth.text()) != 0:
+
+                figID = {'id': 'fig' + str(figInt), 'name': figName, 'width': self.txt_FigWidth.text(), 'height': self.txt_FigHeight.text()}
+                figInt += 1
+                figList.append(figID)
+                self.lw_FigList.addItem(figName)
+
+    def RemoveFigure(self):
+        removeIndex = self.lw_FigList.currentRow()
+
+        if self.lw_FigList.currentItem() is not None:
+            removeName = self.lw_FigList.currentItem().text()
+
+        self.lw_FigList.takeItem(removeIndex)
+
+        for i in range(0, len(figList)):
+
+            if figList[i]['name'] == removeName:
+                del figList[i]
+                break
+            else:
+                next
 
 
 app = QApplication(sys.argv)
