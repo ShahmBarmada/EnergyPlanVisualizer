@@ -74,7 +74,7 @@ class Window(QMainWindow, Ui_MainWindow):
             self.rb_AnnualVal.setEnabled(True)
             self.rb_AnnualVal.setChecked(True)
             self.cb_Style.clear()
-            self.cb_Style.addItems(['Domain'])
+            self.cb_Style.addItems(['Domain', 'Domain Spaced'])
             self.cb_Style.setCurrentIndex(0)
             self.cb_FillArea.setEnabled(False)
             self.cb_TicksX.setEnabled(False)
@@ -92,6 +92,8 @@ class Window(QMainWindow, Ui_MainWindow):
         self.btn_StdRemove.clicked.connect(self.RemoveStudy)
         self.btn_FigAdd.clicked.connect(self.AddFigure)
         self.btn_FigDlt.clicked.connect(self.RemoveFigure)
+        self.btn_PltNew.clicked.connect(self.AddPlot)
+        self.btn_PltDlt.clicked.connect(self.RemovePlot)
 
     def openAboutDialog(self):
         QMessageBox.about(self, 'About', 'Hi, I\'m developer')
@@ -191,7 +193,7 @@ class Window(QMainWindow, Ui_MainWindow):
 
             if int(self.txt_FigHeight.text()) != 0 and int(self.txt_FigWidth.text()) != 0:
 
-                figID = {'id': 'fig' + str(figInt), 'name': figName, 'width': self.txt_FigWidth.text(), 'height': self.txt_FigHeight.text()}
+                figID = {'id': 'fig' + str(figInt), 'name': figName, 'width': self.txt_FigWidth.text(), 'height': self.txt_FigHeight.text(), 'rows': self.sb_FigRows.text(), 'cols': self.sb_FigCols.text()}
                 figInt += 1
                 figList.append(figID)
                 self.lw_FigList.addItem(figName)
@@ -212,6 +214,11 @@ class Window(QMainWindow, Ui_MainWindow):
             else:
                 next
 
+    def AddPlot(self):
+        pass
+
+    def RemovePlot(self):
+        pass
 
 app = QApplication(sys.argv)
 mainWindow = Window()

@@ -47,7 +47,7 @@
      <enum>QFrame::Plain</enum>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>0</number>
     </property>
     <widget class="QWidget" name="page_1">
      <widget class="QLabel" name="lbl_pg1">
@@ -1010,7 +1010,7 @@
         <x>0</x>
         <y>20</y>
         <width>295</width>
-        <height>560</height>
+        <height>440</height>
        </rect>
       </property>
       <property name="title">
@@ -1311,6 +1311,19 @@
       <widget class="QPushButton" name="btn_FigView">
        <property name="geometry">
         <rect>
+         <x>90</x>
+         <y>410</y>
+         <width>105</width>
+         <height>24</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Preview</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="btn_FigLoad">
+       <property name="geometry">
+        <rect>
          <x>205</x>
          <y>410</y>
          <width>80</width>
@@ -1318,7 +1331,128 @@
         </rect>
        </property>
        <property name="text">
-        <string>Preview</string>
+        <string>Load</string>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QGroupBox" name="gb_Info">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>460</y>
+        <width>295</width>
+        <height>120</height>
+       </rect>
+      </property>
+      <property name="title">
+       <string>Information</string>
+      </property>
+      <widget class="QLabel" name="lbl_Selection1">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>30</y>
+         <width>95</width>
+         <height>24</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Selected Figure:</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+      <widget class="QLabel" name="lbl_Selection2">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>60</y>
+         <width>95</width>
+         <height>24</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Selected Plot:</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+      <widget class="QLabel" name="lbl_Selection3">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>90</y>
+         <width>95</width>
+         <height>24</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Selected Study:</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+      <widget class="QLabel" name="lbl_SlctFig">
+       <property name="geometry">
+        <rect>
+         <x>115</x>
+         <y>30</y>
+         <width>170</width>
+         <height>24</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+         <italic>true</italic>
+        </font>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::NoFrame</enum>
+       </property>
+       <property name="text">
+        <string>none</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="lbl_SlctPlt">
+       <property name="geometry">
+        <rect>
+         <x>115</x>
+         <y>60</y>
+         <width>170</width>
+         <height>24</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+         <italic>true</italic>
+        </font>
+       </property>
+       <property name="text">
+        <string>none</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="lbl_SlctStd">
+       <property name="geometry">
+        <rect>
+         <x>115</x>
+         <y>90</y>
+         <width>170</width>
+         <height>24</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+         <italic>true</italic>
+        </font>
+       </property>
+       <property name="text">
+        <string>none</string>
        </property>
       </widget>
      </widget>
