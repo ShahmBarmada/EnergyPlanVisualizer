@@ -40,9 +40,12 @@ class Window(QMainWindow, Ui_MainWindow):
         #self.cb_Xdata.setEnabled(False)
 
     def SwitchHandelers(self):
-        self.cb_Trace.currentIndexChanged.connect(self.updateTrace)
+        self.cb_Trace.currentIndexChanged.connect(self.UpdateTrace)
+        self.lw_FigList.currentRowChanged.connect(self.UpdateFigSlct)
+        self.lw_PltList.currentRowChanged.connect(self.UpdatePltSlct)
+        self.lw_StdList.currentRowChanged.connect(self.UpdateStdSlct)
         
-    def updateTrace(self):
+    def UpdateTrace(self):
         if self.cb_Trace.currentIndex() == 0:
             self.rb_HourlyVal.setEnabled(True)
             self.rb_MonthlyVal.setEnabled(True)
@@ -79,6 +82,30 @@ class Window(QMainWindow, Ui_MainWindow):
             self.cb_FillArea.setEnabled(False)
             self.cb_TicksX.setEnabled(False)
             self.cb_TicksY.setEnabled(False)
+
+    def UpdateFigSlct(self):
+        if self.lw_FigList.currentRow() == -1:
+            self.lbl_SlctFig.setText('none')
+            self.lbl_SlctFig.setStyleSheet('border-bottom-width: 1px; border-bottom-style: solid; border-radius: 0px; color: red;')
+        else:
+            self.lbl_SlctFig.setText(self.lw_FigList.currentItem().text())
+            self.lbl_SlctFig.setStyleSheet('border-bottom-width: 1px; border-bottom-style: solid; border-radius: 0px; color: green;')
+
+    def UpdatePltSlct(self):
+        if self.lw_PltList.currentRow() == -1:
+            self.lbl_SlctPlt.setText('none')
+            self.lbl_SlctPlt.setStyleSheet('border-bottom-width: 1px; border-bottom-style: solid; border-radius: 0px; color: red;')
+        else:
+            self.lbl_SlctPlt.setText(self.lw_PltList.currentItem().text())
+            self.lbl_SlctPlt.setStyleSheet('border-bottom-width: 1px; border-bottom-style: solid; border-radius: 0px; color: green;')
+
+    def UpdateStdSlct(self):
+        if self.lw_StdList.currentRow() == -1:
+            self.lbl_SlctStd.setText('none')
+            self.lbl_SlctStd.setStyleSheet('border-bottom-width: 1px; border-bottom-style: solid; border-radius: 0px; color: red;')
+        else:
+            self.lbl_SlctStd.setText(self.lw_StdList.currentItem().text())
+            self.lbl_SlctStd.setStyleSheet('border-bottom-width: 1px; border-bottom-style: solid; border-radius: 0px; color: green;')
 
     def Connections(self):
         self.actionExit.triggered.connect(self.close)
@@ -151,19 +178,24 @@ class Window(QMainWindow, Ui_MainWindow):
             QMessageBox.critical(self, 'Error', 'Error')
 
     def AddStudy(self):
-        global stdInt
+        stdInt = 1
 
         filePath = QFileDialog.getOpenFileName(self, 'Select Input file', filter='*.csv')
         stdName = filePath[0]
         stdName = stdName[stdName.rfind('/') +1:stdName.rfind('.')]
         
-        if len(self.lw_StdList.findItems(stdName, QtCore.Qt.MatchFlag.MatchExactly)) > 0:
-            stdName = stdName + '_' + str(stdInt)
+        while len(self.lw_StdList.findItems(stdName, QtCore.Qt.MatchFlag.MatchExactly)) > 0:
+            if re.match(r'\w| |[^<>:"/|?*\\](?=_\d{2})', stdName[-4:]):
+                stdName = stdName[:-3] + '_' + str(stdInt).zfill(2)
+            else:
+                stdName = stdName + '_' + str(stdInt).zfill(2)
+            stdInt += 1
 
         stdID = {'id': 'std' + str(stdInt), 'name': stdName, 'path': filePath[0]}
-        stdInt += 1
         stdList.append(stdID)
         self.lw_StdList.addItem(stdName)
+        self.lw_StdList.setCurrentRow(self.lw_StdList.count() -1)
+        self.lw_StdList.sortItems()
 
     def RemoveStudy(self):
         removeIndex = self.lw_StdList.currentRow()
@@ -192,11 +224,12 @@ class Window(QMainWindow, Ui_MainWindow):
                 figName = figName + '_' + str(figInt)
 
             if int(self.txt_FigHeight.text()) != 0 and int(self.txt_FigWidth.text()) != 0:
-
                 figID = {'id': 'fig' + str(figInt), 'name': figName, 'width': self.txt_FigWidth.text(), 'height': self.txt_FigHeight.text(), 'rows': self.sb_FigRows.text(), 'cols': self.sb_FigCols.text()}
                 figInt += 1
                 figList.append(figID)
                 self.lw_FigList.addItem(figName)
+                self.lw_FigList.setCurrentRow(self.lw_FigList.count() -1)
+                self.lw_FigList.sortItems()
 
     def RemoveFigure(self):
         removeIndex = self.lw_FigList.currentRow()
@@ -215,7 +248,26 @@ class Window(QMainWindow, Ui_MainWindow):
                 next
 
     def AddPlot(self):
-        pass
+        pltInt = 1
+
+        if self.lw_FigList.currentRow() == -1:
+            pass
+
+        else:
+            pltSrcName = self.lw_FigList.currentItem().text()
+
+            for i in range(0, len(figList)):
+                if figList[i]['name'] == pltSrcName:
+                    pltSrcID = figList[i]['id'] + '_' + pltSrcName + '_'
+
+            pltID = pltSrcID + 'plt' + str(pltInt).zfill(2)
+            while len(self.lw_PltList.findItems(pltID, QtCore.Qt.MatchFlag.MatchExactly)) > 0:
+                pltInt += 1
+                pltID = pltSrcID + 'plt' + str(pltInt).zfill(2)
+
+            self.lw_PltList.addItem(pltID)
+            self.lw_PltList.setCurrentRow(self.lw_PltList.count() -1)
+            self.lw_PltList.sortItems()
 
     def RemovePlot(self):
         pass
