@@ -13,8 +13,8 @@ from ui_main import Ui_MainWindow
 xSeriesData = ySeries = {'Added Export Payment':'0030','Boiler 1':'0005','Boiler 2':'0008','Boiler 3':'0015','Combined Heat & Power 2':'0006','Combined Heat & Power Electricity Production':'0023','Combined Heat and Power 3':'0013','Combined Steam & Heat Electricity Production':'0022','Combined Steam & Heat Production':'0400','Critical Electricity Excess Production':'0027','Desalination':'2200','District Cooling':'2100','District Heat Demand':'0004','Electricity Demand':'0001','Electricity Demand Cooling':'0002','Electricity Heat 2':'0009','Electricity Heat 3':'0016','Electrolyser 2':'0010','Electrolyser 3':'0017','Electrolyser Gr.2':'1100','Electrolyser Gr.3':'1200','EV & V2G (Transport)':'1300','Exorted Electricity':'0026','Exportable Electricity Excess Production':'0028','Exports Payment':'1600','Fixed Export / Import':'0003','Flexible Electricity demand':'0020','Gas Grid Demand & Balance':'2300','Geothermal Heat Production':'0500','Heat Balance Gr.2':'0012','Heat Balance Gr.3':'0019','Heat Pump 2':'0007','Heat Pump 3':'0014','Heat Pump Electricity Production':'0021','Hydrolic Powers':'0200','Import Payment':'0029','Imported Electricity':'0025','Individual Electricity':'1800','Individual Heat 1':'1700','Individual Heat 2':'1900','Market Prices':'1500','Nordpool Prices':'1400','Nuclear':'0700','Power Plants Electricity Production':'0600','Pump Consumption':'0800','Pump Storage':'1000','Renewable Energy Sources':'0100','Satbelization Load Percaentage':'0024','Solar Thermal Powers':'0300','Storage 2':'0011','Storage 3':'0018','Transports Heat 2':'2000','Turbine Production':'0900'}
 
 xSeriesMonth = ['January','February','March','April','May','June','July','August','September','October','November','December']
-figList = pltList = stdList = []
-figInt = pltInt = stdInt = 1
+figList, pltList, stdList = [], [], []
+figID, pltID, stdID = 1, 1, 1
 
 class Window(QMainWindow, Ui_MainWindow):
 
@@ -32,12 +32,6 @@ class Window(QMainWindow, Ui_MainWindow):
         self.cb_Trace.setCurrentIndex(0)
         self.cb_Style.addItems(['Lines + Markers', 'Lines Only', 'Markers Only', 'Smooth Linear'])
         self.cb_Style.setCurrentIndex(0)
-        #self.rb_AnnualVal.setEnabled(False)
-        #self.cb_FillArea.setEnabled(True)
-        #self.cb_TicksX.setEnabled(True)
-        #self.cb_TicksY.setEnabled(True)
-        #self.rb_Xtime.setChecked(True)
-        #self.cb_Xdata.setEnabled(False)
 
     def SwitchHandelers(self):
         self.cb_Trace.currentIndexChanged.connect(self.UpdateTrace)
@@ -154,6 +148,7 @@ class Window(QMainWindow, Ui_MainWindow):
             pass
 
     def ProcessFile(self):
+        global stdID
         timeStamp = datetime.now().strftime('%y%m%d%H%M%S')
 
         if self.txt_ExePath.text() != '' and self.txt_IPF.text() != '' and self.txt_OPD.text() != '':
@@ -165,34 +160,41 @@ class Window(QMainWindow, Ui_MainWindow):
                 subprocess.run(['explorer', os.path.realpath(path_OPD)])
 
             if self.cb_LoadVis.isChecked():
-                global stdInt
-
                 stdName = stdParsed
                 stdName = stdName[stdName.rfind('/') +1:stdName.rfind('.')]
-                stdID = {'id': 'std' + str(stdInt), 'name': stdName, 'path': stdParsed}
-                stdInt += 1
-                stdList.append(stdID)
+                stdCard = {
+                    'id': 'std' + str(stdID).zfill(2),
+                    'name': stdName,
+                    'path': stdParsed}
+                stdID += 1
+                stdList.append(stdCard)
                 self.lw_StdList.addItem(stdName)
 
         else:
             QMessageBox.critical(self, 'Error', 'Error')
 
     def AddStudy(self):
-        stdInt = 1
+        global stdID
+        numbering = 1
 
         filePath = QFileDialog.getOpenFileName(self, 'Select Input file', filter='*.csv')
         stdName = filePath[0]
         stdName = stdName[stdName.rfind('/') +1:stdName.rfind('.')]
         
         while len(self.lw_StdList.findItems(stdName, QtCore.Qt.MatchFlag.MatchExactly)) > 0:
-            if re.match(r'\w| |[^<>:"/|?*\\](?=_\d{2})', stdName[-4:]):
-                stdName = stdName[:-3] + '_' + str(stdInt).zfill(2)
+            if re.fullmatch(r'_\d{2}', stdName[-3:]) is not None:
+                stdName = stdName[:-3] + '_' + str(numbering).zfill(2)
             else:
-                stdName = stdName + '_' + str(stdInt).zfill(2)
-            stdInt += 1
+                stdName = stdName + '_' + str(numbering).zfill(2)
+            numbering += 1
 
-        stdID = {'id': 'std' + str(stdInt), 'name': stdName, 'path': filePath[0]}
-        stdList.append(stdID)
+        stdCard = {
+            'id': 'std' + str(stdID).zfill(2),
+            'name': stdName,
+            'path': filePath[0]}
+
+        stdID += 1
+        stdList.append(stdCard)
         self.lw_StdList.addItem(stdName)
         self.lw_StdList.setCurrentRow(self.lw_StdList.count() -1)
         self.lw_StdList.sortItems()
@@ -214,22 +216,40 @@ class Window(QMainWindow, Ui_MainWindow):
                 next
 
     def AddFigure(self):
-        global figInt
+        global figID
+        numbering = 1
 
         figName = re.sub(r'\s+', r' ', self.txt_FigName.text().strip())
 
-        if re.match(r'\w+', figName):
+        if re.fullmatch(r'[^<>:"/|?*\\]', figName) is None:
 
-            if len(self.lw_FigList.findItems(figName, QtCore.Qt.MatchFlag.MatchExactly)) > 0:
-                figName = figName + '_' + str(figInt)
+            if re.match(r'\w|\w+', figName):
 
-            if int(self.txt_FigHeight.text()) != 0 and int(self.txt_FigWidth.text()) != 0:
-                figID = {'id': 'fig' + str(figInt), 'name': figName, 'width': self.txt_FigWidth.text(), 'height': self.txt_FigHeight.text(), 'rows': self.sb_FigRows.text(), 'cols': self.sb_FigCols.text()}
-                figInt += 1
-                figList.append(figID)
-                self.lw_FigList.addItem(figName)
-                self.lw_FigList.setCurrentRow(self.lw_FigList.count() -1)
-                self.lw_FigList.sortItems()
+                while len(self.lw_FigList.findItems(figName, QtCore.Qt.MatchFlag.MatchExactly)) > 0:
+                    if re.fullmatch(r'_\d{2}', figName[-3:]) is not None:
+                        figName = figName[:-3] + '_' + str(numbering).zfill(2)
+                    else:
+                        figName = figName + '_' + str(numbering).zfill(2)
+                    numbering += 1
+
+                if int(self.txt_FigHeight.text()) != 0 and int(self.txt_FigWidth.text()) != 0:
+                    figCard = {
+                        'id': 'fig' + str(figID).zfill(2),
+                        'name': figName,
+                        'width': self.txt_FigWidth.text(),
+                        'height': self.txt_FigHeight.text(),
+                        'rows': self.sb_FigRows.text(),
+                        'cols': self.sb_FigCols.text()}
+                    figID += 1
+                    figList.append(figCard)
+                    self.lw_FigList.addItem(figName)
+                    self.lw_FigList.setCurrentRow(self.lw_FigList.count() -1)
+                    self.lw_FigList.sortItems()
+
+            else:
+                pass
+        else:
+            pass
 
     def RemoveFigure(self):
         removeIndex = self.lw_FigList.currentRow()
@@ -248,7 +268,8 @@ class Window(QMainWindow, Ui_MainWindow):
                 next
 
     def AddPlot(self):
-        pltInt = 1
+        global pltID
+        numbering = 1
 
         if self.lw_FigList.currentRow() == -1:
             pass
@@ -258,19 +279,104 @@ class Window(QMainWindow, Ui_MainWindow):
 
             for i in range(0, len(figList)):
                 if figList[i]['name'] == pltSrcName:
-                    pltSrcID = figList[i]['id'] + '_' + pltSrcName + '_'
+                    pltSrcID = figList[i]['id']
 
-            pltID = pltSrcID + 'plt' + str(pltInt).zfill(2)
-            while len(self.lw_PltList.findItems(pltID, QtCore.Qt.MatchFlag.MatchExactly)) > 0:
-                pltInt += 1
-                pltID = pltSrcID + 'plt' + str(pltInt).zfill(2)
+            pltName = 'Fig(' + pltSrcName + ')_' + str(numbering).zfill(2)
 
-            self.lw_PltList.addItem(pltID)
+            while len(self.lw_PltList.findItems(pltName, QtCore.Qt.MatchFlag.MatchExactly)) > 0:
+                numbering += 1
+                pltName = 'Fig(' + pltSrcName + ')_' + str(numbering).zfill(2)
+
+            traceType = self.cb_Trace.currentText()
+            traceStyle = self.cb_Style.currentText()
+
+            if self.rb_HourlyVal.isChecked():
+                pltType = 'hourly'
+            elif self.rb_MonthlyVal.isChecked():
+                pltType = 'monthly'
+            elif self.rb_AnnualVal.isChecked():
+                pltType = 'annual'
+
+            if self.cb_FillArea.isEnabled():
+                if self.cb_FillArea.isChecked():
+                    traceFill = 'fill'
+                else:
+                    traceFill = 'no fill'
+            else:
+                traceFill = 'none'
+
+            if self.cb_TicksX.isChecked():
+                xTick = 'auto'
+                xStep = ''
+            else:
+                xTick = 'fixed'
+                xStep = self.txt_TicksX.text()
+
+            if self.cb_TicksY.isChecked():
+                yTick = 'auto'
+                yStep = ''
+            else:
+                yTick = 'fixed'
+                yStep = self.txt_TicksX.text()
+
+            posR = self.sb_Row.text()
+            posC = self.sb_Col.text()
+            spanR = self.sb_RowSpan.text()
+            spanC = self.sb_ColSpan.text()
+
+            if self.rb_Xtime.isChecked():
+                xType = 'time'
+            if self.rb_Xdata.isChecked():
+                xType = 'data'
+
+            xTimeStart = self.cb_Xstart.currentText()
+            xTimeEnd = self.cb_Xend.currentText()
+            xData = self.cb_Xdata.currentText()
+            yData = self.cb_Ydata.currentText()
+
+            pltCard = {
+                'id': 'plt' + str(pltID).zfill(2),
+                'name': pltName,
+                'figid': pltSrcID,
+                'figname': pltSrcName,
+                'datatype': pltType,
+                'tracetype': traceType,
+                'tracestyle': traceStyle,
+                'tracefill': traceFill,
+                'row': posR,
+                'rowspan': spanR,
+                'col': posC,
+                'colspan': spanC,
+                'xstart': xTimeStart,
+                'xend': xTimeEnd,
+                'xdata': xData,
+                'xtype': xType,
+                'xtick': xTick,
+                'xstep': xStep,
+                'ydata': yData,
+                'ytick': yTick,
+                'ystep': yStep}
+
+            pltID += 1
+            pltList.append(pltCard)
+            self.lw_PltList.addItem(pltName)
             self.lw_PltList.setCurrentRow(self.lw_PltList.count() -1)
             self.lw_PltList.sortItems()
 
     def RemovePlot(self):
-        pass
+        removeIndex = self.lw_PltList.currentRow()
+
+        if self.lw_PltList.currentItem() is not None:
+            removeName = self.lw_PltList.currentItem().text()
+
+        self.lw_PltList.takeItem(removeIndex)
+
+        for i in range(0, len(pltList)):
+            if pltList[i]['name'] == removeName:
+                del pltList[i]
+                break
+            else:
+                next
 
 app = QApplication(sys.argv)
 mainWindow = Window()
