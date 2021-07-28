@@ -53,6 +53,7 @@ def plotter (srcFig = dict, srcPlt = list):
                     fill= styleFill,
                     mode= styleMode,
                     line= styleLine,
+                    name= str(yData[i])[5:]
                     ), row= plot['row'], col= plot['col'])
 
             #figure.update_xaxes({'tickmode':'auto', 'tick0':0, 'dtick':1, 'tickangle':0, 'ticks':'outside', 'showline': True, 'linecolor':'black', 'linewidth':1, 'showgrid':False}, row= plot['row'],     col= plot['col'])
