@@ -38,7 +38,7 @@ fig.add_trace(plygo.Scatter(
     x= [1, 2 ,3 , 4],
     y= [2, 6 , None, 5],
     connectgaps= False,
-    fill= 'tonexty',
+    fill= 'none',
     mode= 'lines+markers',
     line= {'shape':'linear'},
     name= 'two',

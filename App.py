@@ -252,10 +252,10 @@ class Window(QMainWindow, Ui_MainWindow):
                     figCard = {
                         'id': 'fig' + str(figID).zfill(2),
                         'name': figName,
-                        'width': self.txt_FigWidth.text(),
-                        'height': self.txt_FigHeight.text(),
-                        'rows': self.sb_FigRows.text(),
-                        'cols': self.sb_FigCols.text()}
+                        'width': int(self.txt_FigWidth.text()),
+                        'height': int(self.txt_FigHeight.text()),
+                        'rows': int(self.sb_FigRows.text()),
+                        'cols': int(self.sb_FigCols.text())}
                     figID += 1
                     figList.append(figCard)
                     self.lw_FigList.addItem(figName)
@@ -334,14 +334,14 @@ class Window(QMainWindow, Ui_MainWindow):
 
             if self.cb_TicksX.isChecked():
                 xTick = 'auto'
-                xStep = ''
+                xStep = '0'
             else:
                 xTick = 'fixed'
                 xStep = self.txt_TicksX.text()
 
             if self.cb_TicksY.isChecked():
                 yTick = 'auto'
-                yStep = ''
+                yStep = '0'
             else:
                 yTick = 'fixed'
                 yStep = self.txt_TicksX.text()
@@ -434,6 +434,7 @@ class Window(QMainWindow, Ui_MainWindow):
 
         # send data to plotter.py
         figure = plotter(slctFig, slctPlt)
+        figure.write_image(os.getcwd() + '/plot1.jpeg', scale=3, engine='kaleido')
 
         # save figure to file
 
