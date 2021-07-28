@@ -10,9 +10,9 @@ from CSV_Parser import csvParser
 from Plotter import plotter
 from ui_main import Ui_MainWindow
 
-xSeriesData = ySeries = {'Added Export Payment':'0030','Boiler 1':'0005','Boiler 2':'0008','Boiler 3':'0015','Combined Heat & Power 2':'0006','Combined Heat & Power Electricity Production':'0023','Combined Heat and Power 3':'0013','Combined Steam & Heat Electricity Production':'0022','Combined Steam & Heat Production':'0400','Critical Electricity Excess Production':'0027','Desalination':'2200','District Cooling':'2100','District Heat Demand':'0004','Electricity Demand':'0001','Electricity Demand Cooling':'0002','Electricity Heat 2':'0009','Electricity Heat 3':'0016','Electrolyser 2':'0010','Electrolyser 3':'0017','Electrolyser Gr.2':'1100','Electrolyser Gr.3':'1200','EV & V2G (Transport)':'1300','Exorted Electricity':'0026','Exportable Electricity Excess Production':'0028','Exports Payment':'1600','Fixed Export / Import':'0003','Flexible Electricity demand':'0020','Gas Grid Demand & Balance':'2300','Geothermal Heat Production':'0500','Heat Balance Gr.2':'0012','Heat Balance Gr.3':'0019','Heat Pump 2':'0007','Heat Pump 3':'0014','Heat Pump Electricity Production':'0021','Hydrolic Powers':'0200','Import Payment':'0029','Imported Electricity':'0025','Individual Electricity':'1800','Individual Heat 1':'1700','Individual Heat 2':'1900','Market Prices':'1500','Nordpool Prices':'1400','Nuclear':'0700','Power Plants Electricity Production':'0600','Pump Consumption':'0800','Pump Storage':'1000','Renewable Energy Sources':'0100','Satbelization Load Percaentage':'0024','Solar Thermal Powers':'0300','Storage 2':'0011','Storage 3':'0018','Transports Heat 2':'2000','Turbine Production':'0900'}
+dataList = {'Electricity Demand':'0001','Electricity Demand Cooling':'0002','Fixed Export / Import':'0003','District Heat Demand':'0004','Boiler 1':'0005','Combined Heat & Power 2':'0006','Heat Pump 2':'0007','Boiler 2':'0008','Electricity Heat 2':'0009','Electrolyser 2':'0010','Storage 2':'0011','Heat Balance Gr.2':'0012','Combined Heat and Power 3':'0013','Heat Pump 3':'0014','Boiler 3':'0015','Electricity Heat 3':'0016','Electrolyser 3':'0017','Storage 3':'0018','Heat Balance Gr.3':'0019','Flexible Electricity demand':'0020','Heat Pump Electricity Production':'0021','Combined Steam & Heat Electricity Production':'0022','Combined Heat & Power Electricity Production':'0023','Satbelization Load Percaentage':'0024','Imported Electricity':'0025','Exorted Electricity':'0026','Critical Electricity Excess Production':'0027','Exportable Electricity Excess Production':'0028','Import Payment':'0029','Added Export Payment':'0030','Renewable Energy Sources':'0100','Hydrolic Powers':'0200','Solar Thermal Powers':'0300','Combined Steam & Heat Production':'0400','Geothermal Heat Production':'0500','Power Plants Electricity Production':'0600','Nuclear':'0700','Pump Consumption':'0800','Turbine Production':'0900','Pump Storage':'1000','Electrolyser Gr.2':'1100','Electrolyser Gr.3':'1200','EV & V2G (Transport)':'1300','Nordpool Prices':'1400','Market Prices':'1500','Exports Payment':'1600','Individual Heat 1':'1700','Individual Electricity':'1800','Individual Heat 2':'1900','Transports Heat 2':'2000','District Cooling':'2100','Desalination':'2200','Gas Grid Demand & Balance':'2300'}
 
-xSeriesMonth = ['January','February','March','April','May','June','July','August','September','October','November','December']
+monthList = ['January','February','March','April','May','June','July','August','September','October','November','December']
 figList, pltList, stdList = [], [], []
 figID, pltID, stdID = 1, 1, 1
 
@@ -32,12 +32,16 @@ class Window(QMainWindow, Ui_MainWindow):
         self.cb_Trace.setCurrentIndex(0)
         self.cb_Style.addItems(['Lines + Markers', 'Lines Only', 'Markers Only', 'Smooth Linear'])
         self.cb_Style.setCurrentIndex(0)
+        self.cb_Ydata.addItems(dataList.keys())
+        self.cb_Xdata.addItems(dataList.keys())
 
     def SwitchHandelers(self):
         self.cb_Trace.currentIndexChanged.connect(self.UpdateTrace)
         self.lw_FigList.currentRowChanged.connect(self.UpdateFigSlct)
         self.lw_PltList.currentRowChanged.connect(self.UpdatePltSlct)
         self.lw_StdList.currentRowChanged.connect(self.UpdateStdSlct)
+        self.cb_TicksX.stateChanged.connect(self.UpdateTickStateX)
+        self.cb_TicksY.stateChanged.connect(self.UpdateTickStateY)
         
     def UpdateTrace(self):
         if self.cb_Trace.currentIndex() == 0:
@@ -51,7 +55,6 @@ class Window(QMainWindow, Ui_MainWindow):
             self.cb_FillArea.setEnabled(True)
             self.cb_TicksX.setEnabled(True)
             self.cb_TicksY.setEnabled(True)
-
 
         elif self.cb_Trace.currentIndex() == 1:
             self.rb_HourlyVal.setEnabled(True)
@@ -76,6 +79,18 @@ class Window(QMainWindow, Ui_MainWindow):
             self.cb_FillArea.setEnabled(False)
             self.cb_TicksX.setEnabled(False)
             self.cb_TicksY.setEnabled(False)
+
+    def UpdateTickStateX(self):
+        if self.cb_TicksX.isChecked():
+            self.txt_TicksX.setEnabled(False)
+        else:
+            self.txt_TicksX.setEnabled(True)
+
+    def UpdateTickStateY(self):
+        if self.cb_TicksY.isChecked():
+            self.txt_TicksY.setEnabled(False)
+        else:
+            self.txt_TicksY.setEnabled(True)
 
     def UpdateFigSlct(self):
         if self.lw_FigList.currentRow() == -1:
@@ -311,11 +326,11 @@ class Window(QMainWindow, Ui_MainWindow):
 
             if self.cb_FillArea.isEnabled():
                 if self.cb_FillArea.isChecked():
-                    traceFill = 'fill'
+                    traceFill = True
                 else:
-                    traceFill = 'no fill'
+                    traceFill = False
             else:
-                traceFill = 'none'
+                traceFill = False
 
             if self.cb_TicksX.isChecked():
                 xTick = 'auto'
@@ -331,20 +346,26 @@ class Window(QMainWindow, Ui_MainWindow):
                 yTick = 'fixed'
                 yStep = self.txt_TicksX.text()
 
-            posR = self.sb_Row.text()
-            posC = self.sb_Col.text()
-            spanR = self.sb_RowSpan.text()
-            spanC = self.sb_ColSpan.text()
+            posR = int(self.sb_Row.text())
+            posC = int(self.sb_Col.text())
+            spanR = int(self.sb_RowSpan.text())
+            spanC = int(self.sb_ColSpan.text())
 
             if self.rb_Xtime.isChecked():
                 xType = 'time'
-            if self.rb_Xdata.isChecked():
+            elif self.rb_Xdata.isChecked():
                 xType = 'data'
 
             xTimeStart = self.cb_Xstart.currentText()
             xTimeEnd = self.cb_Xend.currentText()
-            xData = self.cb_Xdata.currentText()
-            yData = self.cb_Ydata.currentText()
+
+            for i, key in enumerate(dataList.keys()):
+                if key == self.cb_Xdata.currentText():
+                    xData = dataList[key]
+                    next
+                if key == self.cb_Ydata.currentText():
+                    yData = dataList[key]
+                    next
 
             pltCard = {
                 'id': 'plt' + str(pltID).zfill(2),
@@ -413,9 +434,7 @@ class Window(QMainWindow, Ui_MainWindow):
 
         # send data to plotter.py
         figure = plotter(slctFig, slctPlt)
-        print(figure)
 
-        # return figure object
         # save figure to file
 
 app = QApplication(sys.argv)

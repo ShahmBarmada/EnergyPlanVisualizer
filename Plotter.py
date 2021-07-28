@@ -2,16 +2,31 @@ import pandas as pd
 import plotly.graph_objects as plygo
 from plotly.subplots import make_subplots
 
-def plotter (srcFig = dict, srcPlt = list) -> list:
-    fig = srcFig['id']
-    plt = []
-    for i in range(0, len(srcPlt)):
-        plt.append(srcPlt[i]['id'])
+def plotter (srcFig = dict, srcPlt = list):
 
-    fig = make_subplots(rows= srcFig['rows'], cols= srcFig['cols'])
+    figure = make_subplots(rows= srcFig['rows'], cols= srcFig['cols'], width= srcFig['width'], height= srcFig['height'], title= srcFig['name'])
 
     for i in range(0, len(srcPlt)):
         if srcPlt[i]['tracetype'] == 'Scatter':
+
+            plot = srcPlt[i]
+
+            # get x data plot['datasrc'] plot['datatype']
+            # get y data
+
+            figure.add_trace(plygo.Scatter(
+                x= [1, 2 ,3 , 4],
+                y= [2, 6 , None, 5],
+                connectgaps= True,
+                fill= 'tonexty',
+                mode= 'lines+markers',
+                line= {'shape':'linear'},
+                name= plot['name']
+                ), row= plot['row'], col= plot['col'])
+            
+            figure.update_xaxes({'tickmode':'auto', 'tick0':0, 'dtick':1, 'tickangle':0, 'ticks':'outside', 'showline': True, 'linecolor':'black', 'linewidth':1, 'showgrid':False}, row= plot['row'], col= plot['col'])
+            figure.update_yaxes({'tickmode':'auto', 'tick0':0, 'dtick':1, 'tickangle':0, 'ticks':'outside', 'showline': True, 'linecolor':'black', 'linewidth':1, 'showgrid':False}, row= plot['row'], col= plot['col'])
+            
             pass
 
         elif srcPlt[i]['tracetype'] == 'Bar':
@@ -19,8 +34,6 @@ def plotter (srcFig = dict, srcPlt = list) -> list:
 
         elif srcPlt[i]['tracetype'] == 'Pie':
             pass
-
-    return [fig, plt]
 
 # make subplot (rows, cols, print_grid, subplot_titles, specs, insets, column_titles, row_titles, x_title, y_title)
 
