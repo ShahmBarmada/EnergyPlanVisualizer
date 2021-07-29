@@ -110,11 +110,13 @@ def plotter (srcFig = dict, srcPlt = list):
                 styleFill = 'none'
 
             # set mode & shape
-            styleMode = str(plot['tracestyle']).replace('Only','').replace(' ', '').strip().lower()
+            
 
             if plot['tracestyle'] == 'Smooth Linear':
+                styleMode = 'lines'
                 styleLine = {'shape': 'spline'}
             else:
+                styleMode = str(plot['tracestyle']).replace('Only','').replace(' ', '').strip().lower()
                 styleLine = {'shape': 'linear'}
 
             # set ticks (xtick, xstep, ytick, ystep)
