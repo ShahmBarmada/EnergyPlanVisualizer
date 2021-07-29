@@ -10,7 +10,7 @@ from CSV_Parser import csvParser
 from Plotter import plotter
 from ui_main import Ui_MainWindow
 
-dataList = {'Electricity Demand':'0001','Electricity Demand Cooling':'0002','Fixed Export / Import':'0003','District Heat Demand':'0004','Boiler 1':'0005','Combined Heat & Power 2':'0006','Heat Pump 2':'0007','Boiler 2':'0008','Electricity Heat 2':'0009','Electrolyser 2':'0010','Storage 2':'0011','Heat Balance Gr.2':'0012','Combined Heat and Power 3':'0013','Heat Pump 3':'0014','Boiler 3':'0015','Electricity Heat 3':'0016','Electrolyser 3':'0017','Storage 3':'0018','Heat Balance Gr.3':'0019','Flexible Electricity demand':'0020','Heat Pump Electricity Production':'0021','Combined Steam & Heat Electricity Production':'0022','Combined Heat & Power Electricity Production':'0023','Satbelization Load Percaentage':'0024','Imported Electricity':'0025','Exorted Electricity':'0026','Critical Electricity Excess Production':'0027','Exportable Electricity Excess Production':'0028','Import Payment':'0029','Added Export Payment':'0030','Renewable Energy Sources':'0100','Hydrolic Powers':'0200','Solar Thermal Powers':'0300','Combined Steam & Heat Production':'0400','Geothermal Heat Production':'0500','Power Plants Electricity Production':'0600','Nuclear':'0700','Pump Consumption':'0800','Turbine Production':'0900','Pump Storage':'1000','Electrolyser Gr.2':'1100','Electrolyser Gr.3':'1200','EV & V2G (Transport)':'1300','Nordpool Prices':'1400','Market Prices':'1500','Exports Payment':'1600','Individual Heat 1':'1700','Individual Electricity':'1800','Individual Heat 2':'1900','Transports Heat 2':'2000','District Cooling':'2100','Desalination':'2200','Gas Grid Demand & Balance':'2300'}
+dataList = {'Electricity Demand':'0001','Electricity Demand Cooling':'0002','Fixed Export / Import':'0003','District Heat Demand':'0004','Boiler 1':'0005','Combined Heat & Power 2':'0006','Heat Pump 2':'0007','Boiler 2':'0008','Electricity Heat 2':'0009','Electrolyser 2':'0010','Storage 2':'0011','Heat Balance Gr.2':'0012','Combined Heat and Power 3':'0013','Heat Pump 3':'0014','Boiler 3':'0015','Electricity Heat 3':'0016','Electrolyser 3':'0017','Storage 3':'0018','Heat Balance Gr.3':'0019','Flexible Electricity demand':'0020','Heat Pump Electricity Production':'0021','Combined Steam & Heat Electricity Production':'0022','Combined Heat & Power Electricity Production':'0023','Satbelization Load Percaentage':'0024','Imported Electricity':'0025','Exorted Electricity':'0026','Critical Electricity Excess Production':'0027','Exportable Electricity Excess Production':'0028','Import Payment':'0029','Added Export Payment':'0030','Renewable Energy Sources [g]':'0100','Hydrolic Powers [g]':'0200','Solar Thermal Powers [g]':'0300','Combined Steam & Heat Production [g]':'0400','Geothermal Heat Production [g]':'0500','Power Plants Electricity Production [g]':'0600','Nuclear [g]':'0700','Pump Consumption [g]':'0800','Turbine Production [g]':'0900','Pump Storage [g]':'1000','Electrolyser Gr.2 [g]':'1100','Electrolyser Gr.3 [g]':'1200','EV & V2G (Transport) [g]':'1300','Nordpool Prices [g]':'1400','Market Prices [g]':'1500','Exports Payment [g]':'1600','Individual Heat 1 [g]':'1700','Individual Electricity [g]':'1800','Individual Heat 2 [g]':'1900','Transports Heat 2 [g]':'2000','District Cooling [g]':'2100','Desalination [g]':'2200','Gas Grid Demand & Balance [g]':'2300'}
 
 monthList = ['January','February','March','April','May','June','July','August','September','October','November','December']
 figList, pltList, stdList = [], [], []
@@ -42,6 +42,9 @@ class Window(QMainWindow, Ui_MainWindow):
         self.lw_StdList.currentRowChanged.connect(self.UpdateStdSlct)
         self.cb_TicksX.stateChanged.connect(self.UpdateTickStateX)
         self.cb_TicksY.stateChanged.connect(self.UpdateTickStateY)
+        self.rb_MonthlyVal.toggled.connect(self.TimeX_monthly)
+        self.rb_HourlyVal.toggled.connect(self.TimeX_none)
+        self.rb_AnnualVal.toggled.connect(self.TimeX_none)
         
     def UpdateTrace(self):
         if self.cb_Trace.currentIndex() == 0:
@@ -115,6 +118,18 @@ class Window(QMainWindow, Ui_MainWindow):
         else:
             self.lbl_SlctStd.setText(self.lw_StdList.currentItem().text())
             self.lbl_SlctStd.setStyleSheet('border-bottom-width: 1px; border-bottom-style: solid; border-radius: 0px; color: green;')
+
+    def TimeX_monthly(self, enabled):
+        if enabled:
+            self.cb_Xstart.clear()
+            self.cb_Xstart.addItems(monthList)
+            self.cb_Xend.clear()
+            self.cb_Xend.addItems(monthList)
+
+    def TimeX_none(self, enabled):
+        if enabled:
+            self.cb_Xstart.clear()
+            self.cb_Xend.clear()
 
     def Connections(self):
         self.actionExit.triggered.connect(self.close)
@@ -334,17 +349,17 @@ class Window(QMainWindow, Ui_MainWindow):
 
             if self.cb_TicksX.isChecked():
                 xTick = 'auto'
-                xStep = '0'
+                xStep = 0
             else:
                 xTick = 'fixed'
-                xStep = self.txt_TicksX.text()
+                xStep = int(self.txt_TicksX.text()) -1
 
             if self.cb_TicksY.isChecked():
                 yTick = 'auto'
-                yStep = '0'
+                yStep = 0
             else:
                 yTick = 'fixed'
-                yStep = self.txt_TicksX.text()
+                yStep = int(self.txt_TicksX.text()) -1
 
             posR = int(self.sb_Row.text())
             posC = int(self.sb_Col.text())
@@ -365,6 +380,7 @@ class Window(QMainWindow, Ui_MainWindow):
                     next
                 if key == self.cb_Ydata.currentText():
                     yData = dataList[key]
+                    pltTitle = key
                     next
 
             pltCard = {
@@ -372,6 +388,7 @@ class Window(QMainWindow, Ui_MainWindow):
                 'name': pltName,
                 'figid': pltSrcID,
                 'figname': pltSrcName,
+                'title': pltTitle,
                 'datasrc': datasrc,
                 'datatype': pltType,
                 'tracetype': traceType,
