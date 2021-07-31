@@ -438,7 +438,7 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "EnergyPLAN Visuzalizer"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "EnergyPLAN Visualizer"))
         self.lbl_pg1.setText(_translate("MainWindow", "Page 1"))
         self.gb_Config.setTitle(_translate("MainWindow", "Configuration"))
         self.lbl_ExePath.setText(_translate("MainWindow", "EnergyPLAN .exe Path:"))
