@@ -34,6 +34,8 @@ class Window(QMainWindow, Ui_MainWindow):
         self.cb_Style.setCurrentIndex(0)
         self.cb_Ydata.addItems(dataList.keys())
         self.cb_Xdata.addItems(dataList.keys())
+        self.cb_Ydata.insertSeparator(30)
+        self.cb_Xdata.insertSeparator(30)
 
     def SwitchHandelers(self):
         self.cb_Trace.currentIndexChanged.connect(self.UpdateTrace)
@@ -461,7 +463,6 @@ class Window(QMainWindow, Ui_MainWindow):
         elif self.cb_FileFormat.currentText() == 'json':
             savePath = QFileDialog.getSaveFileName(self, 'Save File', filter='*.json')
             figure.write_json(file= savePath[0], engine='json')
-
 
 app = QApplication(sys.argv)
 mainWindow = Window()
