@@ -238,7 +238,7 @@ class Window(QMainWindow, Ui_MainWindow):
 
         self.lw_StdList.takeItem(removeIndex)
 
-        for i in range(0, len(stdList)):
+        for i in range(len(stdList)):
 
             if stdList[i]['name'] == removeName:
                 del stdList[i]
@@ -292,7 +292,7 @@ class Window(QMainWindow, Ui_MainWindow):
 
         self.lw_FigList.takeItem(removeIndex)
 
-        for i in range(0, len(figList)):
+        for i in range(len(figList)):
 
             if figList[i]['name'] == removeName:
                 del figList[i]
@@ -308,10 +308,10 @@ class Window(QMainWindow, Ui_MainWindow):
             pass
 
         else:
-            datasrc = self.lw_StdList.currentItem().text()
-            for i in range(0,len(stdList)):
+            dataSrc = self.lw_StdList.currentItem().text()
+            for i in range(len(stdList)):
                 if stdList[i]['name'] == self.lw_StdList.currentItem().text():
-                    datasrc = stdList[i]
+                    dataSrc = stdList[i]
 
         if self.lw_FigList.currentRow() == -1:
             pass
@@ -319,7 +319,7 @@ class Window(QMainWindow, Ui_MainWindow):
         else:
             pltSrcName = self.lw_FigList.currentItem().text()
 
-            for i in range(0, len(figList)):
+            for i in range(len(figList)):
                 if figList[i]['name'] == pltSrcName:
                     pltSrcID = figList[i]['id']
 
@@ -389,7 +389,7 @@ class Window(QMainWindow, Ui_MainWindow):
                 'figid': pltSrcID,
                 'figname': pltSrcName,
                 'title': pltTitle,
-                'datasrc': datasrc,
+                'datasrc': dataSrc,
                 'datatype': pltType,
                 'tracetype': traceType,
                 'tracestyle': traceStyle,
@@ -422,7 +422,7 @@ class Window(QMainWindow, Ui_MainWindow):
 
         self.lw_PltList.takeItem(removeIndex)
 
-        for i in range(0, len(pltList)):
+        for i in range(len(pltList)):
             if pltList[i]['name'] == removeName:
                 del pltList[i]
                 break
@@ -432,7 +432,7 @@ class Window(QMainWindow, Ui_MainWindow):
     def SaveFigure(self):
         # get selected figure card
         slctFig = self.lbl_SlctFig.text()
-        for i in range(0, len(figList)):
+        for i in range(len(figList)):
             if figList[i]['name'] == slctFig:
                 slctFig = figList[i]
                 slctFigID = figList[i]['id']
@@ -442,7 +442,7 @@ class Window(QMainWindow, Ui_MainWindow):
 
         # generate sub-plots list of cards
         slctPlt = []
-        for i in range(0, len(pltList)):
+        for i in range(len(pltList)):
             if pltList[i]['figid'] == slctFigID:
                 slctPlt.append(pltList[i])
                 next
@@ -461,8 +461,6 @@ class Window(QMainWindow, Ui_MainWindow):
         elif self.cb_FileFormat.currentText() == 'json':
             savePath = QFileDialog.getSaveFileName(self, 'Save File', filter='*.json')
             figure.write_json(file= savePath[0], engine='json')
-        
-
 
 
 app = QApplication(sys.argv)
