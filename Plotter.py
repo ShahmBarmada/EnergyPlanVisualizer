@@ -6,22 +6,33 @@ from plotly.subplots import make_subplots
 
 def plotter (srcFig = dict, srcPlt = list):
 
-    figure = make_subplots(rows= srcFig['rows'], cols= srcFig['cols'])
+    figure = make_subplots(rows= srcFig['rows'], cols= srcFig['cols'], subplot_titles=('1', '2', '3'))
+    figTitles = []
 
     for plt_i in range(len(srcPlt)):
 
-        plotsTitles = []
         plot = srcPlt[plt_i]
 
         # get data
         srcStd = plot['datasrc']
         stdDF = pd.read_csv(srcStd['path'], delimiter=',', low_memory=False, index_col='Index')
+        
+        # calc plot grid position & assign title
+        pltPos = plot['row'] * 10 + plot['col'] * 1
+        pltTitle = str(pltPos) + '_' + srcStd['name']
+        figTitles.append(pltTitle)
 
         # set x data (datatype[monthly, hourly], xstart, xend, xtype[time, data], xdata{haeder key})
         if plot['datatype'] == 'monthly':
             xStart = plot['xstart']
             xEnd = plot['xend']
             xData = stdDF.loc[xStart:xEnd].index.values.tolist()
+
+            if plot['xtype'] == 'time':
+                xTitle = 'Time Range'
+            elif plot['xtype'] == 'data':
+                xTitle = plot['xtitle']
+
         elif plot['datatype'] == 'hourly':
     
             # set xStart
@@ -58,8 +69,10 @@ def plotter (srcFig = dict, srcPlt = list):
 
             if plot['xtype'] == 'time':
                 xData = stdDF.loc[xStart:xEnd].index.values.tolist()
+                xTitle = 'Time Range'
             elif plot['xtype'] == 'data':
                 xDataOffset = ''
+                xTitle = plot['xtitle']
 
                 for xData_i, headers in enumerate(list(stdDF.columns.values)):
 
@@ -75,11 +88,11 @@ def plotter (srcFig = dict, srcPlt = list):
         yData = []
         for yData_i, headers in enumerate(list(stdDF.columns.values)):
 
-            if str(plot['ydata'])[:2] == '00':
+            if plot['ydata'][:2] == '00':
                 if plot['ydata'] == headers[:4]:
                     yData.append(headers)
                     break
-            elif str(plot['ydata'])[:2] == headers[:2]:
+            elif plot['ydata'][:2] == headers[:2]:
                 yData.append(headers)
                 next
 
@@ -128,8 +141,8 @@ def plotter (srcFig = dict, srcPlt = list):
                     ), row= plot['row'], col= plot['col'])
 
             # update layout & axes
-            figure.update_xaxes({'title_text':'Test X', 'tickmode': xTickMode, 'tick0': 0, 'dtick': xTickStep, 'tickangle': -45}, row= plot['row'], col= plot['col'])
-            figure.update_yaxes({'title_text':'Test Y', 'tickmode': yTickMode, 'tick0': 0, 'dtick': yTickStep, 'tickangle': 0}, row= plot['row'], col= plot['col'])
+            figure.update_xaxes({'title_text': xTitle, 'tickmode': xTickMode, 'tick0': 0, 'dtick': xTickStep, 'tickangle': -45}, row= plot['row'], col= plot['col'])
+            figure.update_yaxes({'title_text': plot['ytitle'], 'tickmode': yTickMode, 'tick0': 0, 'dtick': yTickStep, 'tickangle': 0}, row= plot['row'], col= plot['col'])
 
         elif srcPlt[plt_i]['tracetype'] == 'Bar':
 
@@ -149,18 +162,25 @@ def plotter (srcFig = dict, srcPlt = list):
                     ), row= plot['row'], col= plot['col'])
 
             # update layout & axes
-            figure.update_xaxes({'title_text':'Test X'}, row= plot['row'], col= plot['col'])
-            figure.update_yaxes({'title_text':'Test Y', 'tickmode': yTickMode, 'tick0': 0, 'dtick': yTickStep, 'tickangle': 0}, row= plot['row'], col= plot['col'])
+            figure.update_xaxes({'title_text': xTitle}, row= plot['row'], col= plot['col'])
+            figure.update_yaxes({'title_text': plot['ytitle'], 'tickmode': yTickMode, 'tick0': 0, 'dtick': yTickStep, 'tickangle': 0}, row= plot['row'], col= plot['col'])
             figure.update_layout({'barmode': styleMode})
 
         elif srcPlt[plt_i]['tracetype'] == 'Pie':
             pass
 
+    figTitles.sort()
+    for title_i in range(len(figTitles)):
+        title = figTitles[title_i]
+        title = title.replace(title[:title.find('_') + 1], '')
+        figure.layout.annotations[title_i].update(text= title)
+        figTitles[title_i] = title
+        
     figure.update_layout(width= srcFig['width'], height= srcFig['height'], title= srcFig['name'], showlegend= True, template= pio.templates['simple_white'])
+    print(figure.layout.annotations)
 
     #for j in range(1, len(srcPlt) +1):
         #figure.update_layout({'yaxis' + str(j):{'title': 'axis' + str(j)}})
-
 
     return figure
 

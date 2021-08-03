@@ -379,10 +379,11 @@ class Window(QMainWindow, Ui_MainWindow):
             for i, key in enumerate(dataList.keys()):
                 if key == self.cb_Xdata.currentText():
                     xData = dataList[key]
+                    xTitle = key
                     next
                 if key == self.cb_Ydata.currentText():
                     yData = dataList[key]
-                    pltTitle = key
+                    yTitle = key
                     next
 
             pltCard = {
@@ -390,7 +391,6 @@ class Window(QMainWindow, Ui_MainWindow):
                 'name': pltName,
                 'figid': pltSrcID,
                 'figname': pltSrcName,
-                'title': pltTitle,
                 'datasrc': dataSrc,
                 'datatype': pltType,
                 'tracetype': traceType,
@@ -403,10 +403,12 @@ class Window(QMainWindow, Ui_MainWindow):
                 'xstart': xTimeStart,
                 'xend': xTimeEnd,
                 'xdata': xData,
+                'xtitle': xTitle,
                 'xtype': xType,
                 'xtick': xTick,
                 'xstep': xStep,
                 'ydata': yData,
+                'ytitle': yTitle,
                 'ytick': yTick,
                 'ystep': yStep}
 
