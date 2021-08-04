@@ -436,6 +436,7 @@ class Window(QMainWindow, Ui_MainWindow):
     def SaveFigure(self):
         # get selected figure card
         slctFig = self.lbl_SlctFig.text()
+
         for i in range(len(figList)):
             if figList[i]['name'] == slctFig:
                 slctFig = figList[i]
@@ -446,6 +447,7 @@ class Window(QMainWindow, Ui_MainWindow):
 
         # generate sub-plots list of cards
         slctPlt = []
+
         for i in range(len(pltList)):
             if pltList[i]['figid'] == slctFigID:
                 slctPlt.append(pltList[i])
@@ -455,16 +457,18 @@ class Window(QMainWindow, Ui_MainWindow):
 
         # save figure to file
         figure = plotter(slctFig, slctPlt)
-
-        if self.cb_FileFormat.currentText() == 'image':
-            savePath = QFileDialog.getSaveFileName(self, 'Save File', filter='*.png;;*.jpg;;*.svg')
-            figure.write_image(file= savePath[0], scale=3, engine='kaleido')
-        elif self.cb_FileFormat.currentText() == 'html':
-            savePath = QFileDialog.getSaveFileName(self, 'Save File', filter='*.html')
-            figure.write_html(file= savePath[0])
-        elif self.cb_FileFormat.currentText() == 'json':
-            savePath = QFileDialog.getSaveFileName(self, 'Save File', filter='*.json')
-            figure.write_json(file= savePath[0], engine='json')
+        try:
+            if self.cb_FileFormat.currentText() == 'image':
+                savePath = QFileDialog.getSaveFileName(self, 'Save File', filter='*.png;;*.jpg;;*.svg')
+                figure.write_image(file= savePath[0], scale=3, engine='kaleido')
+            elif self.cb_FileFormat.currentText() == 'html':
+                savePath = QFileDialog.getSaveFileName(self, 'Save File', filter='*.html')
+                figure.write_html(file= savePath[0])
+            elif self.cb_FileFormat.currentText() == 'json':
+                savePath = QFileDialog.getSaveFileName(self, 'Save File', filter='*.json')
+                figure.write_json(file= savePath[0], engine='json')
+        except:
+            pass
 
 app = QApplication(sys.argv)
 mainWindow = Window()

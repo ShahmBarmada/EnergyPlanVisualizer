@@ -6,8 +6,14 @@ from plotly.subplots import make_subplots
 
 def plotter (srcFig = dict, srcPlt = list):
 
-    figure = make_subplots(rows= srcFig['rows'], cols= srcFig['cols'], subplot_titles=('1', '2', '3'))
+    figSize = srcFig['rows'] * srcFig['cols']
     figTitles = []
+
+    for size_i in range(0, figSize):
+        figTitles.append('Plot ' + str(size_i))
+
+    figure = make_subplots(rows= srcFig['rows'], cols= srcFig['cols'], horizontal_spacing= 0.1, vertical_spacing= 0.23, subplot_titles= tuple(figTitles))
+    figTitles.clear()
 
     for plt_i in range(len(srcPlt)):
 
@@ -170,14 +176,14 @@ def plotter (srcFig = dict, srcPlt = list):
             pass
 
     figTitles.sort()
+
     for title_i in range(len(figTitles)):
         title = figTitles[title_i]
         title = title.replace(title[:title.find('_') + 1], '')
-        figure.layout.annotations[title_i].update(text= title)
+        figure.layout.annotations[title_i].update(text= 'Study: ' + title)
         figTitles[title_i] = title
         
     figure.update_layout(width= srcFig['width'], height= srcFig['height'], title= srcFig['name'], showlegend= True, template= pio.templates['simple_white'])
-    print(figure.layout.annotations)
 
     #for j in range(1, len(srcPlt) +1):
         #figure.update_layout({'yaxis' + str(j):{'title': 'axis' + str(j)}})
