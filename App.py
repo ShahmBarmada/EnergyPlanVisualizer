@@ -28,32 +28,78 @@ class Window(QMainWindow, Ui_MainWindow):
     def InitialData(self):
         self.cb_FileFormat.addItems(['image','html','json']) 
         self.cb_FileFormat.setCurrentIndex(0)
-        self.cb_Trace.addItems(['Scatter', 'Bar', 'Pie'])   
-        self.cb_Trace.setCurrentIndex(0)
-        self.cb_Style.addItems(['Lines + Markers', 'Lines Only', 'Markers Only', 'Smooth Linear'])
-        self.cb_Style.setCurrentIndex(0)
-        self.cb_Ydata.addItems(dataList.keys())
-        self.cb_Xdata.addItems(dataList.keys())
-        self.cb_Ydata.insertSeparator(30)
-        self.cb_Xdata.insertSeparator(30)
+        self.DataTypeHourly(True)
+        self.UpdateTrace()
 
     def SwitchHandelers(self):
+        self.rb_HourlyVal.toggled.connect(self.DataTypeHourly)
+        self.rb_MonthlyVal.toggled.connect(self.DataTypeMonthly)
+        self.rb_AnnualVal.toggled.connect(self.DataTypeAnnual)
         self.cb_Trace.currentIndexChanged.connect(self.UpdateTrace)
         self.lw_FigList.currentRowChanged.connect(self.UpdateFigSlct)
         self.lw_PltList.currentRowChanged.connect(self.UpdatePltSlct)
         self.lw_StdList.currentRowChanged.connect(self.UpdateStdSlct)
         self.cb_TicksX.stateChanged.connect(self.UpdateTickStateX)
         self.cb_TicksY.stateChanged.connect(self.UpdateTickStateY)
-        self.rb_MonthlyVal.toggled.connect(self.TimeX_monthly)
-        self.rb_HourlyVal.toggled.connect(self.TimeX_none)
-        self.rb_AnnualVal.toggled.connect(self.TimeX_none)
-        
+
+    def DataTypeHourly(self, enabled):
+        if enabled:
+            self.cb_Trace.clear()
+            self.cb_Trace.addItems(['Scatter'])
+            self.cb_Trace.setCurrentIndex(0)
+            self.rb_Xtime.setEnabled(True)
+            self.cb_Xstart.setEnabled(True)
+            self.cb_Xstart.clear()
+            self.cb_Xend.setEnabled(True)
+            self.cb_Xend.clear()
+            self.cb_Ydata.clear()
+            self.cb_Ydata.addItems(dataList.keys())
+            self.cb_Ydata.insertSeparator(30)
+            self.cb_Xdata.clear()
+            self.cb_Xdata.addItems(dataList.keys())
+            self.cb_Xdata.insertSeparator(30)
+            self.UpdateTrace()
+
+    def DataTypeMonthly(self, enabled):
+        if enabled:
+            self.cb_Trace.clear()
+            self.cb_Trace.addItems(['Scatter', 'Bar'])
+            self.cb_Trace.setCurrentIndex(0)
+            self.rb_Xtime.setEnabled(True)
+            self.cb_Xstart.setEnabled(True)
+            self.cb_Xstart.clear()
+            self.cb_Xstart.addItems(monthList)
+            self.cb_Xstart.setCurrentIndex(0)
+            self.cb_Xend.setEnabled(True)
+            self.cb_Xend.clear()
+            self.cb_Xend.addItems(monthList)
+            self.cb_Xend.setCurrentIndex(11)
+            self.cb_Ydata.clear()
+            self.cb_Ydata.addItems(dataList.keys())
+            self.cb_Ydata.insertSeparator(30)
+            self.cb_Xdata.clear()
+            self.cb_Xdata.addItems(dataList.keys())
+            self.cb_Xdata.insertSeparator(30)
+            self.UpdateTrace()
+
+    def DataTypeAnnual(self, enabled):
+        if enabled:
+            self.cb_Trace.clear()
+            self.cb_Trace.addItems(['Bar', 'Pie'])
+            self.cb_Trace.setCurrentIndex(0)
+
+            self.rb_Xdata.setChecked(True)
+            self.rb_Xtime.setDisabled(True)
+            self.cb_Xstart.setDisabled(True)
+            self.cb_Xend.setDisabled(True)
+            self.cb_Ydata.clear()
+            self.cb_Ydata.addItems(dataList.keys())
+            self.cb_Ydata.insertSeparator(30)
+            self.cb_Xdata.clear()
+            self.UpdateTrace()
+
     def UpdateTrace(self):
-        if self.cb_Trace.currentIndex() == 0:
-            self.rb_HourlyVal.setEnabled(True)
-            self.rb_MonthlyVal.setEnabled(True)
-            self.rb_AnnualVal.setEnabled(False)
-            self.rb_HourlyVal.setChecked(True)
+        if self.cb_Trace.currentText() == 'Scatter':
             self.cb_Style.clear()
             self.cb_Style.addItems(['Lines + Markers', 'Lines Only', 'Markers Only', 'Smooth Linear'])
             self.cb_Style.setCurrentIndex(0)
@@ -61,29 +107,25 @@ class Window(QMainWindow, Ui_MainWindow):
             self.cb_TicksX.setEnabled(True)
             self.cb_TicksY.setEnabled(True)
 
-        elif self.cb_Trace.currentIndex() == 1:
-            self.rb_HourlyVal.setEnabled(True)
-            self.rb_MonthlyVal.setEnabled(True)
-            self.rb_AnnualVal.setEnabled(False)
-            self.rb_HourlyVal.setChecked(True)
+        elif self.cb_Trace.currentText() == 'Bar':
             self.cb_Style.clear()
             self.cb_Style.addItems(['Stacked', 'Grouped'])
             self.cb_Style.setCurrentIndex(0)
             self.cb_FillArea.setEnabled(False)
             self.cb_TicksX.setEnabled(False)
             self.cb_TicksY.setEnabled(False)
+            if self.rb_AnnualVal.isChecked():
+                self.cb_Xdata.addItems(['Total','Average','Maximum','Minimum'])
 
-        elif self.cb_Trace.currentIndex() == 2:
-            self.rb_HourlyVal.setEnabled(False)
-            self.rb_MonthlyVal.setEnabled(False)
-            self.rb_AnnualVal.setEnabled(True)
-            self.rb_AnnualVal.setChecked(True)
+        elif self.cb_Trace.currentText() == 'Pie':
             self.cb_Style.clear()
             self.cb_Style.addItems(['Domain', 'Domain Spaced'])
             self.cb_Style.setCurrentIndex(0)
             self.cb_FillArea.setEnabled(False)
             self.cb_TicksX.setEnabled(False)
             self.cb_TicksY.setEnabled(False)
+            if self.rb_AnnualVal.isChecked():
+                pass
 
     def UpdateTickStateX(self):
         if self.cb_TicksX.isChecked():
@@ -120,18 +162,6 @@ class Window(QMainWindow, Ui_MainWindow):
         else:
             self.lbl_SlctStd.setText(self.lw_StdList.currentItem().text())
             self.lbl_SlctStd.setStyleSheet('border-bottom-width: 1px; border-bottom-style: solid; border-radius: 0px; color: green;')
-
-    def TimeX_monthly(self, enabled):
-        if enabled:
-            self.cb_Xstart.clear()
-            self.cb_Xstart.addItems(monthList)
-            self.cb_Xend.clear()
-            self.cb_Xend.addItems(monthList)
-
-    def TimeX_none(self, enabled):
-        if enabled:
-            self.cb_Xstart.clear()
-            self.cb_Xend.clear()
 
     def Connections(self):
         self.actionExit.triggered.connect(self.close)
@@ -331,15 +361,51 @@ class Window(QMainWindow, Ui_MainWindow):
                 numbering += 1
                 pltName = 'Fig(' + pltSrcName + ')_' + str(numbering).zfill(2)
 
-            traceType = self.cb_Trace.currentText()
-            traceStyle = self.cb_Style.currentText()
-
             if self.rb_HourlyVal.isChecked():
                 pltType = 'hourly'
+                if self.rb_Xtime.isChecked():
+                    xType = 'time'
+                elif self.rb_Xdata.isChecked():
+                    xType = 'data'
+                for i, key in enumerate(dataList.keys()):
+                    if key == self.cb_Xdata.currentText():
+                        xData = dataList[key]
+                        xTitle = key
+                        next
+                    if key == self.cb_Ydata.currentText():
+                        yData = dataList[key]
+                        yTitle = key
+                        next
+
             elif self.rb_MonthlyVal.isChecked():
                 pltType = 'monthly'
+                if self.rb_Xtime.isChecked():
+                    xType = 'time'
+                elif self.rb_Xdata.isChecked():
+                    xType = 'data'
+                for i, key in enumerate(dataList.keys()):
+                    if key == self.cb_Xdata.currentText():
+                        xData = dataList[key]
+                        xTitle = key
+                        next
+                    if key == self.cb_Ydata.currentText():
+                        yData = dataList[key]
+                        yTitle = key
+                        next
+
             elif self.rb_AnnualVal.isChecked():
                 pltType = 'annual'
+                xType = 'data'
+                xData = self.cb_Xdata.currentText()
+                xTitle = 'Annual Values'
+                for i, key in enumerate(dataList.keys()):
+                    if key == self.cb_Ydata.currentText():
+                        yData = dataList[key]
+                        yTitle = key
+                        next
+
+            traceType = self.cb_Trace.currentText()
+            traceStyle = self.cb_Style.currentText()
 
             if self.cb_FillArea.isEnabled():
                 if self.cb_FillArea.isChecked():
@@ -368,23 +434,8 @@ class Window(QMainWindow, Ui_MainWindow):
             spanR = int(self.sb_RowSpan.text())
             spanC = int(self.sb_ColSpan.text())
 
-            if self.rb_Xtime.isChecked():
-                xType = 'time'
-            elif self.rb_Xdata.isChecked():
-                xType = 'data'
-
             xTimeStart = self.cb_Xstart.currentText()
             xTimeEnd = self.cb_Xend.currentText()
-
-            for i, key in enumerate(dataList.keys()):
-                if key == self.cb_Xdata.currentText():
-                    xData = dataList[key]
-                    xTitle = key
-                    next
-                if key == self.cb_Ydata.currentText():
-                    yData = dataList[key]
-                    yTitle = key
-                    next
 
             pltCard = {
                 'id': 'plt' + str(pltID).zfill(2),

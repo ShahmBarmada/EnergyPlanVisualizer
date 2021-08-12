@@ -29,7 +29,20 @@ def plotter (srcFig = dict, srcPlt = list):
         figTitles.append(pltTitle)
 
         # set x data (datatype[monthly, hourly], xstart, xend, xtype[time, data], xdata{haeder key})
-        if plot['datatype'] == 'monthly':
+        if plot['datatype'] == 'annual':
+            if plot['xdata'] == 'Total':
+                xStart = xEnd = 'Annual'
+            elif plot['xdata'] == 'Average':
+                xStart = xEnd = 'AnnualAverage'
+            elif plot['xdata'] == 'Maximum':
+                xStart = xEnd = 'AnnualMaximum'
+            elif plot['xdata'] == 'Minimum':
+                xStart = xEnd = 'AnnualMinimum'
+
+            xData = stdDF.loc[xStart:xEnd].index.values.tolist()
+            xTitle = plot['xtitle']
+
+        elif plot['datatype'] == 'monthly':
             xStart = plot['xstart']
             xEnd = plot['xend']
             xData = stdDF.loc[xStart:xEnd].index.values.tolist()
@@ -177,11 +190,11 @@ def plotter (srcFig = dict, srcPlt = list):
 
     figTitles.sort()
 
-    for title_i in range(len(figTitles)):
-        title = figTitles[title_i]
-        title = title.replace(title[:title.find('_') + 1], '')
-        figure.layout.annotations[title_i].update(text= 'Study: ' + title)
-        figTitles[title_i] = title
+    #for title_i in range(len(figTitles)):
+    #    title = figTitles[title_i]
+    #    title = title.replace(title[:title.find('_') + 1], '')
+    #    figure.layout.annotations[title_i].update(text= 'Study: ' + title)
+    #    figTitles[title_i] = title
         
     figure.update_layout(width= srcFig['width'], height= srcFig['height'], title= srcFig['name'], showlegend= True, template= pio.templates['simple_white'])
 

@@ -473,7 +473,7 @@
         <property name="geometry">
          <rect>
           <x>60</x>
-          <y>25</y>
+          <y>60</y>
           <width>110</width>
           <height>24</height>
          </rect>
@@ -482,14 +482,14 @@
        <widget class="QRadioButton" name="rb_HourlyVal">
         <property name="geometry">
          <rect>
-          <x>60</x>
-          <y>60</y>
-          <width>110</width>
+          <x>85</x>
+          <y>25</y>
+          <width>70</width>
           <height>24</height>
          </rect>
         </property>
         <property name="text">
-         <string>Hourly Values</string>
+         <string>Hourly</string>
         </property>
         <property name="checked">
          <bool>true</bool>
@@ -498,27 +498,27 @@
        <widget class="QRadioButton" name="rb_MonthlyVal">
         <property name="geometry">
          <rect>
-          <x>60</x>
-          <y>90</y>
-          <width>110</width>
+          <x>175</x>
+          <y>25</y>
+          <width>70</width>
           <height>24</height>
          </rect>
         </property>
         <property name="text">
-         <string>Monthly Values</string>
+         <string>Monthly</string>
         </property>
        </widget>
        <widget class="QRadioButton" name="rb_AnnualVal">
         <property name="geometry">
          <rect>
-          <x>60</x>
-          <y>120</y>
-          <width>110</width>
+          <x>285</x>
+          <y>25</y>
+          <width>70</width>
           <height>24</height>
          </rect>
         </property>
         <property name="text">
-         <string>Annual Values</string>
+         <string>Annual</string>
         </property>
        </widget>
        <widget class="QLabel" name="lbl10">
@@ -526,12 +526,12 @@
          <rect>
           <x>10</x>
           <y>25</y>
-          <width>40</width>
+          <width>65</width>
           <height>24</height>
          </rect>
         </property>
         <property name="text">
-         <string>Trace:</string>
+         <string>DataType:</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -540,8 +540,8 @@
        <widget class="QComboBox" name="cb_Style">
         <property name="geometry">
          <rect>
-          <x>245</x>
-          <y>25</y>
+          <x>60</x>
+          <y>90</y>
           <width>110</width>
           <height>24</height>
          </rect>
@@ -550,8 +550,8 @@
        <widget class="QLabel" name="lbl11">
         <property name="geometry">
          <rect>
-          <x>195</x>
-          <y>25</y>
+          <x>10</x>
+          <y>90</y>
           <width>40</width>
           <height>24</height>
          </rect>
@@ -573,7 +573,7 @@
          </rect>
         </property>
         <property name="text">
-         <string>Type:</string>
+         <string>Trace:</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
