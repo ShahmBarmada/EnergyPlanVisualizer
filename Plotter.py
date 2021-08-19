@@ -240,13 +240,25 @@ def plotter (srcFig = dict, srcPlt = list):
             ))
 
     figTitles.sort()
-    print(figTitles)
+    figTitlesID = []
+    for cnt1 in range(len(figTitles)):
+        figTitlesID.append(figTitles[cnt1][:figTitles[cnt1].find('_') +1])
 
-    #for title_i in range(len(figTitles)):
-    #    title = figTitles[title_i]
-    #    title = title.replace(title[:title.find('_') + 1], '')
-    #    figure.layout.annotations[title_i].update(text= 'Study: ' + title)
-    #    figTitles[title_i] = title
+    figTitlesID = list(dict.fromkeys(figTitlesID))
+    figTitles = list(dict.fromkeys(figTitles))
+    figTitlesID.sort()
+
+    for cnt2 in range(len(figTitlesID)):
+        for cnt3 in range(len(figTitles)):
+            if figTitlesID[cnt2][:figTitlesID[cnt2].find('_') +1] == figTitles[cnt3][:figTitles[cnt3].find('_') +1]:
+                figTitlesID[cnt2] = figTitlesID[cnt2] + figTitles[cnt3][figTitles[cnt3].find('_') +1:] + ', '
+
+    for cnt4 in range(len(figTitlesID)):
+        figTitlesID[cnt4] = figTitlesID[cnt4][figTitlesID[cnt4].find('_') +1:figTitlesID[cnt4].rfind(',')]
+
+    for title_i in range(len(figTitlesID)):
+        title = figTitlesID[title_i]
+        figure.layout.annotations[title_i].update(text= title)
 
     figure.update_layout(width= srcFig['width'], height= srcFig['height'], title= srcFig['name'], showlegend= True, template= pio.templates['simple_white'])
 
