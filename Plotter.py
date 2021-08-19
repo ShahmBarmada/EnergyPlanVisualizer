@@ -70,7 +70,7 @@ def plotter (srcFig = dict, srcPlt = list):
                 xTitle = 'Time Range'
             elif plot['xtype'] == 'data':
                 xDataOffset = ''
-                xTitle = plot['xtitle'] + ' (MWh)'
+                xTitle = plot['xtitle'] + ' (MW)'
 
                 for xData_i, headers in enumerate(list(stdDF.columns.values)):
 
@@ -82,7 +82,7 @@ def plotter (srcFig = dict, srcPlt = list):
                     else:
                         xData = stdDF.loc[xStart:xEnd].index.values.tolist()
 
-            yTitle = plot['ytitle'] + ' (MWh)'
+            yTitle = plot['ytitle'] + ' (MW)'
 
         elif plot['datatype'] == 'monthly':
 
@@ -93,9 +93,9 @@ def plotter (srcFig = dict, srcPlt = list):
             if plot['xtype'] == 'time':
                 xTitle = 'Time Range'
             elif plot['xtype'] == 'data':
-                xTitle = plot['xtitle'] + ' (MWh)'
+                xTitle = plot['xtitle'] + ' (MW)'
 
-            yTitle = plot['ytitle'] + ' (MWh)'
+            yTitle = plot['ytitle'] + ' (MW)'
 
         elif plot['datatype'] == 'annual':
 
