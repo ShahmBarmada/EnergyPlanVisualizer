@@ -222,12 +222,21 @@ def plotter (srcFig = dict, srcPlt = list):
             figure.update_layout({'barmode': styleMode})
 
         elif plot['tracetype'] == 'Pie':
+            if plot['tracestyle'] == 'Domain':
+                styleMode = 0
+                holeSize = 0.1
+                
+            else:
+                styleMode = 0.05
+                holeSize = 0
+                
             figure.add_trace(plygo.Pie(
                 labels= xData,
                 values= stdDF.loc[xStart:xEnd, 'g0-Data1'].tolist(),
                 texttemplate= templateFormat,
                 showlegend= False,
-                #textinfo= 'value+percent'
+                hole= holeSize,
+                pull= styleMode,
             ))
 
     figTitles.sort()
