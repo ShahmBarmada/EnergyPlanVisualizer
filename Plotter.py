@@ -16,44 +16,23 @@ def plotter (srcFig = dict, srcPlt = list):
     figTitles.clear()
 
     for plt_i in range(len(srcPlt)):
-
+        
         plot = srcPlt[plt_i]
 
-        # get data
+        # get data source
         srcStd = plot['datasrc']
         stdDF = pd.read_csv(srcStd['path'], delimiter=',', low_memory=False, index_col='Index')
-        
+        stdDF.loc['AnnualAverage':'AnnualMinimum'] /= 1000
+
         # calc plot grid position & assign title
         pltPos = plot['row'] * 10 + plot['col'] * 1
-        pltTitle = str(pltPos) + '_' + srcStd['name']
+        pltTitle = str(pltPos) + '_' + srcStd['id'] + ' ' + srcStd['name']
         figTitles.append(pltTitle)
 
-        # set x data (datatype[monthly, hourly], xstart, xend, xtype[time, data], xdata{haeder key})
-        if plot['datatype'] == 'annual':
-            if plot['xdata'] == 'Total':
-                xStart = xEnd = 'Annual'
-            elif plot['xdata'] == 'Average':
-                xStart = xEnd = 'AnnualAverage'
-            elif plot['xdata'] == 'Maximum':
-                xStart = xEnd = 'AnnualMaximum'
-            elif plot['xdata'] == 'Minimum':
-                xStart = xEnd = 'AnnualMinimum'
+        # getting X series data
 
-            xData = stdDF.loc[xStart:xEnd].index.values.tolist()
-            xTitle = plot['xtitle']
-
-        elif plot['datatype'] == 'monthly':
-            xStart = plot['xstart']
-            xEnd = plot['xend']
-            xData = stdDF.loc[xStart:xEnd].index.values.tolist()
-
-            if plot['xtype'] == 'time':
-                xTitle = 'Time Range'
-            elif plot['xtype'] == 'data':
-                xTitle = plot['xtitle']
-
-        elif plot['datatype'] == 'hourly':
-    
+        if plot['datatype'] == 'hourly':
+            
             # set xStart
             if re.fullmatch(r'\d{1,4}', plot['xstart']):
                 xStart = 'h' + plot['xstart']
@@ -91,7 +70,7 @@ def plotter (srcFig = dict, srcPlt = list):
                 xTitle = 'Time Range'
             elif plot['xtype'] == 'data':
                 xDataOffset = ''
-                xTitle = plot['xtitle']
+                xTitle = plot['xtitle'] + ' (MWh)'
 
                 for xData_i, headers in enumerate(list(stdDF.columns.values)):
 
@@ -103,7 +82,51 @@ def plotter (srcFig = dict, srcPlt = list):
                     else:
                         xData = stdDF.loc[xStart:xEnd].index.values.tolist()
 
-        # set y data (ydata{haeder key})
+            yTitle = plot['ytitle'] + ' (MWh)'
+
+        elif plot['datatype'] == 'monthly':
+
+            xStart = plot['xstart']
+            xEnd = plot['xend']
+            xData = stdDF.loc[xStart:xEnd].index.values.tolist()
+
+            if plot['xtype'] == 'time':
+                xTitle = 'Time Range'
+            elif plot['xtype'] == 'data':
+                xTitle = plot['xtitle'] + ' (MWh)'
+
+            yTitle = plot['ytitle'] + ' (MWh)'
+
+        elif plot['datatype'] == 'annual':
+
+            if plot['xdata'] == 'Total':
+                xStart = xEnd = 'Annual'
+            elif plot['xdata'] == 'Average':
+                xStart = xEnd = 'AnnualAverage'
+            elif plot['xdata'] == 'Maximum':
+                xStart = xEnd = 'AnnualMaximum'
+            elif plot['xdata'] == 'Minimum':
+                xStart = xEnd = 'AnnualMinimum'
+            elif plot['xdata'] == 'Annual CO2 Emissions':
+                xStart = 'Co2-Emission(Total)'
+                xEnd = 'Co2-Emission(Corrected)'
+                templateFormat = '%{label}<br>%{value} (MT)<br>%{percent}'
+
+            elif plot['xdata'] == 'Annual Fuel Consumptions':
+                xStart = 'FuelConsumption(Total)'
+                xEnd = 'V2GPreLoadHours'
+                templateFormat = '%{label}<br>%{value} (TWh/year)<br>%{percent}'
+                
+            elif plot['xdata'] == 'Share of RES':
+                xStart = 'ResShareOfPes'
+                xEnd = 'ResShareOfElec.Prod.'
+                templateFormat = '%{label}<br>%{value}'
+
+            xData = stdDF.loc[xStart:xEnd].index.values.tolist()
+            xTitle = ''
+            yTitle = plot['ytitle'] + ' (TWh\Year)'
+
+        # getting Y series data
         yData = []
         for yData_i, headers in enumerate(list(stdDF.columns.values)):
 
@@ -130,7 +153,9 @@ def plotter (srcFig = dict, srcPlt = list):
 
         yTickStep = plot['ystep']
 
-        if srcPlt[plt_i]['tracetype'] == 'Scatter':
+
+        # drawing the plot
+        if plot['tracetype'] == 'Scatter':
 
             # set fill
             if plot['tracefill']:
@@ -156,14 +181,14 @@ def plotter (srcFig = dict, srcPlt = list):
                     fill= styleFill,
                     mode= styleMode,
                     line= styleLine,
-                    name= str(yData[i])[5:]
+                    name= srcStd['id'] + ' ' + str(yData[i])[5:]
                     ), row= plot['row'], col= plot['col'])
 
             # update layout & axes
             figure.update_xaxes({'title_text': xTitle, 'tickmode': xTickMode, 'tick0': 0, 'dtick': xTickStep, 'tickangle': -45}, row= plot['row'], col= plot['col'])
-            figure.update_yaxes({'title_text': plot['ytitle'], 'tickmode': yTickMode, 'tick0': 0, 'dtick': yTickStep, 'tickangle': 0}, row= plot['row'], col= plot['col'])
+            figure.update_yaxes({'title_text': yTitle, 'tickmode': yTickMode, 'tick0': 0, 'dtick': yTickStep, 'tickangle': 0}, row= plot['row'], col= plot['col'])
 
-        elif srcPlt[plt_i]['tracetype'] == 'Bar':
+        elif plot['tracetype'] == 'Bar':
 
             # set mode & shape
             styleMode = str(plot['tracestyle'])[:-2].replace(' ', '').strip().lower()
@@ -171,40 +196,49 @@ def plotter (srcFig = dict, srcPlt = list):
             # build plot
             for i in range(len(yData)):
 
-                figure.add_trace(plygo.Bar(
-                    x= xData,
-                    y= stdDF.loc[xStart:xEnd, yData[i]].tolist(),
-                    text= stdDF.loc[xStart:xEnd, yData[i]],
-                    textfont_color= '#000000',
-                    textposition= 'inside',
-                    name= str(yData[i])[5:]
-                    ), row= plot['row'], col= plot['col'])
+                if plot['datatype'] == 'annual':
+                    figure.add_trace(plygo.Bar(
+                        x= xData,
+                        y= stdDF.loc[xStart:xEnd, yData[i]].tolist(),
+                        text= stdDF.loc[xStart:xEnd, yData[i]].round(3),
+                        textfont_color= '#000000',
+                        textposition= 'inside',
+                        name= srcStd['id'] + ' ' + str(yData[i])[5:]
+                        ), row= plot['row'], col= plot['col'])
+
+                else:
+                    figure.add_trace(plygo.Bar(
+                        x= xData,
+                        y= stdDF.loc[xStart:xEnd, yData[i]].tolist(),
+                        text= stdDF.loc[xStart:xEnd, yData[i]].astype(int),
+                        textfont_color= '#000000',
+                        textposition= 'inside',
+                        name= srcStd['id'] + ' ' + str(yData[i])[5:]
+                        ), row= plot['row'], col= plot['col'])
 
             # update layout & axes
             figure.update_xaxes({'title_text': xTitle}, row= plot['row'], col= plot['col'])
-            figure.update_yaxes({'title_text': plot['ytitle'], 'tickmode': yTickMode, 'tick0': 0, 'dtick': yTickStep, 'tickangle': 0}, row= plot['row'], col= plot['col'])
+            figure.update_yaxes({'title_text': yTitle, 'tickmode': yTickMode, 'tick0': 0, 'dtick': yTickStep, 'tickangle': 0}, row= plot['row'], col= plot['col'])
             figure.update_layout({'barmode': styleMode})
 
-        elif srcPlt[plt_i]['tracetype'] == 'Pie':
-            pass
+        elif plot['tracetype'] == 'Pie':
+            figure.add_trace(plygo.Pie(
+                labels= xData,
+                values= stdDF.loc[xStart:xEnd, 'g0-Data1'].tolist(),
+                texttemplate= templateFormat,
+                showlegend= False,
+                #textinfo= 'value+percent'
+            ))
 
     figTitles.sort()
+    print(figTitles)
 
     #for title_i in range(len(figTitles)):
     #    title = figTitles[title_i]
     #    title = title.replace(title[:title.find('_') + 1], '')
     #    figure.layout.annotations[title_i].update(text= 'Study: ' + title)
     #    figTitles[title_i] = title
-        
+
     figure.update_layout(width= srcFig['width'], height= srcFig['height'], title= srcFig['name'], showlegend= True, template= pio.templates['simple_white'])
 
-    #for j in range(1, len(srcPlt) +1):
-        #figure.update_layout({'yaxis' + str(j):{'title': 'axis' + str(j)}})
-
     return figure
-
-# Bar (x, y, barmode{gourp, stack, relative}, opacity, textposition{auto, outside}, bargap, bargroupgap)
-# Bar layout ()
-#
-# Pie (labels, values, hole, pull, )
-# Pie layout ()

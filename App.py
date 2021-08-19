@@ -115,6 +115,7 @@ class Window(QMainWindow, Ui_MainWindow):
             self.cb_TicksX.setEnabled(False)
             self.cb_TicksY.setEnabled(False)
             if self.rb_AnnualVal.isChecked():
+                self.cb_Xdata.clear()
                 self.cb_Xdata.addItems(['Total','Average','Maximum','Minimum'])
 
         elif self.cb_Trace.currentText() == 'Pie':
@@ -125,6 +126,8 @@ class Window(QMainWindow, Ui_MainWindow):
             self.cb_TicksX.setEnabled(False)
             self.cb_TicksY.setEnabled(False)
             if self.rb_AnnualVal.isChecked():
+                self.cb_Xdata.clear()
+                self.cb_Xdata.addItems(['Annual CO2 Emissions','Annual Fuel Consumptions','Share of RES'])
                 pass
 
     def UpdateTickStateX(self):
