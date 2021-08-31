@@ -5,7 +5,8 @@ import re
 
 from datetime import datetime
 from PyQt6 import QtCore
-from PyQt6.QtWidgets import (QApplication, QMainWindow, QFileDialog, QMessageBox)
+from PyQt6.QtWidgets import (QApplication, QMainWindow, QFileDialog, QMessageBox, QLabel)
+from PyQt6.QtGui import (QPixmap, QScreen)
 from CSV_Parser import csvParser
 from Plotter import plotter
 from ui_main import Ui_MainWindow
@@ -16,7 +17,7 @@ monthList = ['January','February','March','April','May','June','July','August','
 figList, pltList, stdList = [], [], []
 figID, pltID, stdID = 1, 1, 1
 
-class Window(QMainWindow, Ui_MainWindow):
+class MainWindow(QMainWindow, Ui_MainWindow):
 
     def __init__(self):
         super().__init__()
@@ -183,6 +184,7 @@ class Window(QMainWindow, Ui_MainWindow):
         self.btn_PltNew.clicked.connect(self.AddPlot)
         self.btn_PltDlt.clicked.connect(self.RemovePlot)
         self.btn_FigSave.clicked.connect(self.SaveFigure)
+        self.btn_FigView.clicked.connect(self.PreviewFigure)
 
     def openAboutDialog(self):
         QMessageBox.about(self, 'About', 'Hi, I\'m developer')
@@ -489,7 +491,7 @@ class Window(QMainWindow, Ui_MainWindow):
             else:
                 next
 
-    def SaveFigure(self):
+    def PrepareFigure(self):
         # get selected figure card
         slctFig = self.lbl_SlctFig.text()
 
@@ -512,21 +514,69 @@ class Window(QMainWindow, Ui_MainWindow):
                 next
 
         # save figure to file
+        global figure
         figure = plotter(slctFig, slctPlt)
+
+    def SaveFigure(self):
         try:
+            self.PrepareFigure()
+
             if self.cb_FileFormat.currentText() == 'image':
                 savePath = QFileDialog.getSaveFileName(self, 'Save File', filter='*.png;;*.jpg;;*.svg')
-                figure.write_image(file= savePath[0], scale=3, engine='kaleido')
+                figure.write_image(file= savePath[0], scale= 3, engine= 'kaleido')
             elif self.cb_FileFormat.currentText() == 'html':
                 savePath = QFileDialog.getSaveFileName(self, 'Save File', filter='*.html')
                 figure.write_html(file= savePath[0])
             elif self.cb_FileFormat.currentText() == 'json':
                 savePath = QFileDialog.getSaveFileName(self, 'Save File', filter='*.json')
-                figure.write_json(file= savePath[0], engine='json')
+                figure.write_json(file= savePath[0], engine= 'json')
+
+        except:
+            pass
+    
+    def PreviewFigure(self):
+        try:
+            self.PrepareFigure()
+
+            figure.write_image(file= './preview.jpg', scale= 1)
+            self.PreviewWindowDialog = PreviewWindow(self)
+            self.PreviewWindowDialog.show()
+
         except:
             pass
 
+class PreviewWindow(QMainWindow):
+    def __init__(self, parent= None):
+        super(PreviewWindow, self).__init__(parent)
+
+        self.setWindowTitle('Figure Preview')
+        self.resize(100,100)
+
+        imageHolder = QPixmap('./preview.jpg')
+
+        if imageHolder.width() > int(QScreen.availableGeometry(QApplication.primaryScreen()).width() * 0.95):
+            imageWidth = int(QScreen.availableGeometry(QApplication.primaryScreen()).width() / 1.2)
+            imageHeight = int(imageHolder.height() * (imageWidth / imageHolder.width()))
+
+        elif imageHolder.height() > int(QScreen.availableGeometry(QApplication.primaryScreen()).height() * 0.95):
+            imageHeight = int(QScreen.availableGeometry(QApplication.primaryScreen()).height() / 1.2)
+            imageWidth = int(imageHolder.width() * (imageHeight / imageHolder.height()))
+
+        else:
+            imageWidth = imageHolder.width()
+            imageHeight = imageHolder.height()
+
+        self.setMinimumSize(imageWidth, imageHeight)
+        self.setMaximumSize(imageWidth, imageHeight)
+
+        self.imageLable = QLabel()
+        self.imageLable.setPixmap(imageHolder)
+        self.imageLable.setScaledContents(True)
+        self.setCentralWidget(self.imageLable)
+        os.remove('./preview.jpg')
+
+
 app = QApplication(sys.argv)
-mainWindow = Window()
+mainWindow = MainWindow()
 mainWindow.show()
 sys.exit(app.exec())
