@@ -535,9 +535,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             pass
     
     def PreviewFigure(self):
-        try:
-            self.PrepareFigure()
+        self.PrepareFigure()
 
+        try:
             figure.write_image(file= './preview.jpg', scale= 1)
             self.PreviewWindowDialog = PreviewWindow(self)
             self.PreviewWindowDialog.show()

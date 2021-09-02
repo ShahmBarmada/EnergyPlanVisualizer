@@ -113,13 +113,13 @@ def plotter (srcFig = dict, srcPlt = list):
                 if plot['xdata'] == 'Investment Costs - Total':
                     yData = ['g0-Data1']
 
-                if plot['xdata'] == 'Investment Costs - Annual':
+                elif plot['xdata'] == 'Investment Costs - Annual':
                     yData = ['g0-Data2']
 
                 elif plot['xdata'] == 'Investment Costs - O & M':
                     yData = ['g0-Data3']
 
-                yTitle = plot['ytitle'] + ' (M Euro)'
+                yTitle = plot['xdata'] + ' (M Euro)'
 
             else:
 
@@ -211,7 +211,7 @@ def plotter (srcFig = dict, srcPlt = list):
                     fill= styleFill,
                     mode= styleMode,
                     line= styleLine,
-                    name= srcStd['id'] + ' ' + str(yData[i])[5:]
+                    name= srcStd['id'] + ' ' + str(yData[i])[str(yData[i]).find('_'):]
                     ), row= plot['row'], col= plot['col'])
 
             # update layout & axes
@@ -230,10 +230,10 @@ def plotter (srcFig = dict, srcPlt = list):
                     figure.add_trace(plygo.Bar(
                         x= xData,
                         y= stdDF.loc[xStart:xEnd, yData[i]].tolist(),
-                        text= stdDF.loc[xStart:xEnd, yData[i]].round(3),
+                        #text= stdDF.loc[xStart:xEnd, yData[i]].round(3),
                         textfont_color= '#000000',
                         textposition= 'inside',
-                        name= srcStd['id'] + ' ' + str(yData[i])[5:]
+                        name= srcStd['id'] + ' ' + str(yData[i])[str(yData[i]).find('_'):]
                         ), row= plot['row'], col= plot['col'])
 
                 else:
@@ -243,7 +243,7 @@ def plotter (srcFig = dict, srcPlt = list):
                         text= stdDF.loc[xStart:xEnd, yData[i]].astype(int),
                         textfont_color= '#000000',
                         textposition= 'inside',
-                        name= srcStd['id'] + ' ' + str(yData[i])[5:]
+                        name= srcStd['id'] + ' ' + str(yData[i])[str(yData[i]).find('_'):]
                         ), row= plot['row'], col= plot['col'])
 
             # update layout & axes
