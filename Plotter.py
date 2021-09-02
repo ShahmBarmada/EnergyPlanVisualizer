@@ -99,44 +99,74 @@ def plotter (srcFig = dict, srcPlt = list):
 
         elif plot['datatype'] == 'annual':
 
-            if plot['xdata'] == 'Total':
-                xStart = xEnd = 'Annual'
-            elif plot['xdata'] == 'Average':
-                xStart = xEnd = 'AnnualAverage'
-            elif plot['xdata'] == 'Maximum':
-                xStart = xEnd = 'AnnualMaximum'
-            elif plot['xdata'] == 'Minimum':
-                xStart = xEnd = 'AnnualMinimum'
-            elif plot['xdata'] == 'Annual CO2 Emissions':
-                xStart = 'Co2-Emission(Total)'
-                xEnd = 'Co2-Emission(Corrected)'
-                templateFormat = '%{label}<br>%{value} (MT)<br>%{percent}'
+            if plot['xdata'][0:16] == 'Investment Costs':
 
-            elif plot['xdata'] == 'Annual Fuel Consumptions':
-                xStart = 'FuelConsumption(Total)'
-                xEnd = 'V2GPreLoadHours'
-                templateFormat = '%{label}<br>%{value} (TWh/year)<br>%{percent}'
+                rangeStart = stdDF.index.get_loc('TotalAnnualCosts')
+                rangeStart += 1
                 
-            elif plot['xdata'] == 'Share of RES':
-                xStart = 'ResShareOfPes'
-                xEnd = 'ResShareOfElec.Prod.'
-                templateFormat = '%{label}<br>%{value}'
+                rangeEnd = stdDF.iloc[rangeStart:rangeStart+100].index.get_loc('Coal')
+                rangeEnd = rangeEnd + rangeStart
+
+                xStart = stdDF.iloc[rangeStart:rangeEnd].index[0]
+                xEnd = stdDF.iloc[rangeStart:rangeEnd].index[-1]
+
+                if plot['xdata'] == 'Investment Costs - Total':
+                    yData = ['g0-Data1']
+
+                if plot['xdata'] == 'Investment Costs - Annual':
+                    yData = ['g0-Data2']
+
+                elif plot['xdata'] == 'Investment Costs - O & M':
+                    yData = ['g0-Data3']
+
+                yTitle = plot['ytitle'] + ' (M Euro)'
+
+            else:
+
+                if plot['xdata'] == 'Power Values - Totals':
+                    xStart = xEnd = 'Annual'
+                elif plot['xdata'] == 'Power Values - Annual Average':
+                    xStart = xEnd = 'AnnualAverage'
+                elif plot['xdata'] == 'Power Values - Annual Maximum':
+                    xStart = xEnd = 'AnnualMaximum'
+                elif plot['xdata'] == 'Power Values - Annual Minimum':
+                    xStart = xEnd = 'AnnualMinimum'
+
+                elif plot['xdata'] == 'Annual CO2 Emissions':
+                    xStart = 'Co2-Emission(Total)'
+                    xEnd = 'Co2-Emission(Corrected)'
+                    templateFormat = '%{label}<br>%{value} (MT)<br>%{percent}'
+
+                elif plot['xdata'] == 'Annual Fuel Consumptions':
+                    xStart = 'FuelConsumption(Total)'
+                    xEnd = 'V2GPreLoadHours'
+                    templateFormat = '%{label}<br>%{value} (TWh/year)<br>%{percent}'
+
+                elif plot['xdata'] == 'Share of RES':
+                    xStart = 'ResShareOfPes'
+                    xEnd = 'ResShareOfElec.Prod.'
+                    templateFormat = '%{label}<br>%{value}'
+
+                yTitle = plot['ytitle'] + ' (TWh\Year)'
 
             xData = stdDF.loc[xStart:xEnd].index.values.tolist()
             xTitle = ''
-            yTitle = plot['ytitle'] + ' (TWh\Year)'
 
         # getting Y series data
-        yData = []
-        for yData_i, headers in enumerate(list(stdDF.columns.values)):
+        if plot['xdata'][0:16] == 'Investment Costs':
+            pass
 
-            if plot['ydata'][2:4] == '00':
-                if plot['ydata'][:2] == headers[:2]:
+        else:
+            yData = []
+            for yData_i, headers in enumerate(list(stdDF.columns.values)):
+
+                if plot['ydata'][2:4] == '00':
+                    if plot['ydata'][:2] == headers[:2]:
+                        yData.append(headers)
+                        next
+                elif plot['ydata'] == headers[:4]:
                     yData.append(headers)
-                    next
-            elif plot['ydata'] == headers[:4]:
-                yData.append(headers)
-                break
+                    break
 
         # set ticks (xtick, xstep, ytick, ystep)
         if plot['xtick'] == 'auto':

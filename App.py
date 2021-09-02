@@ -119,7 +119,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.cb_TicksY.setEnabled(False)
             if self.rb_AnnualVal.isChecked():
                 self.cb_Xdata.clear()
-                self.cb_Xdata.addItems(['Total','Average','Maximum','Minimum'])
+                self.cb_Xdata.addItems(['Power Values - Totals','Power Values - Annual Average','Power Values - Annual Maximum','Power Values - Annual Minimum', 'Investment Costs - Total', 'Investment Costs - Annual', 'Investment Costs - O & M'])
 
         elif self.cb_Trace.currentText() == 'Pie':
             self.cb_Style.clear()
