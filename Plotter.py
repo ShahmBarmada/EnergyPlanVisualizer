@@ -130,13 +130,13 @@ def plotter (srcFig = dict, srcPlt = list):
         yData = []
         for yData_i, headers in enumerate(list(stdDF.columns.values)):
 
-            if plot['ydata'][:2] == '00':
-                if plot['ydata'] == headers[:4]:
+            if plot['ydata'][2:4] == '00':
+                if plot['ydata'][:2] == headers[:2]:
                     yData.append(headers)
-                    break
-            elif plot['ydata'][:2] == headers[:2]:
+                    next
+            elif plot['ydata'] == headers[:4]:
                 yData.append(headers)
-                next
+                break
 
         # set ticks (xtick, xstep, ytick, ystep)
         if plot['xtick'] == 'auto':
