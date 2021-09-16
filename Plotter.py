@@ -121,6 +121,16 @@ def plotter (srcFig = dict, srcPlt = list):
 
                 yTitle = plot['xdata'] + ' (M Euro)'
 
+            elif plot['xdata'] == 'Energy Balance':
+
+                rangeStart = stdDF.index.get_loc('TotalAnnualCosts')
+                rangeStart = rangeStart + stdDF.iloc[rangeStart:rangeStart+100].index.get_loc('Coal')
+                
+                rangeEnd = stdDF.iloc[rangeStart:rangeStart+100].index.get_loc('Renewable')
+                rangeEnd = rangeEnd + rangeStart +1
+
+                xData = stdDF.iloc[rangeStart:rangeEnd].index.values.tolist()
+
             else:
 
                 if plot['xdata'] == 'Power Values - Totals':
@@ -149,11 +159,15 @@ def plotter (srcFig = dict, srcPlt = list):
 
                 yTitle = plot['ytitle'] + ' (TWh\Year)'
 
-            xData = stdDF.loc[xStart:xEnd].index.values.tolist()
+            if plot['xdata'] != 'Energy Balance':
+                xData = stdDF.loc[xStart:xEnd].index.values.tolist()
             xTitle = ''
 
         # getting Y series data
         if plot['xdata'][0:16] == 'Investment Costs':
+            pass
+
+        elif plot['xdata'] == 'Energy Balance':
             pass
 
         else:
@@ -185,7 +199,7 @@ def plotter (srcFig = dict, srcPlt = list):
 
 
         # drawing the plot
-        if plot['tracetype'] == 'Scatter':
+        if plot['tracetype'] == 'Scatter Plot':
 
             # set fill
             if plot['tracefill']:
@@ -218,7 +232,7 @@ def plotter (srcFig = dict, srcPlt = list):
             figure.update_xaxes({'title_text': xTitle, 'tickmode': xTickMode, 'tick0': 0, 'dtick': xTickStep, 'tickangle': -45}, row= plot['row'], col= plot['col'])
             figure.update_yaxes({'title_text': yTitle, 'tickmode': yTickMode, 'tick0': 0, 'dtick': yTickStep, 'tickangle': 0}, row= plot['row'], col= plot['col'])
 
-        elif plot['tracetype'] == 'Bar':
+        elif plot['tracetype'] == 'Bar Chart':
 
             # set mode & shape
             styleMode = str(plot['tracestyle'])[:-2].replace(' ', '').strip().lower()
@@ -251,7 +265,7 @@ def plotter (srcFig = dict, srcPlt = list):
             figure.update_yaxes({'title_text': yTitle, 'tickmode': yTickMode, 'tick0': 0, 'dtick': yTickStep, 'tickangle': 0}, row= plot['row'], col= plot['col'])
             figure.update_layout({'barmode': styleMode})
 
-        elif plot['tracetype'] == 'Pie':
+        elif plot['tracetype'] == 'Pie Chart':
             if plot['tracestyle'] == 'Domain':
                 styleMode = 0
                 holeSize = 0.1
@@ -268,6 +282,30 @@ def plotter (srcFig = dict, srcPlt = list):
                 hole= holeSize,
                 pull= styleMode,
             ))
+
+        elif plot['tracetype'] == 'Box Plot':
+            if plot['tracestyle'] == 'Whiskers & Points':
+                styleMode = 'all'
+            elif plot['tracestyle'] == 'Whiskers':
+                styleMode = False
+            elif plot['tracestyle'] == 'OutLiers':
+                styleMode = 'suspectedoutliers'
+            elif plot['tracestyle'] == 'Whiskers & OutLiers':
+                styleMode = 'outliers'
+
+            for i in range(len(xData)):
+                xDataSeries = []
+                for num1 in range(17):
+                    xDataSeries.append(xData[i])
+
+                figure.add_trace(plygo.Box(
+                    x= xDataSeries,
+                    y= stdDF.iloc[rangeStart + i, 3:20].tolist(),
+                    boxpoints= styleMode,
+                    showlegend= True,
+                    name= xData[i],
+                    jitter= 0.3
+                ))
 
     figTitles.sort()
     figTitlesID = []

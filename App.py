@@ -46,7 +46,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def DataTypeHourly(self, enabled):
         if enabled:
             self.cb_Trace.clear()
-            self.cb_Trace.addItems(['Scatter'])
+            self.cb_Trace.addItems(['Scatter Plot'])
             self.cb_Trace.setCurrentIndex(0)
             self.rb_Xtime.setEnabled(True)
             self.rb_Xtime.setChecked(True)
@@ -65,7 +65,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def DataTypeMonthly(self, enabled):
         if enabled:
             self.cb_Trace.clear()
-            self.cb_Trace.addItems(['Scatter', 'Bar'])
+            self.cb_Trace.addItems(['Scatter Plot', 'Bar Chart'])
             self.cb_Trace.setCurrentIndex(0)
             self.rb_Xtime.setEnabled(True)
             self.rb_Xtime.setChecked(True)
@@ -88,7 +88,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def DataTypeAnnual(self, enabled):
         if enabled:
             self.cb_Trace.clear()
-            self.cb_Trace.addItems(['Bar', 'Pie'])
+            self.cb_Trace.addItems(['Bar Chart', 'Pie Chart', 'Box Plot'])
             self.cb_Trace.setCurrentIndex(0)
 
             self.rb_Xdata.setChecked(True)
@@ -102,7 +102,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.UpdateTrace()
 
     def UpdateTrace(self):
-        if self.cb_Trace.currentText() == 'Scatter':
+        if self.cb_Trace.currentText() == 'Scatter Plot':
             self.cb_Style.clear()
             self.cb_Style.addItems(['Lines + Markers', 'Lines Only', 'Markers Only', 'Smooth Linear'])
             self.cb_Style.setCurrentIndex(0)
@@ -110,7 +110,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.cb_TicksX.setEnabled(True)
             self.cb_TicksY.setEnabled(True)
 
-        elif self.cb_Trace.currentText() == 'Bar':
+        elif self.cb_Trace.currentText() == 'Bar Chart':
             self.cb_Style.clear()
             self.cb_Style.addItems(['Stacked', 'Grouped'])
             self.cb_Style.setCurrentIndex(0)
@@ -121,7 +121,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 self.cb_Xdata.clear()
                 self.cb_Xdata.addItems(['Power Values - Totals','Power Values - Annual Average','Power Values - Annual Maximum','Power Values - Annual Minimum', 'Investment Costs - Total', 'Investment Costs - Annual', 'Investment Costs - O & M'])
 
-        elif self.cb_Trace.currentText() == 'Pie':
+        elif self.cb_Trace.currentText() == 'Pie Chart':
             self.cb_Style.clear()
             self.cb_Style.addItems(['Domain', 'Domain Spaced'])
             self.cb_Style.setCurrentIndex(0)
@@ -131,6 +131,18 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             if self.rb_AnnualVal.isChecked():
                 self.cb_Xdata.clear()
                 self.cb_Xdata.addItems(['Annual CO2 Emissions','Annual Fuel Consumptions','Share of RES'])
+                pass
+
+        elif self.cb_Trace.currentText() == 'Box Plot':
+            self.cb_Style.clear()
+            self.cb_Style.addItems(['Whiskers', 'OutLiers', 'Whiskers & Points', 'Whiskers & OutLiers'])
+            self.cb_Style.setCurrentIndex(0)
+            self.cb_FillArea.setEnabled(False)
+            self.cb_TicksX.setEnabled(False)
+            self.cb_TicksY.setEnabled(False)
+            if self.rb_AnnualVal.isChecked():
+                self.cb_Xdata.clear()
+                self.cb_Xdata.addItems(['Energy Balance'])
                 pass
 
     def UpdateTickStateX(self):
