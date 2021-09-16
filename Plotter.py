@@ -130,6 +130,9 @@ def plotter (srcFig = dict, srcPlt = list):
                 rangeEnd = rangeEnd + rangeStart +1
 
                 xData = stdDF.iloc[rangeStart:rangeEnd].index.values.tolist()
+                xStart = stdDF.iloc[rangeStart:rangeEnd].index[0]
+                xEnd = stdDF.iloc[rangeStart:rangeEnd].index[-1]
+                #yData = ['g1-DHP','g1-CHP2','g1-CHP3','g1-Boiler2','g1-Boiler3','g1-PP','g1-Geo/Nu','g1-Hydro','g1-Waste/HTL','g1-CAES/ELT','g1-BioCon','g1-EFuel','g1-VRES','g1-SolarTh','g1-Transp','g1-Househ','g1-Ind/Var']
 
             else:
 
@@ -164,16 +167,18 @@ def plotter (srcFig = dict, srcPlt = list):
             xTitle = ''
 
         # getting Y series data
+        yData = []
         if plot['xdata'][0:16] == 'Investment Costs':
             pass
 
         elif plot['xdata'] == 'Energy Balance':
-            pass
+            for yData_i, headers in enumerate(list(stdDF.columns.values)):
+                if headers[:2] == 'g1':
+                    yData.append(headers)
+            yData.pop()
 
         else:
-            yData = []
             for yData_i, headers in enumerate(list(stdDF.columns.values)):
-
                 if plot['ydata'][2:4] == '00':
                     if plot['ydata'][:2] == headers[:2]:
                         yData.append(headers)
@@ -241,14 +246,27 @@ def plotter (srcFig = dict, srcPlt = list):
             for i in range(len(yData)):
 
                 if plot['datatype'] == 'annual':
-                    figure.add_trace(plygo.Bar(
-                        x= xData,
-                        y= stdDF.loc[xStart:xEnd, yData[i]].tolist(),
-                        #text= stdDF.loc[xStart:xEnd, yData[i]].round(3),
-                        textfont_color= '#000000',
-                        textposition= 'inside',
-                        name= srcStd['id'] + ' ' + str(yData[i])[str(yData[i]).find('_'):]
-                        ), row= plot['row'], col= plot['col'])
+                    if plot['xdata'] == 'Energy Balance':
+                        yTitle = ''
+                        #yDataHolder = stdDF.columns.get_loc(yData[i])
+                        figure.add_trace(plygo.Bar(
+                            x= xData,
+                            y= stdDF.iloc[rangeStart:rangeEnd, stdDF.columns.get_loc(yData[i])].tolist(),
+                            #text= stdDF.loc[xStart:xEnd, yData[i]].round(3),
+                            textfont_color= '#000000',
+                            textposition= 'inside',
+                            name= srcStd['id'] + ' ' + str(yData[i])[str(yData[i]).find('-')+1:]
+                            ), row= plot['row'], col= plot['col'])
+                        
+                    else:
+                        figure.add_trace(plygo.Bar(
+                            x= xData,
+                            y= stdDF.loc[xStart:xEnd, yData[i]].tolist(),
+                            #text= stdDF.loc[xStart:xEnd, yData[i]].round(3),
+                            textfont_color= '#000000',
+                            textposition= 'inside',
+                            name= srcStd['id'] + ' ' + str(yData[i])[str(yData[i]).find('_'):]
+                            ), row= plot['row'], col= plot['col'])
 
                 else:
                     figure.add_trace(plygo.Bar(
