@@ -47,7 +47,7 @@
      <enum>QFrame::Plain</enum>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="page_1">
      <widget class="QLabel" name="lbl_pg1">
@@ -1491,7 +1491,15 @@
     <addaction name="actionAbout"/>
     <addaction name="actionExit"/>
    </widget>
+   <widget class="QMenu" name="menuAnalysis">
+    <property name="title">
+     <string>Analysis</string>
+    </property>
+    <addaction name="actionEnergy_Balance_Compilation"/>
+    <addaction name="actionInstalled_Capacities_Compilation"/>
+   </widget>
    <addaction name="m_Menu"/>
+   <addaction name="menuAnalysis"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionAbout">
@@ -1502,6 +1510,16 @@
   <action name="actionExit">
    <property name="text">
     <string>Exit</string>
+   </property>
+  </action>
+  <action name="actionEnergy_Balance_Compilation">
+   <property name="text">
+    <string>Energy Balance Compilation</string>
+   </property>
+  </action>
+  <action name="actionInstalled_Capacities_Compilation">
+   <property name="text">
+    <string>Installed Capacities Compilation</string>
    </property>
   </action>
  </widget>
