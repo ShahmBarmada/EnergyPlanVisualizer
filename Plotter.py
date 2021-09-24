@@ -132,7 +132,6 @@ def plotter (srcFig = dict, srcPlt = list):
                 xData = stdDF.iloc[rangeStart:rangeEnd].index.values.tolist()
                 xStart = stdDF.iloc[rangeStart:rangeEnd].index[0]
                 xEnd = stdDF.iloc[rangeStart:rangeEnd].index[-1]
-                #yData = ['g1-DHP','g1-CHP2','g1-CHP3','g1-Boiler2','g1-Boiler3','g1-PP','g1-Geo/Nu','g1-Hydro','g1-Waste/HTL','g1-CAES/ELT','g1-BioCon','g1-EFuel','g1-VRES','g1-SolarTh','g1-Transp','g1-Househ','g1-Ind/Var']
 
             else:
 
@@ -346,6 +345,6 @@ def plotter (srcFig = dict, srcPlt = list):
         title = figTitlesID[title_i]
         figure.layout.annotations[title_i].update(text= title)
 
-    figure.update_layout(width= srcFig['width'], height= srcFig['height'], title= srcFig['name'], showlegend= True, template= pio.templates['simple_white'])
+    figure.update_layout(uniformtext_minsize=18, font_size=18, width= srcFig['width'], height= srcFig['height'], title= srcFig['name'], showlegend= True, template= pio.templates['simple_white'])
 
     return figure
