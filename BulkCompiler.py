@@ -41,7 +41,7 @@ def EnergyBalance (stdCollection = list):
             name= xData[i],
             jitter= 0.3
         ))
-
+    figure.update_yaxes({'title_text': '(TWh\Year)'})
     figure.update_layout(uniformtext_minsize=18, font_size=18, width= 1366 , height= 768, showlegend= True, template= pio.templates['simple_white'])
     return figure
     
