@@ -5,7 +5,7 @@ from plotly.subplots import make_subplots
 
 def EnergyBalance (stdCollection = list):
 
-    BulkDF = pd.DataFrame(0, index=['Coal', 'Oil', 'Biomass', 'Renewable', 'H2Etc.', 'Biofuel', 'Nucl/Ccs'], columns=['test'])
+    BulkDF = pd.DataFrame(0, index=['Coal', 'Oil', 'N.Gas', 'Biomass', 'Renewable', 'H2Etc.', 'Biofuel', 'Nucl/Ccs'], columns=['test'])
 
     for path in range(len(stdCollection)):
         stdDF = pd.read_csv(stdCollection[path], delimiter=',', low_memory=False, index_col='Index')

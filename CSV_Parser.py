@@ -103,7 +103,7 @@ def csvParser (inputFile: str, timestamp: str) -> str:
             if line[:10].isspace():
                 next
 
-            elif line[:2].replace('\t',' ').strip().isalpha():
+            elif line[:1].replace('\t',' ').strip().isalpha():
 
                 if any((match := x) in line.title() for x in exceptionList3):
                     out1 = out1 + (line[:line.find(match)].replace('\t',' ').strip().title() + '   ')
@@ -175,6 +175,8 @@ def csvParser (inputFile: str, timestamp: str) -> str:
                 opf.write(line.replace(',', ',,,,', 1))
 
     opf.close()
+
+    # Here
 
     opf = open(outputPath1, 'a')
 

@@ -1,6 +1,8 @@
-liss = []
-for i in range(16):
-    liss.append('te')
+tex = 'n.gas'
 
-print(liss)
-print(len(liss))
+if tex[:1].isalpha():
+    print('yes')
+    print(tex[:1])
+
+else:
+    print('no')
