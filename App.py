@@ -253,7 +253,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         if self.txt_ExePath.text() != '' and self.txt_IPF.text() != '' and self.txt_OPD.text() != '':
             path_OPD = self.txt_OPD.text()
             subprocess.run([self.txt_ExePath.text(), "-i", self.txt_IPF.text(), "-ascii", path_OPD + '/ops.txt'])
-            stdParsed = csvParser(path_OPD + '/ops.txt', timeStamp)
+            stdParsed = csvParser(self.txt_IPF.text(), path_OPD + '/ops.txt', timeStamp)
             
             if self.cb_OpenOPD.isChecked():
                 subprocess.run(['explorer', os.path.realpath(path_OPD)])

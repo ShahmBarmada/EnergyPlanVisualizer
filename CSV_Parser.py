@@ -2,7 +2,7 @@ import re
 import os
 import pandas as pd
 
-def csvParser (inputFile: str, timestamp: str) -> str:
+def csvParser (originalFile: str, inputFile: str, timestamp: str) -> str:
     outputPath = inputFile[:inputFile.rfind('/')]
     outputPath1 = outputPath + "/Output1.txt"
     outputPath2 = outputPath + "/Output2.txt"
@@ -176,8 +176,6 @@ def csvParser (inputFile: str, timestamp: str) -> str:
 
     opf.close()
 
-    # Here
-
     opf = open(outputPath1, 'a')
 
     with open(outputPath3) as ipf:
@@ -190,6 +188,15 @@ def csvParser (inputFile: str, timestamp: str) -> str:
     opf.close()
 
     dfObj = pd.read_csv(outputPath1, delimiter=',', names=headerList, low_memory=False, index_col='Index')
+
+    print(dfObj.index.get_loc('Annual'))
+
+    with open(originalFile) as ipf:
+        for i, line in enumerate(ipf):
+            if line == 'input_cap_pp_el':
+                value = ipf.readline(i + 1)
+
+
     studyName = dfObj.loc['InputStudy','g0-Data1']
     studyName = studyName[:studyName.rfind('.')]
     studyPath = outputPath + '/' + studyName + '_' + timestamp + '.csv'
