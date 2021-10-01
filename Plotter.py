@@ -4,7 +4,7 @@ import plotly.graph_objects as plygo
 import plotly.io as pio
 from plotly.subplots import make_subplots
 
-def plotter (srcFig = dict, srcPlt = list):
+def PlotterSelective (srcFig = dict, srcPlt = list):
 
     figSize = srcFig['rows'] * srcFig['cols']
     figTitles = []
@@ -295,7 +295,6 @@ def plotter (srcFig = dict, srcPlt = list):
                 labels= xData,
                 values= stdDF.loc[xStart:xEnd, 'g0-Data1'].tolist(),
                 texttemplate= templateFormat,
-                showlegend= False,
                 hole= holeSize,
                 pull= styleMode,
             ))
@@ -319,7 +318,6 @@ def plotter (srcFig = dict, srcPlt = list):
                     x= xDataSeries,
                     y= stdDF.iloc[rangeStart + i, 3:20].tolist(),
                     boxpoints= styleMode,
-                    showlegend= True,
                     name= xData[i],
                     jitter= 0.3
                 ))
@@ -345,6 +343,116 @@ def plotter (srcFig = dict, srcPlt = list):
         title = figTitlesID[title_i]
         figure.layout.annotations[title_i].update(text= title)
 
-    figure.update_layout(uniformtext_minsize=18, font_size=18, width= srcFig['width'], height= srcFig['height'], title= srcFig['name'], showlegend= True, template= pio.templates['simple_white'])
+    figure.update_layout(
+        uniformtext_minsize=18,
+        font_size= srcFig['font'],
+        width= srcFig['width'],
+        height= srcFig['height'],
+        title= srcFig['name'],
+        showlegend= srcFig['legend'],
+        template= pio.templates['simple_white'])
 
     return figure
+
+def PlotterCollective (srcFig = dict, srcStd = list, xDataSrc = str):
+
+    if xDataSrc == 'Energy Balance':
+        SumDF = pd.DataFrame(0, index=['Coal', 'Oil', 'N.Gas', 'Biomass', 'Renewable', 'H2Etc.', 'Biofuel', 'Nucl/Ccs'], columns=['test'])
+
+        for study in range(len(srcStd)):
+            stdDF = pd.read_csv(srcStd[study]['path'], delimiter=',', low_memory=False, index_col='Index')
+    
+            rangeStart = stdDF.index.get_loc('TotalAnnualCosts')
+            rangeStart = rangeStart + stdDF.iloc[rangeStart:rangeStart+100].index.get_loc('Coal')
+                    
+            rangeEnd = stdDF.iloc[rangeStart:rangeStart+100].index.get_loc('Nucl/Ccs')
+            rangeEnd = rangeEnd + rangeStart +1
+    
+            xData = stdDF.iloc[rangeStart:rangeEnd].index.values.tolist()
+            
+            stdDF = stdDF.iloc[rangeStart:rangeEnd]
+            stdDF = stdDF.loc[:, 'g1-Total']
+    
+            SumDF.insert(0, 'std' + str(study), stdDF)
+
+        SumDF.drop(['test'], axis= 1, inplace=True)
+
+        figure = make_subplots()
+
+        for i in range(len(SumDF.index.values.tolist())):
+            xDataSeries = []
+            for num1 in range(len(SumDF.columns.values.tolist())):
+                xDataSeries.append(xData[i])
+
+            figure.add_trace(plygo.Box(
+                x= xDataSeries,
+                y= SumDF.iloc[i].tolist(),
+                boxpoints= 'all',
+                name= xData[i],
+                jitter= 0.3
+            ))
+            
+        figure.update_yaxes({'title_text': '(TWh\Year)'})
+        figure.update_layout(
+            uniformtext_minsize=18,
+            font_size= srcFig['font'],
+            width= srcFig['width'],
+            height= srcFig['height'],
+            title= srcFig['name'],
+            showlegend= srcFig['legend'],
+            template= pio.templates['simple_white'])
+
+        return figure
+
+    elif xDataSrc == 'Installed Capacities':
+        #SumDF = pd.DataFrame(0, index=['Condensing power plant 1','CHP plants (elect. capacity) gr.2','CHP plants (elect. capacity) gr.3','Condensing power plant 2','Nuclear','Geothermal plants','Dammed hydro','RES1','RES2','RES3','RES4','RES5','RES6','RES7','DH - Heat pump gr.2','DH - Heat pump gr.3','Electrolysers','DH - Electric boiler gr.2','DH - Electric boiler gr.3','DH - Boiler gr.2','DH - Boiler gr.3','DH - CHP (thermal capacity) gr.2','DH - CHP (thermal capacity) gr.3'], columns=['test'])
+
+        SumDF = pd.DataFrame(0, index=['InputCapPpEl','InputCapChp2El','InputCapChp3El','InputCapPp2El','InputNuclearCap','InputGeopowerCap','InputHydroCap','InputRes1Capacity','InputRes2Capacity','InputRes3Capacity','InputRes4Capacity','InputRes5Capacity','InputRes6Capacity','InputRes7Capacity','InputCapHp2El','InputCapHp3El','InputCapElttransEl','InputEh2','InputEh3','InputCapBoiler2Th','InputCapBoiler3Th','InputCapChp2Thermal','InputCapChp3Thermal'], columns=['test'])
+
+        for study in range(len(srcStd)):
+            stdDF = pd.read_csv(srcStd[study]['path'], delimiter=',', low_memory=False, index_col='Index')
+    
+            rangeStart = stdDF.index.get_loc('InputCapPpEl')   
+            rangeEnd = stdDF.index.get_loc('InputCapChp3Thermal') +1
+    
+            xData = stdDF.iloc[rangeStart:rangeEnd].index.values.tolist()
+            
+            stdDF = stdDF.iloc[rangeStart:rangeEnd]
+            stdDF = stdDF.loc[:, 'g0-Data1']
+    
+            SumDF.insert(0, 'std' + str(study), stdDF)
+
+        SumDF.drop(['test'], axis= 1, inplace=True)
+
+        figure = make_subplots()
+
+        for i in range(len(SumDF.index.values.tolist())):
+            xDataSeries = []
+            for num1 in range(len(SumDF.columns.values.tolist())):
+                xDataSeries.append(xData[i])
+
+            figure.add_trace(plygo.Box(
+                x= xDataSeries,
+                y= SumDF.iloc[i].tolist(),
+                boxpoints= 'all',
+                name= xData[i],
+                jitter= 0.3
+            ))
+            
+        figure.update_yaxes({'title_text': '(TWh\Year)'})
+        figure.update_layout(
+            uniformtext_minsize=18,
+            font_size= srcFig['font'],
+            width= srcFig['width'],
+            height= srcFig['height'],
+            title= srcFig['name'],
+            showlegend= srcFig['legend'],
+            template= pio.templates['simple_white'])
+
+        return figure
+
+    elif xDataSrc == 'Total Elect. Demand':
+        pass
+
+    elif xDataSrc == 'Total Heat Demand':
+        pass
