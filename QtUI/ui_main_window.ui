@@ -47,10 +47,10 @@
      <enum>QFrame::Plain</enum>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>0</number>
     </property>
     <widget class="QWidget" name="page_1">
-     <widget class="QLabel" name="lbl_pg1">
+     <widget class="QLabel" name="label_pg1">
       <property name="geometry">
        <rect>
         <x>800</x>
@@ -92,7 +92,7 @@
       <property name="flat">
        <bool>true</bool>
       </property>
-      <widget class="QLabel" name="lbl_ExePath">
+      <widget class="QLabel" name="label01">
        <property name="geometry">
         <rect>
          <x>20</x>
@@ -128,7 +128,7 @@
         <string>Select</string>
        </property>
       </widget>
-      <widget class="QLabel" name="lbl_IPF">
+      <widget class="QLabel" name="label02">
        <property name="geometry">
         <rect>
          <x>20</x>
@@ -164,7 +164,7 @@
         </rect>
        </property>
       </widget>
-      <widget class="QLabel" name="lbl_OPD">
+      <widget class="QLabel" name="label03">
        <property name="geometry">
         <rect>
          <x>20</x>
@@ -242,7 +242,7 @@
       <property name="flat">
        <bool>true</bool>
       </property>
-      <widget class="QLabel" name="lbl_State">
+      <widget class="QLabel" name="label04">
        <property name="geometry">
         <rect>
          <x>20</x>
@@ -270,7 +270,7 @@
         </url>
        </property>
       </widget>
-      <widget class="QLabel" name="lbl_Log">
+      <widget class="QLabel" name="label05">
        <property name="geometry">
         <rect>
          <x>20</x>
@@ -318,7 +318,7 @@
      </widget>
     </widget>
     <widget class="QWidget" name="page_2">
-     <widget class="QLabel" name="lbl_pg2">
+     <widget class="QLabel" name="label_pg2">
       <property name="geometry">
        <rect>
         <x>800</x>
@@ -402,7 +402,7 @@
         <string>Delete</string>
        </property>
       </widget>
-      <widget class="QLabel" name="lbl23">
+      <widget class="QLabel" name="label20">
        <property name="geometry">
         <rect>
          <x>385</x>
@@ -415,7 +415,7 @@
         <string>Plots List:</string>
        </property>
       </widget>
-      <widget class="QLabel" name="lbl24">
+      <widget class="QLabel" name="label19">
        <property name="geometry">
         <rect>
          <x>385</x>
@@ -460,7 +460,7 @@
          <x>10</x>
          <y>30</y>
          <width>365</width>
-         <height>215</height>
+         <height>315</height>
         </rect>
        </property>
        <property name="title">
@@ -473,85 +473,43 @@
         <property name="geometry">
          <rect>
           <x>60</x>
-          <y>60</y>
+          <y>90</y>
           <width>110</width>
           <height>24</height>
          </rect>
         </property>
        </widget>
-       <widget class="QRadioButton" name="rb_HourlyVal">
-        <property name="geometry">
-         <rect>
-          <x>85</x>
-          <y>25</y>
-          <width>70</width>
-          <height>24</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>Hourly</string>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
-       </widget>
-       <widget class="QRadioButton" name="rb_MonthlyVal">
-        <property name="geometry">
-         <rect>
-          <x>175</x>
-          <y>25</y>
-          <width>70</width>
-          <height>24</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>Monthly</string>
-        </property>
-       </widget>
-       <widget class="QRadioButton" name="rb_AnnualVal">
-        <property name="geometry">
-         <rect>
-          <x>285</x>
-          <y>25</y>
-          <width>70</width>
-          <height>24</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>Annual</string>
-        </property>
-       </widget>
-       <widget class="QLabel" name="lbl10">
+       <widget class="QLabel" name="label22">
         <property name="geometry">
          <rect>
           <x>10</x>
-          <y>25</y>
+          <y>55</y>
           <width>65</width>
           <height>24</height>
          </rect>
         </property>
         <property name="text">
-         <string>DataType:</string>
+         <string>Data Type:</string>
         </property>
         <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
         </property>
        </widget>
        <widget class="QComboBox" name="cb_Style">
         <property name="geometry">
          <rect>
           <x>60</x>
-          <y>90</y>
+          <y>120</y>
           <width>110</width>
           <height>24</height>
          </rect>
         </property>
        </widget>
-       <widget class="QLabel" name="lbl11">
+       <widget class="QLabel" name="label25">
         <property name="geometry">
          <rect>
           <x>10</x>
-          <y>90</y>
+          <y>120</y>
           <width>40</width>
           <height>24</height>
          </rect>
@@ -563,11 +521,11 @@
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
        </widget>
-       <widget class="QLabel" name="lbl12">
+       <widget class="QLabel" name="label23">
         <property name="geometry">
          <rect>
           <x>10</x>
-          <y>60</y>
+          <y>90</y>
           <width>40</width>
           <height>24</height>
          </rect>
@@ -579,11 +537,11 @@
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
        </widget>
-       <widget class="QLabel" name="lbl13">
+       <widget class="QLabel" name="label24">
         <property name="geometry">
          <rect>
           <x>185</x>
-          <y>60</y>
+          <y>90</y>
           <width>50</width>
           <height>24</height>
          </rect>
@@ -602,7 +560,7 @@
         <property name="geometry">
          <rect>
           <x>245</x>
-          <y>60</y>
+          <y>90</y>
           <width>110</width>
           <height>24</height>
          </rect>
@@ -618,7 +576,7 @@
         <property name="geometry">
          <rect>
           <x>245</x>
-          <y>90</y>
+          <y>120</y>
           <width>50</width>
           <height>24</height>
          </rect>
@@ -637,7 +595,7 @@
         <property name="geometry">
          <rect>
           <x>305</x>
-          <y>90</y>
+          <y>120</y>
           <width>50</width>
           <height>24</height>
          </rect>
@@ -659,7 +617,7 @@
         <property name="geometry">
          <rect>
           <x>245</x>
-          <y>120</y>
+          <y>150</y>
           <width>50</width>
           <height>24</height>
          </rect>
@@ -678,7 +636,7 @@
         <property name="geometry">
          <rect>
           <x>305</x>
-          <y>120</y>
+          <y>150</y>
           <width>50</width>
           <height>24</height>
          </rect>
@@ -690,11 +648,11 @@
          <string/>
         </property>
        </widget>
-       <widget class="QLabel" name="lbl14">
+       <widget class="QLabel" name="label26">
         <property name="geometry">
          <rect>
           <x>185</x>
-          <y>90</y>
+          <y>120</y>
           <width>50</width>
           <height>24</height>
          </rect>
@@ -706,11 +664,11 @@
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
        </widget>
-       <widget class="QLabel" name="lbl15">
+       <widget class="QLabel" name="label27">
         <property name="geometry">
          <rect>
           <x>185</x>
-          <y>120</y>
+          <y>150</y>
           <width>50</width>
           <height>24</height>
          </rect>
@@ -722,11 +680,11 @@
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
        </widget>
-       <widget class="QLabel" name="lbl16">
+       <widget class="QLabel" name="label28">
         <property name="geometry">
          <rect>
           <x>10</x>
-          <y>150</y>
+          <y>185</y>
           <width>100</width>
           <height>24</height>
          </rect>
@@ -738,11 +696,11 @@
          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
         </property>
        </widget>
-       <widget class="QLabel" name="lbl19">
+       <widget class="QLabel" name="label31">
         <property name="geometry">
          <rect>
           <x>115</x>
-          <y>180</y>
+          <y>215</y>
           <width>40</width>
           <height>24</height>
          </rect>
@@ -758,7 +716,7 @@
         <property name="geometry">
          <rect>
           <x>160</x>
-          <y>150</y>
+          <y>185</y>
           <width>50</width>
           <height>24</height>
          </rect>
@@ -770,11 +728,11 @@
          <number>12</number>
         </property>
        </widget>
-       <widget class="QLabel" name="lbl17">
+       <widget class="QLabel" name="label29">
         <property name="geometry">
          <rect>
           <x>115</x>
-          <y>150</y>
+          <y>185</y>
           <width>40</width>
           <height>24</height>
          </rect>
@@ -790,7 +748,7 @@
         <property name="geometry">
          <rect>
           <x>160</x>
-          <y>180</y>
+          <y>215</y>
           <width>50</width>
           <height>24</height>
          </rect>
@@ -802,11 +760,11 @@
          <number>12</number>
         </property>
        </widget>
-       <widget class="QLabel" name="lbl18">
+       <widget class="QLabel" name="label30">
         <property name="geometry">
          <rect>
           <x>235</x>
-          <y>150</y>
+          <y>185</y>
           <width>60</width>
           <height>24</height>
          </rect>
@@ -822,7 +780,7 @@
         <property name="geometry">
          <rect>
           <x>305</x>
-          <y>150</y>
+          <y>185</y>
           <width>50</width>
           <height>24</height>
          </rect>
@@ -838,7 +796,7 @@
         <property name="geometry">
          <rect>
           <x>305</x>
-          <y>180</y>
+          <y>215</y>
           <width>50</width>
           <height>24</height>
          </rect>
@@ -850,11 +808,11 @@
          <number>12</number>
         </property>
        </widget>
-       <widget class="QLabel" name="lbl20">
+       <widget class="QLabel" name="label32">
         <property name="geometry">
          <rect>
           <x>235</x>
-          <y>180</y>
+          <y>215</y>
           <width>60</width>
           <height>24</height>
          </rect>
@@ -866,12 +824,144 @@
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
        </widget>
+       <widget class="QLabel" name="label21">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>30</y>
+          <width>85</width>
+          <height>24</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Analysis Type:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label33">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>250</y>
+          <width>100</width>
+          <height>24</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Statistical Lines:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+       <widget class="QCheckBox" name="cb_StatMean">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+        <property name="geometry">
+         <rect>
+          <x>120</x>
+          <y>250</y>
+          <width>110</width>
+          <height>24</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Draw Mean</string>
+        </property>
+       </widget>
+       <widget class="QCheckBox" name="cb_StatMedian">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+        <property name="geometry">
+         <rect>
+          <x>120</x>
+          <y>280</y>
+          <width>110</width>
+          <height>24</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Draw Median</string>
+        </property>
+       </widget>
+       <widget class="QWidget" name="layoutWidget">
+        <property name="geometry">
+         <rect>
+          <x>105</x>
+          <y>30</y>
+          <width>251</width>
+          <height>24</height>
+         </rect>
+        </property>
+        <layout class="QHBoxLayout" name="rb_group1">
+         <item>
+          <widget class="QRadioButton" name="rb_Selective">
+           <property name="text">
+            <string>Selective Sources</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QRadioButton" name="rb_Collaborative">
+           <property name="text">
+            <string>Collaborative</string>
+           </property>
+           <property name="checked">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="layoutWidget">
+        <property name="geometry">
+         <rect>
+          <x>85</x>
+          <y>55</y>
+          <width>271</width>
+          <height>24</height>
+         </rect>
+        </property>
+        <layout class="QHBoxLayout" name="rb_group2">
+         <item>
+          <widget class="QRadioButton" name="rb_HourlyVal">
+           <property name="text">
+            <string>Hourly</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QRadioButton" name="rb_MonthlyVal">
+           <property name="text">
+            <string>Monthly</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QRadioButton" name="rb_AnnualVal">
+           <property name="text">
+            <string>Annual</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
       </widget>
       <widget class="QGroupBox" name="gb_SeriesX">
        <property name="geometry">
         <rect>
          <x>10</x>
-         <y>300</y>
+         <y>355</y>
          <width>365</width>
          <height>120</height>
         </rect>
@@ -905,7 +995,7 @@
          <bool>true</bool>
         </property>
        </widget>
-       <widget class="QLabel" name="lbl21">
+       <widget class="QLabel" name="label34">
         <property name="geometry">
          <rect>
           <x>110</x>
@@ -921,7 +1011,7 @@
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
        </widget>
-       <widget class="QLabel" name="lbl22">
+       <widget class="QLabel" name="label35">
         <property name="geometry">
          <rect>
           <x>110</x>
@@ -981,7 +1071,7 @@
        <property name="geometry">
         <rect>
          <x>10</x>
-         <y>440</y>
+         <y>485</y>
          <width>365</width>
          <height>50</height>
         </rect>
@@ -1023,9 +1113,9 @@
        <property name="geometry">
         <rect>
          <x>90</x>
-         <y>160</y>
+         <y>185</y>
          <width>195</width>
-         <height>210</height>
+         <height>185</height>
         </rect>
        </property>
       </widget>
@@ -1033,7 +1123,7 @@
        <property name="geometry">
         <rect>
          <x>215</x>
-         <y>130</y>
+         <y>155</y>
          <width>70</width>
          <height>24</height>
         </rect>
@@ -1042,11 +1132,11 @@
         <string>Delete</string>
        </property>
       </widget>
-      <widget class="QLabel" name="lbl08">
+      <widget class="QLabel" name="label14">
        <property name="geometry">
         <rect>
          <x>10</x>
-         <y>160</y>
+         <y>185</y>
          <width>70</width>
          <height>24</height>
         </rect>
@@ -1062,7 +1152,7 @@
        <property name="geometry">
         <rect>
          <x>90</x>
-         <y>130</y>
+         <y>155</y>
          <width>70</width>
          <height>24</height>
         </rect>
@@ -1071,7 +1161,7 @@
         <string>Add</string>
        </property>
       </widget>
-      <widget class="QLabel" name="lbl01">
+      <widget class="QLabel" name="label06">
        <property name="geometry">
         <rect>
          <x>10</x>
@@ -1103,7 +1193,7 @@
         </rect>
        </property>
       </widget>
-      <widget class="QLabel" name="lbl02">
+      <widget class="QLabel" name="label07">
        <property name="geometry">
         <rect>
          <x>10</x>
@@ -1135,7 +1225,7 @@
         <number>12</number>
        </property>
       </widget>
-      <widget class="QLabel" name="lbl03">
+      <widget class="QLabel" name="label08">
        <property name="geometry">
         <rect>
          <x>90</x>
@@ -1167,7 +1257,7 @@
         <number>12</number>
        </property>
       </widget>
-      <widget class="QLabel" name="lbl04">
+      <widget class="QLabel" name="label09">
        <property name="geometry">
         <rect>
          <x>190</x>
@@ -1183,7 +1273,7 @@
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
        </property>
       </widget>
-      <widget class="QLabel" name="lbl05">
+      <widget class="QLabel" name="label10">
        <property name="geometry">
         <rect>
          <x>10</x>
@@ -1199,7 +1289,7 @@
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
        </property>
       </widget>
-      <widget class="QLabel" name="lbl06">
+      <widget class="QLabel" name="label11">
        <property name="geometry">
         <rect>
          <x>90</x>
@@ -1215,7 +1305,7 @@
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
        </property>
       </widget>
-      <widget class="QLabel" name="lbl07">
+      <widget class="QLabel" name="label12">
        <property name="geometry">
         <rect>
          <x>190</x>
@@ -1263,7 +1353,7 @@
         <string>768</string>
        </property>
       </widget>
-      <widget class="QLabel" name="lbl09">
+      <widget class="QLabel" name="label15">
        <property name="geometry">
         <rect>
          <x>10</x>
@@ -1299,7 +1389,7 @@
        <property name="geometry">
         <rect>
          <x>205</x>
-         <y>380</y>
+         <y>410</y>
          <width>80</width>
          <height>24</height>
         </rect>
@@ -1322,16 +1412,70 @@
        </property>
       </widget>
       <widget class="QPushButton" name="btn_FigLoad">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="geometry">
         <rect>
          <x>205</x>
-         <y>410</y>
+         <y>380</y>
          <width>80</width>
          <height>24</height>
         </rect>
        </property>
        <property name="text">
         <string>Load</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label13">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>120</y>
+         <width>70</width>
+         <height>24</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Font Size:</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+      <widget class="QSpinBox" name="sb_FontSize">
+       <property name="geometry">
+        <rect>
+         <x>90</x>
+         <y>120</y>
+         <width>50</width>
+         <height>24</height>
+        </rect>
+       </property>
+       <property name="minimum">
+        <number>9</number>
+       </property>
+       <property name="maximum">
+        <number>35</number>
+       </property>
+       <property name="value">
+        <number>16</number>
+       </property>
+      </widget>
+      <widget class="QCheckBox" name="cb_Legend">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="geometry">
+        <rect>
+         <x>165</x>
+         <y>120</y>
+         <width>100</width>
+         <height>24</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Show Legend</string>
        </property>
       </widget>
      </widget>
@@ -1347,7 +1491,7 @@
       <property name="title">
        <string>Information</string>
       </property>
-      <widget class="QLabel" name="lbl_Selection1">
+      <widget class="QLabel" name="label16">
        <property name="geometry">
         <rect>
          <x>10</x>
@@ -1363,7 +1507,7 @@
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
        </property>
       </widget>
-      <widget class="QLabel" name="lbl_Selection2">
+      <widget class="QLabel" name="label17">
        <property name="geometry">
         <rect>
          <x>10</x>
@@ -1379,7 +1523,7 @@
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
        </property>
       </widget>
-      <widget class="QLabel" name="lbl_Selection3">
+      <widget class="QLabel" name="label18">
        <property name="geometry">
         <rect>
          <x>10</x>
@@ -1491,15 +1635,7 @@
     <addaction name="actionAbout"/>
     <addaction name="actionExit"/>
    </widget>
-   <widget class="QMenu" name="menuAnalysis">
-    <property name="title">
-     <string>Analysis</string>
-    </property>
-    <addaction name="actionEnergy_Balance_Compilation"/>
-    <addaction name="actionInstalled_Capacities_Compilation"/>
-   </widget>
    <addaction name="m_Menu"/>
-   <addaction name="menuAnalysis"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionAbout">
