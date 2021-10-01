@@ -419,6 +419,7 @@ def PlotterCollective (srcFig = dict, srcStd = list, xDataSrc = str):
             
             stdDF = stdDF.iloc[rangeStart:rangeEnd]
             stdDF = stdDF.loc[:, 'g0-Data1']
+            stdDF = stdDF.astype(float)
     
             SumDF.insert(0, 'std' + str(study), stdDF)
 
