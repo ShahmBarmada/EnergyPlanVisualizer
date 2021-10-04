@@ -29,7 +29,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def InitialData(self):
         self.cb_FileFormat.addItems(['image','html','json']) 
         self.cb_FileFormat.setCurrentIndex(0)
-        self.SelectiveAnalysis(True)
+        self.SelectiveAnalysis()
 
     def SwitchHandelers(self):
         self.rb_Selective.toggled.connect(self.SelectiveAnalysis)
@@ -44,23 +44,21 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.cb_TicksX.stateChanged.connect(self.UpdateTickStateX)
         self.cb_TicksY.stateChanged.connect(self.UpdateTickStateY)
 
-    def SelectiveAnalysis(self, enabled):
+    def SelectiveAnalysis(self):
         self.rb_HourlyVal.setEnabled(True)
         self.rb_MonthlyVal.setEnabled(True)
         self.rb_AnnualVal.setEnabled(True)
         self.cb_StatMean.setEnabled(True)
         self.cb_StatMedian.setEnabled(True)
-
         self.rb_HourlyVal.setChecked(True)
         self.UpdateDataType()
 
-    def CollectiveAnalysis(self, enabled):
+    def CollectiveAnalysis(self):
         self.rb_HourlyVal.setEnabled(False)
         self.rb_MonthlyVal.setEnabled(False)
         self.rb_AnnualVal.setEnabled(True)
         self.cb_StatMean.setEnabled(False)
         self.cb_StatMedian.setEnabled(False)
-
         self.rb_AnnualVal.setChecked(True)
         self.UpdateDataType()
 
@@ -76,7 +74,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.cb_Xend.setEnabled(True)
             self.cb_Xend.clear()
             self.cb_Ydata.clear()
-            self.cb_Ydata.setDisabled(False)
+            self.cb_Ydata.setEnabled(True)
             self.cb_Ydata.addItems(dataList.keys())
             self.cb_Ydata.insertSeparator(23)
             self.cb_Xdata.clear()
@@ -98,7 +96,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.cb_Xend.addItems(monthList)
             self.cb_Xend.setCurrentIndex(11)
             self.cb_Ydata.clear()
-            self.cb_Ydata.setDisabled(False)
+            self.cb_Ydata.setEnabled(True)
             self.cb_Ydata.addItems(dataList.keys())
             self.cb_Ydata.insertSeparator(23)
             self.cb_Xdata.clear()
@@ -111,11 +109,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 self.cb_Trace.addItems(['Bar Chart', 'Pie Chart', 'Box Plot'])
                 self.cb_Trace.setCurrentIndex(0)
                 self.rb_Xdata.setChecked(True)
-                self.rb_Xtime.setDisabled(True)
-                self.cb_Xstart.setDisabled(True)
-                self.cb_Xend.setDisabled(True)
+                self.rb_Xtime.setEnabled(False)
+                self.cb_Xstart.setEnabled(False)
+                self.cb_Xend.setEnabled(False)
                 self.cb_Ydata.clear()
-                self.cb_Ydata.setDisabled(False)
+                self.cb_Ydata.setEnabled(True)
                 self.cb_Ydata.addItems(dataList.keys())
                 self.cb_Ydata.insertSeparator(23)
                 self.cb_Xdata.clear()
@@ -125,13 +123,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 self.cb_Trace.addItems(['Box Plot'])
                 self.cb_Trace.setCurrentIndex(0)
                 self.rb_Xdata.setChecked(True)
-                self.rb_Xtime.setDisabled(True)
-                self.cb_Xstart.setDisabled(True)
-                self.cb_Xend.setDisabled(True)
-                self.sb_Col.setDisabled(True)
-                self.sb_Row.setDisabled(True)
+                self.rb_Xtime.setEnabled(False)
+                self.cb_Xstart.setEnabled(False)
+                self.cb_Xend.setEnabled(False)
+                self.sb_Col.setEnabled(False)
+                self.sb_Row.setEnabled(False)
                 self.cb_Ydata.clear()
-                self.cb_Ydata.setDisabled(True)
+                self.cb_Ydata.setEnabled(False)
                 self.cb_Xdata.clear()
 
         self.UpdateTrace()

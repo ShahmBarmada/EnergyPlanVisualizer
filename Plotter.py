@@ -21,9 +21,14 @@ def PlotterSelective (srcFig = dict, srcPlt = list):
 
         # get data source
         srcStd = plot['datasrc']
-        stdDF = pd.read_csv(srcStd['path'], delimiter=',', low_memory=False, index_col='Index')
-        stdDF.loc['AnnualAverage':'AnnualMinimum'] /= 1000
+        stdDF = pd.read_csv(srcStd['path'], delimiter= ',', low_memory= False, index_col= 'Index')
 
+        stdDF = stdDF.drop(stdDF.index[stdDF.index.get_loc('EnergyplanModel'):stdDF.index.get_loc('Calc.EconomyAndFuel')], axis=0)
+        stdDF = stdDF.astype(float)
+
+        stdDF.loc['AnnualAverage':'AnnualMinimum'] /= 1000
+        print(stdDF.info())
+        
         # calc plot grid position & assign title
         pltPos = plot['row'] * 10 + plot['col'] * 1
         pltTitle = str(pltPos) + '_' + srcStd['id'] + ' ' + srcStd['name']
@@ -168,7 +173,14 @@ def PlotterSelective (srcFig = dict, srcPlt = list):
         # getting Y series data
         yData = []
         if plot['xdata'][0:16] == 'Investment Costs':
-            pass
+            if plot['xdata'] == 'Investment Costs - Total':
+                yData = ['g0-Data1']
+
+            elif plot['xdata'] == 'Investment Costs - Annual':
+                yData = ['g0-Data2']
+
+            elif plot['xdata'] == 'Investment Costs - O & M':
+                yData = ['g0-Data3']
 
         elif plot['xdata'] == 'Energy Balance':
             for yData_i, headers in enumerate(list(stdDF.columns.values)):
