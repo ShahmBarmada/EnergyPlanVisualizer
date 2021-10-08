@@ -395,10 +395,10 @@ def PlotterSelective (srcFig = dict, srcPlt = list):
 
     return figure
 
-def PlotterCollective (srcFig = dict, srcStd = list, xDataSrc = str):
+def PlotterCollective (srcFig = dict, srcStd = list, xDataSrc = str, traceStyle = str):
 
     if xDataSrc == 'Energy Balance (per Index)':
-        SumDF = pd.DataFrame(0, index=['Coal', 'Oil', 'N.Gas', 'Biomass', 'Renewable', 'H2Etc.', 'Biofuel', 'Nucl/Ccs'], columns=['test'])
+        SumDF = pd.DataFrame(0, index=['Coal', 'Oil', 'N.Gas', 'Biomass', 'Renewable'], columns=['test'])
 
         for study in range(len(srcStd)):
             stdDF = pd.read_csv(srcStd[study]['path'], delimiter=',', low_memory=False, index_col='Index')
@@ -406,7 +406,7 @@ def PlotterCollective (srcFig = dict, srcStd = list, xDataSrc = str):
             rangeStart = stdDF.index.get_loc('TotalAnnualCosts')
             rangeStart = rangeStart + stdDF.iloc[rangeStart:rangeStart+100].index.get_loc('Coal')
                     
-            rangeEnd = stdDF.iloc[rangeStart:rangeStart+100].index.get_loc('Nucl/Ccs')
+            rangeEnd = stdDF.iloc[rangeStart:rangeStart+100].index.get_loc('Renewable')
             rangeEnd = rangeEnd + rangeStart +1
     
             xData = stdDF.iloc[rangeStart:rangeEnd].index.values.tolist()
@@ -419,7 +419,16 @@ def PlotterCollective (srcFig = dict, srcStd = list, xDataSrc = str):
         SumDF.drop(['test'], axis= 1, inplace=True)
 
         figure = make_subplots()
-        
+
+        if traceStyle == 'Whiskers & Points':
+            styleMode = 'all'
+        elif traceStyle == 'Whiskers':
+            styleMode = False
+        elif traceStyle == 'OutLiers':
+            styleMode = 'suspectedoutliers'
+        elif traceStyle == 'Whiskers & OutLiers':
+            styleMode = 'outliers'
+
         for i in range(len(SumDF.index.values.tolist())):
             xDataSeries = []
             for num1 in range(len(SumDF.columns.values.tolist())):
@@ -428,7 +437,7 @@ def PlotterCollective (srcFig = dict, srcStd = list, xDataSrc = str):
             figure.add_trace(plygo.Box(
                 x= xDataSeries,
                 y= SumDF.iloc[i].tolist(),
-                boxpoints= 'all',
+                boxpoints= styleMode,
                 name= xData[i],
                 jitter= 0.3
             ))
@@ -468,6 +477,15 @@ def PlotterCollective (srcFig = dict, srcStd = list, xDataSrc = str):
 
         figure = make_subplots()
 
+        if traceStyle == 'Whiskers & Points':
+            styleMode = 'all'
+        elif traceStyle == 'Whiskers':
+            styleMode = False
+        elif traceStyle == 'OutLiers':
+            styleMode = 'suspectedoutliers'
+        elif traceStyle == 'Whiskers & OutLiers':
+            styleMode = 'outliers'
+
         for i in range(len(SumDF.index.values.tolist())):
             xDataSeries = []
             for num1 in range(len(SumDF.columns.values.tolist())):
@@ -476,7 +494,7 @@ def PlotterCollective (srcFig = dict, srcStd = list, xDataSrc = str):
             figure.add_trace(plygo.Box(
                 x= xDataSeries,
                 y= SumDF.iloc[i].tolist(),
-                boxpoints= 'all',
+                boxpoints= styleMode,
                 name= xData[i],
                 jitter= 0.3
             ))
@@ -510,11 +528,20 @@ def PlotterCollective (srcFig = dict, srcStd = list, xDataSrc = str):
         
         figure = make_subplots()
 
+        if traceStyle == 'Whiskers & Points':
+            styleMode = 'all'
+        elif traceStyle == 'Whiskers':
+            styleMode = False
+        elif traceStyle == 'OutLiers':
+            styleMode = 'suspectedoutliers'
+        elif traceStyle == 'Whiskers & OutLiers':
+            styleMode = 'outliers'
+
         for i in range(len(SumDF.index.values.tolist())):
             figure.add_trace(plygo.Box(
                 #x= SumDF.index[i],
                 y= SumDF.iloc[i].tolist(),
-                boxpoints= 'all',
+                boxpoints= styleMode,
                 name= SumDF.index[i],
                 jitter= 0.3
             ))
@@ -548,11 +575,20 @@ def PlotterCollective (srcFig = dict, srcStd = list, xDataSrc = str):
         
         figure = make_subplots()
 
+        if traceStyle == 'Whiskers & Points':
+            styleMode = 'all'
+        elif traceStyle == 'Whiskers':
+            styleMode = False
+        elif traceStyle == 'OutLiers':
+            styleMode = 'suspectedoutliers'
+        elif traceStyle == 'Whiskers & OutLiers':
+            styleMode = 'outliers'
+
         for i in range(len(SumDF.index.values.tolist())):
             figure.add_trace(plygo.Box(
                 #x= SumDF.index[i],
                 y= SumDF.iloc[i].tolist(),
-                boxpoints= 'all',
+                boxpoints= styleMode,
                 name= SumDF.index[i],
                 jitter= 0.3
             ))

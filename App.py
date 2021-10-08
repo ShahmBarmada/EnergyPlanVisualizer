@@ -174,7 +174,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.cb_TicksY.setEnabled(False)
             if self.rb_AnnualVal.isChecked():
                 self.cb_Xdata.clear()
-                self.cb_Xdata.addItems(['Energy Balance (per Index)', 'Energy Balance (per Study)','Energy Balance (Total)', 'Installed Capacities (per Index)', 'Installed Capacities (per Study)', 'Installed Capacities (Total)', 'Total Elect. Demand', 'Total Heat Demand'])
+                self.cb_Xdata.addItems(['Energy Balance (per Index)', 'Installed Capacities (per Index)', 'Total Elect. Demand', 'Total Heat Demand'])
 
     def UpdateTickStateX(self):
         if self.cb_TicksX.isChecked():
@@ -584,8 +584,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             # get X data series:
             xData = self.cb_Xdata.currentText()
 
+            traceStyle = self.cb_Style.currentText()
+
             # process figure in plotter
-            figure = PlotterCollective(slctFig, slctStd, xData)
+            figure = PlotterCollective(slctFig, slctStd, xData, traceStyle)
 
     def SaveFigure(self):
         try:
