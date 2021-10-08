@@ -152,7 +152,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.cb_TicksY.setEnabled(False)
             if self.rb_AnnualVal.isChecked():
                 self.cb_Xdata.clear()
-                self.cb_Xdata.addItems(['Energy Balance', 'Power Values - Totals','Power Values - Annual Average','Power Values - Annual Maximum','Power Values - Annual Minimum', 'Investment Costs - Total', 'Investment Costs - Annual', 'Investment Costs - O & M'])
+                self.cb_Xdata.addItems(['Energy Balance', 'Power Values - Totals','Power Values - Annual Average','Power Values - Annual Maximum','Power Values - Annual Minimum', 'Investment Costs - Total', 'Investment Costs - Annual', 'Investment Costs - O & M', 'Total Elect. Demand', 'Total Heat Demand'])
 
         elif self.cb_Trace.currentText() == 'Pie Chart':
             self.cb_Style.clear()
@@ -163,8 +163,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.cb_TicksY.setEnabled(False)
             if self.rb_AnnualVal.isChecked():
                 self.cb_Xdata.clear()
-                self.cb_Xdata.addItems(['Annual CO2 Emissions','Annual Fuel Consumptions','Share of RES'])
-                pass
+                self.cb_Xdata.addItems(['Annual CO2 Emissions','Annual Fuel Consumptions','Share of RES', 'Total Elect. Demand', 'Total Heat Demand'])
 
         elif self.cb_Trace.currentText() == 'Box Plot':
             self.cb_Style.clear()
@@ -176,7 +175,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             if self.rb_AnnualVal.isChecked():
                 self.cb_Xdata.clear()
                 self.cb_Xdata.addItems(['Energy Balance', 'Installed Capacities', 'Total Elect. Demand', 'Total Heat Demand'])
-                pass
 
     def UpdateTickStateX(self):
         if self.cb_TicksX.isChecked():

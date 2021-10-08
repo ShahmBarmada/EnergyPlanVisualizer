@@ -27,7 +27,6 @@ def PlotterSelective (srcFig = dict, srcPlt = list):
         stdDF = stdDF.astype(float)
 
         stdDF.loc['AnnualAverage':'AnnualMinimum'] /= 1000
-        print(stdDF.info())
         
         # calc plot grid position & assign title
         pltPos = plot['row'] * 10 + plot['col'] * 1
@@ -104,7 +103,54 @@ def PlotterSelective (srcFig = dict, srcPlt = list):
 
         elif plot['datatype'] == 'annual':
 
-            if plot['xdata'][0:16] == 'Investment Costs':
+            yTitle = plot['ytitle'] + ' (TWh\Year)'
+
+            if plot['xdata'] == 'Power Values - Totals':
+                xStart = xEnd = 'Annual'
+
+            elif plot['xdata'] == 'Power Values - Annual Average':
+                xStart = xEnd = 'AnnualAverage'
+
+            elif plot['xdata'] == 'Power Values - Annual Maximum':
+                xStart = xEnd = 'AnnualMaximum'
+
+            elif plot['xdata'] == 'Power Values - Annual Minimum':
+                xStart = xEnd = 'AnnualMinimum'
+
+            elif plot['xdata'] == 'Annual CO2 Emissions':
+                xStart = 'Co2-Emission(Total)'
+                xEnd = 'Co2-Emission(Corrected)'
+                labelsData = xData = stdDF.loc[xStart:xEnd].index.values.tolist()
+                valuesData = stdDF.loc[xStart:xEnd, 'g0-Data1'].tolist()
+                templateFormat = '%{label}<br>%{value} (MT)<br>%{percent}'
+
+            elif plot['xdata'] == 'Annual Fuel Consumptions':
+                xStart = 'FuelConsumption(Total)'
+                xEnd = 'V2GPreLoadHours'
+                labelsData = xData = stdDF.loc[xStart:xEnd].index.values.tolist()
+                valuesData = stdDF.loc[xStart:xEnd, 'g0-Data1'].tolist()
+                templateFormat = '%{label}<br>%{value} (TWh/year)<br>%{percent}'
+
+            elif plot['xdata'] == 'Share of RES':
+                xStart = 'ResShareOfPes'
+                xEnd = 'ResShareOfElec.Prod.'
+                labelsData = xData = stdDF.loc[xStart:xEnd].index.values.tolist()
+                valuesData = stdDF.loc[xStart:xEnd, 'g0-Data1'].tolist()
+                templateFormat = '%{label}<br>%{value}'
+
+            elif plot['xdata'] == 'Total Elect. Demand':
+                xStart = xEnd = 'Annual'
+                labelsData = ['Elect. Demand', 'Elect. Demand Cooling', 'Fixed Exp/Imp', 'Flexible Electr,', 'HH-HP Elect.', 'HH-EB Elect.']
+                valuesData = stdDF.loc['Annual', ['0001_ElectrDemand', '0002_ElecdemCooling', '0003_FixedExp/Imp', '0020_FlexibleElectr', '1802_HH-HPElectr', '1804_HH-EBElectr']].tolist()
+                templateFormat = '%{label}<br>%{value}'
+
+            elif plot['xdata'] == 'Total Heat Demand':
+                xStart = xEnd = 'Annual'
+                labelsData = ['DH Demand', 'HH Demand Heat']
+                valuesData = stdDF.loc['Annual', ['0004_DHDemand', '1701_HHDemHeat']].tolist()
+                templateFormat = '%{label}<br>%{value}'
+
+            elif plot['xdata'][0:16] == 'Investment Costs':
 
                 rangeStart = stdDF.index.get_loc('TotalAnnualCosts')
                 rangeStart += 1
@@ -138,33 +184,11 @@ def PlotterSelective (srcFig = dict, srcPlt = list):
                 xStart = stdDF.iloc[rangeStart:rangeEnd].index[0]
                 xEnd = stdDF.iloc[rangeStart:rangeEnd].index[-1]
 
-            else:
+                yTitle = ''
 
-                if plot['xdata'] == 'Power Values - Totals':
-                    xStart = xEnd = 'Annual'
-                elif plot['xdata'] == 'Power Values - Annual Average':
-                    xStart = xEnd = 'AnnualAverage'
-                elif plot['xdata'] == 'Power Values - Annual Maximum':
-                    xStart = xEnd = 'AnnualMaximum'
-                elif plot['xdata'] == 'Power Values - Annual Minimum':
-                    xStart = xEnd = 'AnnualMinimum'
+            elif plot['xdata'] == 'Installed Capacities':
+                break
 
-                elif plot['xdata'] == 'Annual CO2 Emissions':
-                    xStart = 'Co2-Emission(Total)'
-                    xEnd = 'Co2-Emission(Corrected)'
-                    templateFormat = '%{label}<br>%{value} (MT)<br>%{percent}'
-
-                elif plot['xdata'] == 'Annual Fuel Consumptions':
-                    xStart = 'FuelConsumption(Total)'
-                    xEnd = 'V2GPreLoadHours'
-                    templateFormat = '%{label}<br>%{value} (TWh/year)<br>%{percent}'
-
-                elif plot['xdata'] == 'Share of RES':
-                    xStart = 'ResShareOfPes'
-                    xEnd = 'ResShareOfElec.Prod.'
-                    templateFormat = '%{label}<br>%{value}'
-
-                yTitle = plot['ytitle'] + ' (TWh\Year)'
 
             if plot['xdata'] != 'Energy Balance':
                 xData = stdDF.loc[xStart:xEnd].index.values.tolist()
@@ -187,6 +211,12 @@ def PlotterSelective (srcFig = dict, srcPlt = list):
                 if headers[:2] == 'g1':
                     yData.append(headers)
             yData.pop()
+
+        elif plot['xdata'] == 'Total Elect. Demand':
+            yData = ['0001_ElectrDemand', '0002_ElecdemCooling', '0003_FixedExp/Imp', '0020_FlexibleElectr', '1802_HH-HPElectr', '1804_HH-EBElectr']
+
+        elif plot['xdata'] == 'Total Heat Demand':
+            yData = ['0004_DHDemand', '1701_HHDemHeat']
 
         else:
             for yData_i, headers in enumerate(list(stdDF.columns.values)):
@@ -258,7 +288,6 @@ def PlotterSelective (srcFig = dict, srcPlt = list):
 
                 if plot['datatype'] == 'annual':
                     if plot['xdata'] == 'Energy Balance':
-                        yTitle = ''
                         #yDataHolder = stdDF.columns.get_loc(yData[i])
                         figure.add_trace(plygo.Bar(
                             x= xData,
@@ -304,8 +333,8 @@ def PlotterSelective (srcFig = dict, srcPlt = list):
                 holeSize = 0
                 
             figure.add_trace(plygo.Pie(
-                labels= xData,
-                values= stdDF.loc[xStart:xEnd, 'g0-Data1'].tolist(),
+                labels= labelsData,
+                values= valuesData,
                 texttemplate= templateFormat,
                 hole= holeSize,
                 pull= styleMode,
@@ -390,7 +419,7 @@ def PlotterCollective (srcFig = dict, srcStd = list, xDataSrc = str):
         SumDF.drop(['test'], axis= 1, inplace=True)
 
         figure = make_subplots()
-
+        
         for i in range(len(SumDF.index.values.tolist())):
             xDataSeries = []
             for num1 in range(len(SumDF.columns.values.tolist())):
@@ -452,7 +481,7 @@ def PlotterCollective (srcFig = dict, srcStd = list, xDataSrc = str):
                 jitter= 0.3
             ))
             
-        figure.update_yaxes({'title_text': '(TWh\Year)'})
+        figure.update_yaxes({'title_text': '(MW)'})
         figure.update_layout(
             uniformtext_minsize=18,
             font_size= srcFig['font'],
@@ -465,7 +494,77 @@ def PlotterCollective (srcFig = dict, srcStd = list, xDataSrc = str):
         return figure
 
     elif xDataSrc == 'Total Elect. Demand':
-        pass
+
+        SumDF = pd.DataFrame(0, index= ['test'], columns=['0001_ElectrDemand', '0002_ElecdemCooling', '0003_FixedExp/Imp', '0020_FlexibleElectr', '1802_HH-HPElectr', '1804_HH-EBElectr'])
+
+        for study in range(len(srcStd)):
+
+            stdDF = pd.read_csv(srcStd[study]['path'], delimiter=',', low_memory=False, index_col='Index')
+
+            stdValues = stdDF.loc['Annual', ['0001_ElectrDemand', '0002_ElecdemCooling', '0003_FixedExp/Imp', '0020_FlexibleElectr', '1802_HH-HPElectr', '1804_HH-EBElectr']].tolist()
+
+            SumDF.loc[srcStd[study]['name']] = stdValues
+
+        SumDF.drop(['test'], axis= 0, inplace=True)
+        print(len(SumDF.index.values.tolist()))
+        
+        figure = make_subplots()
+
+        for i in range(len(SumDF.index.values.tolist())):
+            figure.add_trace(plygo.Box(
+                #x= SumDF.index[i],
+                y= SumDF.iloc[i].tolist(),
+                boxpoints= 'all',
+                name= SumDF.index[i],
+                jitter= 0.3
+            ))
+            
+        figure.update_yaxes({'title_text': '(TWh\Year)'})
+        figure.update_layout(
+            uniformtext_minsize=18,
+            font_size= srcFig['font'],
+            width= srcFig['width'],
+            height= srcFig['height'],
+            title= srcFig['name'],
+            showlegend= srcFig['legend'],
+            template= pio.templates['simple_white'])
+
+        return figure
 
     elif xDataSrc == 'Total Heat Demand':
-        pass
+
+        SumDF = pd.DataFrame(0, index= ['test'], columns=['0004_DHDemand', '1701_HHDemHeat'])
+
+        for study in range(len(srcStd)):
+
+            stdDF = pd.read_csv(srcStd[study]['path'], delimiter=',', low_memory=False, index_col='Index')
+
+            stdValues = stdDF.loc['Annual', ['0004_DHDemand', '1701_HHDemHeat']].tolist()
+
+            SumDF.loc[srcStd[study]['name']] = stdValues
+
+        SumDF.drop(['test'], axis= 0, inplace=True)
+        print(len(SumDF.index.values.tolist()))
+        
+        figure = make_subplots()
+
+        for i in range(len(SumDF.index.values.tolist())):
+            figure.add_trace(plygo.Box(
+                #x= SumDF.index[i],
+                y= SumDF.iloc[i].tolist(),
+                boxpoints= 'all',
+                name= SumDF.index[i],
+                jitter= 0.3
+            ))
+            
+        figure.update_yaxes({'title_text': '(TWh\Year)'})
+        figure.update_layout(
+            uniformtext_minsize=18,
+            font_size= srcFig['font'],
+            width= srcFig['width'],
+            height= srcFig['height'],
+            title= srcFig['name'],
+            showlegend= srcFig['legend'],
+            template= pio.templates['simple_white'])
+
+        return figure
