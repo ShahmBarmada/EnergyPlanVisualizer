@@ -465,7 +465,7 @@ def PlotterCollective (srcFig = dict, srcStd = list, xDataSrc = str, traceStyle 
             rangeStart = stdDF.index.get_loc('InputCapPpEl')   
             rangeEnd = stdDF.index.get_loc('InputCapChp3Thermal') +1
     
-            xData = stdDF.iloc[rangeStart:rangeEnd].index.values.tolist()
+            #xData = stdDF.iloc[rangeStart:rangeEnd].index.values.tolist()
             
             stdDF = stdDF.iloc[rangeStart:rangeEnd]
             stdDF = stdDF.loc[:, 'g0-Data1']
@@ -474,6 +474,14 @@ def PlotterCollective (srcFig = dict, srcStd = list, xDataSrc = str, traceStyle 
             SumDF.insert(0, 'std' + str(study), stdDF)
 
         SumDF.drop(['test'], axis= 1, inplace=True)
+
+        list1 = ['InputCapPpEl','InputCapChp2El','InputCapChp3El','InputCapPp2El','InputNuclearCap','InputGeopowerCap','InputHydroCap','InputRes1Capacity','InputRes2Capacity','InputRes3Capacity','InputRes4Capacity','InputRes5Capacity','InputRes6Capacity','InputRes7Capacity','InputCapHp2El','InputCapHp3El','InputCapElttransEl','InputEh2','InputEh3','InputCapBoiler2Th','InputCapBoiler3Th','InputCapChp2Thermal','InputCapChp3Thermal']
+
+        list2 = ['PP1','CHP2','CHP3','PP2','Nuclear','Geopower','Hydro','Res1','Res2','Res3','Res4','Res5','Res6','Res7','Heat Pump 2','Heat Pump 3','Electrolysers','Boiler 2','Boiler3 ','Boiler 2 Thermal','Boiler 3 Thermal','CHP2 Thermal','CHP3 Thermal']
+
+        SumDF.rename(index= dict(zip(list1, list2)), inplace= True)
+
+        xData = SumDF.index.values.tolist()
 
         figure = make_subplots()
 
