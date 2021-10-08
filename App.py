@@ -174,7 +174,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.cb_TicksY.setEnabled(False)
             if self.rb_AnnualVal.isChecked():
                 self.cb_Xdata.clear()
-                self.cb_Xdata.addItems(['Energy Balance', 'Installed Capacities', 'Total Elect. Demand', 'Total Heat Demand'])
+                self.cb_Xdata.addItems(['Energy Balance (per Index)', 'Energy Balance (per Study)','Energy Balance (Total)', 'Installed Capacities (per Index)', 'Installed Capacities (per Study)', 'Installed Capacities (Total)', 'Total Elect. Demand', 'Total Heat Demand'])
 
     def UpdateTickStateX(self):
         if self.cb_TicksX.isChecked():

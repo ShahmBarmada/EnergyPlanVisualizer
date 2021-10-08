@@ -397,7 +397,7 @@ def PlotterSelective (srcFig = dict, srcPlt = list):
 
 def PlotterCollective (srcFig = dict, srcStd = list, xDataSrc = str):
 
-    if xDataSrc == 'Energy Balance':
+    if xDataSrc == 'Energy Balance (per Index)':
         SumDF = pd.DataFrame(0, index=['Coal', 'Oil', 'N.Gas', 'Biomass', 'Renewable', 'H2Etc.', 'Biofuel', 'Nucl/Ccs'], columns=['test'])
 
         for study in range(len(srcStd)):
@@ -445,7 +445,7 @@ def PlotterCollective (srcFig = dict, srcStd = list, xDataSrc = str):
 
         return figure
 
-    elif xDataSrc == 'Installed Capacities':
+    elif xDataSrc == 'Installed Capacities (per Index)':
         #SumDF = pd.DataFrame(0, index=['Condensing power plant 1','CHP plants (elect. capacity) gr.2','CHP plants (elect. capacity) gr.3','Condensing power plant 2','Nuclear','Geothermal plants','Dammed hydro','RES1','RES2','RES3','RES4','RES5','RES6','RES7','DH - Heat pump gr.2','DH - Heat pump gr.3','Electrolysers','DH - Electric boiler gr.2','DH - Electric boiler gr.3','DH - Boiler gr.2','DH - Boiler gr.3','DH - CHP (thermal capacity) gr.2','DH - CHP (thermal capacity) gr.3'], columns=['test'])
 
         SumDF = pd.DataFrame(0, index=['InputCapPpEl','InputCapChp2El','InputCapChp3El','InputCapPp2El','InputNuclearCap','InputGeopowerCap','InputHydroCap','InputRes1Capacity','InputRes2Capacity','InputRes3Capacity','InputRes4Capacity','InputRes5Capacity','InputRes6Capacity','InputRes7Capacity','InputCapHp2El','InputCapHp3El','InputCapElttransEl','InputEh2','InputEh3','InputCapBoiler2Th','InputCapBoiler3Th','InputCapChp2Thermal','InputCapChp3Thermal'], columns=['test'])
