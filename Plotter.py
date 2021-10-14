@@ -24,7 +24,11 @@ def PlotterSelective (srcFig = dict, srcPlt = list):
         stdDF = pd.read_csv(srcStd['path'], delimiter= ',', low_memory= False, index_col= 'Index')
 
         stdDF = stdDF.drop(stdDF.index[stdDF.index.get_loc('EnergyplanModel'):stdDF.index.get_loc('Calc.EconomyAndFuel')], axis=0)
-        stdDF = stdDF.astype(float)
+        
+        try:
+            stdDF = stdDF.astype(float)
+        except:
+            pass
 
         stdDF.loc['AnnualAverage':'AnnualMinimum'] /= 1000
         
@@ -38,15 +42,15 @@ def PlotterSelective (srcFig = dict, srcPlt = list):
         if plot['datatype'] == 'hourly':
             
             # set xStart
-            if re.fullmatch(r'\d{1,4}', plot['xstart']):
+            if re.fullmatch(r'\d{1, 4}', plot['xstart']):
                 xStart = 'h' + plot['xstart']
-            elif re.fullmatch(r'h\d{1,4}', plot['xstart']):
+            elif re.fullmatch(r'h\d{1, 4}', plot['xstart']):
                 xStart = plot['xstart']
-            elif re.fullmatch(r'd\d{1,3}', plot['xstart']):
+            elif re.fullmatch(r'd\d{1, 3}', plot['xstart']):
                 xStart = int(plot['xstart'][1:])
                 xStart = (xStart * 24) - 24 + 1
                 xStart = 'h' + str(xStart)
-            elif re.fullmatch(r'w\d{1,2}', plot['xstart']):
+            elif re.fullmatch(r'w\d{1, 2}', plot['xstart']):
                 xStart = int(plot['xstart'][1:])
                 xStart = ((xStart -1) * 24 * 7) + 1
                 xStart = 'h' + str(xStart)
@@ -54,15 +58,15 @@ def PlotterSelective (srcFig = dict, srcPlt = list):
                 xStart = 'h1'
 
             # set xEnd
-            if re.fullmatch(r'\d{1,4}', plot['xend']):
+            if re.fullmatch(r'\d{1, 4}', plot['xend']):
                 xEnd = 'h' + plot['xend']
-            elif re.fullmatch(r'h\d{1,4}', plot['xend']):
+            elif re.fullmatch(r'h\d{1, 4}', plot['xend']):
                 xEnd = plot['xend']
-            elif re.fullmatch(r'd\d{1,3}', plot['xend']):
+            elif re.fullmatch(r'd\d{1, 3}', plot['xend']):
                 xEnd = int(plot['xend'][1:])
                 xEnd = xEnd * 24
                 xEnd = 'h' + str(xEnd)
-            elif re.fullmatch(r'w\d{1,2}', plot['xend']):
+            elif re.fullmatch(r'w\d{1, 2}', plot['xend']):
                 xEnd = int(plot['xend'][1:])
                 xEnd = xEnd * 24 * 7
                 xEnd = 'h' + str(xEnd)
@@ -140,15 +144,75 @@ def PlotterSelective (srcFig = dict, srcPlt = list):
 
             elif plot['xdata'] == 'Total Elect. Demand':
                 xStart = xEnd = 'Annual'
-                labelsData = ['Elect. Demand', 'Elect. Demand Cooling', 'Fixed Exp/Imp', 'Flexible Electr,', 'HH-HP Elect.', 'HH-EB Elect.']
+                labelsData = ['Elect. Demand', 'Elect. Demand Cooling', 'Fixed Exp/Imp', 'Flexible Electr, ', 'HH-HP Elect.', 'HH-EB Elect.']
                 valuesData = stdDF.loc['Annual', ['0001_ElectrDemand', '0002_ElecdemCooling', '0003_FixedExp/Imp', '0020_FlexibleElectr', '1802_HH-HPElectr', '1804_HH-EBElectr']].tolist()
-                templateFormat = '%{label}<br>%{value}'
+                templateFormat = '%{label}<br>%{value} (TWh/year)<br>%{percent}'
 
             elif plot['xdata'] == 'Total Heat Demand':
                 xStart = xEnd = 'Annual'
                 labelsData = ['DH Demand', 'HH Demand Heat']
                 valuesData = stdDF.loc['Annual', ['0004_DHDemand', '1701_HHDemHeat']].tolist()
-                templateFormat = '%{label}<br>%{value}'
+                templateFormat = '%{label}<br>%{value} (TWh/year)<br>%{percent}'
+
+            elif plot['xdata'] == 'VRES (Renewable Fuel Balance)':
+                xStart = xEnd = 'Annual'
+                labelsData = ['Wind Electr', 'Offshore Electr', 'PV Electr', 'River Electr', 'Tidal Electr', 'Wave Electr', 'CSP Electr', 'CSP2 Electr']
+                valuesData = stdDF.loc['Annual', ['0101_WindElectr', '0102_OffshoreElectr', '0103_PVElectr', '0105_RiverElectr', '0107_TidalElectr', '0106_WaveElectr', '0104_CSPElectr', '0108_CSP2Electr']].tolist()
+                templateFormat = '%{label}<br>%{value} (TWh/year)<br>%{percent}'
+
+            elif plot['xdata'] == 'Electricity Consumption':
+                xStart = xEnd = 'Annual'
+                labelsData = ['Electr Demand', 'Fixed Exp/Imp', 'Flexible Electr', 'Elec. Dem Cooling', 'H2 Electr', 'V2G Charge', 'HP Electr', 'HH-EB Electr', 'Pump Electr', 'Pump2 Electr', 'Hydro Pump', 'EH3 Heat']
+                valuesData = stdDF.loc['Annual', ['0001_ElectrDemand', '0003_FixedExp/Imp', '0020_FlexibleElectr', '0002_ElecdemCooling', '2001_H2Electr', '1302_V2GCharge', '0021_HPElectr', '1804_HH-EBElectr', '0801_PumpElectr', '0802_Pump2Electr', '0202_Hydropump', '0016_EH3Heat']].tolist()
+                templateFormat = '%{label}<br>%{value} (TWh/year)<br>%{percent}'
+
+            elif plot['xdata'] == 'Electricity Production':
+                xStart = xEnd = 'Annual'
+                labelsData = ['Wind Electr', 'Offshore Electr', 'PV Electr', 'River Electr', 'Tidal Electr', 'Wave Electr', 'CSP Electr', 'CSP2 Electr', 'HH-CHP Electr', 'Hydro Electr', 'Nuclear Electr', 'Geother. Electr', 'V2G Discharge', 'CSHP Electr', 'CHP Electr', 'Turbine Electr', 'Turbine2 Electr', 'PP Electr', 'PP2 Electr']
+                valuesData = stdDF.loc['Annual', ['0101_WindElectr', '0102_OffshoreElectr', '0103_PVElectr', '0105_RiverElectr', '0107_TidalElectr', '0106_WaveElectr', '0104_CSPElectr', '0108_CSP2Electr', '1801_HH-CHPElectr', '0201_HydroElectr', '0701_NuclearElectr', '0702_GeotherElectr', '1303_V2GDischa', '0022_CSHPElectr', '0023_CHPElectr', '0901_TurbineElectr', '0902_Turbine2Electr', '0601_PPElectr', '0602_PP2Electr']].tolist()
+                templateFormat = '%{label}<br>%{value} (TWh/year)<br>%{percent}'
+
+            elif plot['xdata'] == 'Electricity Balance':
+                xStart = xEnd = 'Annual'
+                labelsData = ['Import Electr', 'CEEP Electr', 'EEEP Electr']
+                valuesData = stdDF.loc['Annual', ['0025_ImportElectr', '0027_CEEPElectr', '0028_EEEPElectr']].tolist()
+                templateFormat = '%{label}<br>%{value} (TWh/year)<br>%{percent}'
+
+            elif plot['xdata'] == 'District Heat Production':
+                xStart = xEnd = 'Annual'
+                labelsData = ['CSHP 1 Heat', 'Waste 1 Heat', 'Boiler 1 Heat', 'Solar 1 Heat', 'CSHP 2 Heat', 'Waste 2 Heat', 'Geoth 2 Heat', 'CHP 2 Heat', 'HP 2 Heat', 'Boiler 2 Heat', 'EH 2 Heat', 'ELT 2 Heat', 'Solar 2 Heat', 'CSHP 3 Heat', 'Waste 3 Heat', 'Geoth 3 Heat', 'CHP 3 Heat', 'HP 3 Heat', 'Boiler 3 Heat', 'EH 3 Heat', 'ELT 3 Heat', 'Solar 3 Heat']
+                valuesData = stdDF.loc['Annual', ['0401_CSHP1Heat', '0402_Waste1Heat', '0005_Boiler1Heat', '0302_Solar1Heat', '0403_CSHP2Heat', '0404_Waste2Heat', '0501_Geoth2Heat', '0006_CHP2Heat', '0007_HP2Heat', '0008_Boiler2Heat', '0009_EH2Heat', '0010_ELT2Heat', '0304_Solar2Heat', '0405_CSHP3Heat', '0406_Waste3Heat', '0504_Geoth3Heat', '0013_CHP3Heat', '0014_HP3Heat', '0015_Boiler3Heat', '0016_EH3Heat', '0017_ELT3Heat', '0306_Solar3Heat']].tolist()
+                templateFormat = '%{label}<br>%{value} (TWh/year)<br>%{percent}'
+
+            elif plot['xdata'] == 'District Heat Gr.1':
+                xStart = xEnd = 'Annual'
+                labelsData = ['CSHP 1 Heat', 'Waste 1 Heat', 'Boiler 1 Heat', 'Solar 1 Heat']
+                valuesData = stdDF.loc['Annual', ['0401_CSHP1Heat', '0402_Waste1Heat', '0005_Boiler1Heat', '0302_Solar1Heat']].tolist()
+                templateFormat = '%{label}<br>%{value} (TWh/year)<br>%{percent}'
+
+            elif plot['xdata'] == 'District Heat Gr.2':
+                xStart = xEnd = 'Annual'
+                labelsData = ['CSHP 2 Heat', 'Waste 2 Heat', 'Geoth 2 Heat', 'CHP 2 Heat', 'HP 2 Heat', 'Boiler 2 Heat', 'EH 2 Heat', 'ELT 2 Heat', 'Solar 2 Heat']
+                valuesData = stdDF.loc['Annual', ['0403_CSHP2Heat', '0404_Waste2Heat', '0501_Geoth2Heat', '0006_CHP2Heat', '0007_HP2Heat', '0008_Boiler2Heat', '0009_EH2Heat', '0010_ELT2Heat', '0304_Solar2Heat']].tolist()
+                templateFormat = '%{label}<br>%{value} (TWh/year)<br>%{percent}'
+
+            elif plot['xdata'] == 'District Heat Gr.3':
+                xStart = xEnd = 'Annual'
+                labelsData = ['CSHP 3 Heat', 'Waste 3 Heat', 'Geoth 3 Heat', 'CHP 3 Heat', 'HP 3 Heat', 'Boiler 3 Heat', 'EH 3 Heat', 'ELT 3 Heat', 'Solar 3 Heat']
+                valuesData = stdDF.loc['Annual', ['0405_CSHP3Heat', '0406_Waste3Heat', '0504_Geoth3Heat', '0013_CHP3Heat', '0014_HP3Heat', '0015_Boiler3Heat', '0016_EH3Heat', '0017_ELT3Heat', '0306_Solar3Heat']].tolist()
+                templateFormat = '%{label}<br>%{value} (TWh/year)<br>%{percent}'
+
+            elif plot['xdata'] == 'Individual (HH) Heating Production':
+                xStart = xEnd = 'Annual'
+                labelsData = ['HH-EB Electr', 'HH CHP+HP Heat', 'HH Boil. Heat', 'HH Solar Heat']
+                valuesData = stdDF.loc['Annual', ['1804_HH-EBElectr', '1702_HHCHP+HPHeat', '1703_HHBoilHeat', '1704_HHSolarHeat']].tolist()
+                templateFormat = '%{label}<br>%{value} (TWh/year)<br>%{percent}'
+            
+            elif plot['xdata'] == 'Heat Balance':
+                xStart = xEnd = 'Annual'
+                labelsData = ['HH Balan Heat', 'Boiler1 Heat', 'Balance2 Heat', 'Balance3 Heat']
+                valuesData = stdDF.loc['Annual', ['1706_HHBalanHeat', '0005_Boiler1Heat', '0012_Balance2Heat', '0019_Balance3Heat']].tolist()
+                templateFormat = '%{label}<br>%{value} (TWh/year)<br>%{percent}'
 
             elif plot['xdata'][0:16] == 'Investment Costs':
 
@@ -189,7 +253,6 @@ def PlotterSelective (srcFig = dict, srcPlt = list):
             elif plot['xdata'] == 'Installed Capacities':
                 break
 
-
             if plot['xdata'] != 'Energy Balance':
                 xData = stdDF.loc[xStart:xEnd].index.values.tolist()
             xTitle = ''
@@ -199,24 +262,70 @@ def PlotterSelective (srcFig = dict, srcPlt = list):
         if plot['xdata'][0:16] == 'Investment Costs':
             if plot['xdata'] == 'Investment Costs - Total':
                 yData = ['g0-Data1']
+                yTitle = plot['xdata'] + ' (M Euro)'
 
             elif plot['xdata'] == 'Investment Costs - Annual':
                 yData = ['g0-Data2']
+                yTitle = plot['xdata'] + ' (M Euro)'
 
             elif plot['xdata'] == 'Investment Costs - O & M':
                 yData = ['g0-Data3']
+                yTitle = plot['xdata'] + ' (M Euro)'
 
         elif plot['xdata'] == 'Energy Balance':
             for yData_i, headers in enumerate(list(stdDF.columns.values)):
                 if headers[:2] == 'g1':
                     yData.append(headers)
             yData.pop()
+            yTitle = plot['xdata']
 
         elif plot['xdata'] == 'Total Elect. Demand':
             yData = ['0001_ElectrDemand', '0002_ElecdemCooling', '0003_FixedExp/Imp', '0020_FlexibleElectr', '1802_HH-HPElectr', '1804_HH-EBElectr']
+            yTitle = plot['xdata'] + ' (TWh/year)'
 
         elif plot['xdata'] == 'Total Heat Demand':
             yData = ['0004_DHDemand', '1701_HHDemHeat']
+            yTitle = plot['xdata'] + ' (TWh/year)'
+
+        elif plot['xdata'] == 'VRES (Renewable Fuel Balance)':
+            yData = ['0101_WindElectr', '0102_OffshoreElectr', '0103_PVElectr', '0105_RiverElectr', '0107_TidalElectr', '0106_WaveElectr', '0104_CSPElectr', '0108_CSP2Electr']
+            yTitle = plot['xdata'] + ' (TWh/year)'
+
+        elif plot['xdata'] == 'Electricity Consumption':
+            yData = ['0001_ElectrDemand', '0003_FixedExp/Imp', '0020_FlexibleElectr', '0002_ElecdemCooling', '2001_H2Electr', '1302_V2GCharge', '0021_HPElectr', '1804_HH-EBElectr', '0801_PumpElectr', '0802_Pump2Electr', '0202_Hydropump', '0016_EH3Heat']
+            yTitle = plot['xdata'] + ' (TWh/year)'
+
+        elif plot['xdata'] == 'Electricity Production':
+            yData = ['0101_WindElectr', '0102_OffshoreElectr', '0103_PVElectr', '0105_RiverElectr', '0107_TidalElectr', '0106_WaveElectr', '0104_CSPElectr', '0108_CSP2Electr', '1801_HH-CHPElectr', '0201_HydroElectr', '0701_NuclearElectr', '0702_GeotherElectr', '1303_V2GDischa', '0022_CSHPElectr', '0023_CHPElectr', '0901_TurbineElectr', '0902_Turbine2Electr', '0601_PPElectr', '0602_PP2Electr']
+            yTitle = plot['xdata'] + ' (TWh/year)'
+
+        elif plot['xdata'] == 'Electricity Balance':
+            yData = ['0025_ImportElectr', '0027_CEEPElectr', '0028_EEEPElectr']
+            yTitle = plot['xdata'] + ' (TWh/year)'
+
+        elif plot['xdata'] == 'District Heat Production':
+            yData = ['0401_CSHP1Heat', '0402_Waste1Heat', '0005_Boiler1Heat', '0302_Solar1Heat', '0403_CSHP2Heat', '0404_Waste2Heat', '0501_Geoth2Heat', '0006_CHP2Heat', '0007_HP2Heat', '0008_Boiler2Heat', '0009_EH2Heat', '0010_ELT2Heat', '0304_Solar2Heat', '0405_CSHP3Heat', '0406_Waste3Heat', '0504_Geoth3Heat', '0013_CHP3Heat', '0014_HP3Heat', '0015_Boiler3Heat', '0016_EH3Heat', '0017_ELT3Heat', '0306_Solar3Heat']
+            yTitle = plot['xdata'] + ' (TWh/year)'
+
+        elif plot['xdata'] == 'District Heat Gr.1':
+            yData = ['0401_CSHP1Heat', '0402_Waste1Heat', '0005_Boiler1Heat', '0302_Solar1Heat']
+            yTitle = plot['xdata'] + ' (TWh/year)'
+
+        elif plot['xdata'] == 'District Heat Gr.2':
+            yData = ['0403_CSHP2Heat', '0404_Waste2Heat', '0501_Geoth2Heat', '0006_CHP2Heat', '0007_HP2Heat', '0008_Boiler2Heat', '0009_EH2Heat', '0010_ELT2Heat', '0304_Solar2Heat']
+            yTitle = plot['xdata'] + ' (TWh/year)'
+
+        elif plot['xdata'] == 'District Heat Gr.3':
+            yData = ['0405_CSHP3Heat', '0406_Waste3Heat', '0504_Geoth3Heat', '0013_CHP3Heat', '0014_HP3Heat', '0015_Boiler3Heat', '0016_EH3Heat', '0017_ELT3Heat', '0306_Solar3Heat']
+            yTitle = plot['xdata'] + ' (TWh/year)'
+
+        elif plot['xdata'] == 'Individual (HH) Heating Production':
+            yData = ['1804_HH-EBElectr', '1702_HHCHP+HPHeat', '1703_HHBoilHeat', '1704_HHSolarHeat']
+            yTitle = plot['xdata'] + ' (TWh/year)'
+
+        elif plot['xdata'] == 'Heat Balance':
+            yData = ['1706_HHBalanHeat', '0005_Boiler1Heat', '0012_Balance2Heat', '0019_Balance3Heat']
+            yTitle = plot['xdata'] + ' (TWh/year)'
 
         else:
             for yData_i, headers in enumerate(list(stdDF.columns.values)):
@@ -258,19 +367,19 @@ def PlotterSelective (srcFig = dict, srcPlt = list):
                 styleMode = 'lines'
                 styleLine = {'shape': 'spline'}
             else:
-                styleMode = str(plot['tracestyle']).replace('Only','').replace(' ', '').strip().lower()
+                styleMode = str(plot['tracestyle']).replace('Only', '').replace(' ', '').strip().lower()
                 styleLine = {'shape': 'linear'}
 
             # build plot
             for i in range(len(yData)):
 
                 figure.add_trace(plygo.Scatter(
-                    x= xData,
-                    y= stdDF.loc[xStart:xEnd, yData[i]].tolist(),
-                    connectgaps= False,
-                    fill= styleFill,
-                    mode= styleMode,
-                    line= styleLine,
+                    x= xData, 
+                    y= stdDF.loc[xStart:xEnd, yData[i]].tolist(), 
+                    connectgaps= False, 
+                    fill= styleFill, 
+                    mode= styleMode, 
+                    line= styleLine, 
                     name= srcStd['id'] + ' ' + str(yData[i])[str(yData[i]).find('_'):]
                     ), row= plot['row'], col= plot['col'])
 
@@ -290,31 +399,31 @@ def PlotterSelective (srcFig = dict, srcPlt = list):
                     if plot['xdata'] == 'Energy Balance':
                         #yDataHolder = stdDF.columns.get_loc(yData[i])
                         figure.add_trace(plygo.Bar(
-                            x= xData,
-                            y= stdDF.iloc[rangeStart:rangeEnd, stdDF.columns.get_loc(yData[i])].tolist(),
-                            #text= stdDF.loc[xStart:xEnd, yData[i]].round(3),
-                            textfont_color= '#000000',
-                            textposition= 'inside',
+                            x= xData, 
+                            y= stdDF.iloc[rangeStart:rangeEnd, stdDF.columns.get_loc(yData[i])].tolist(), 
+                            #text= stdDF.loc[xStart:xEnd, yData[i]].astype(int), 
+                            textfont_color= '#000000', 
+                            textposition= 'inside', 
                             name= srcStd['id'] + ' ' + str(yData[i])[str(yData[i]).find('-')+1:]
                             ), row= plot['row'], col= plot['col'])
                         
                     else:
                         figure.add_trace(plygo.Bar(
-                            x= xData,
-                            y= stdDF.loc[xStart:xEnd, yData[i]].tolist(),
-                            #text= stdDF.loc[xStart:xEnd, yData[i]].round(3),
-                            textfont_color= '#000000',
-                            textposition= 'inside',
-                            name= srcStd['id'] + ' ' + str(yData[i])[str(yData[i]).find('_'):]
+                            x= xData, 
+                            y= stdDF.loc[xStart:xEnd, yData[i]].tolist(), 
+                            text= stdDF.loc[xStart:xEnd, yData[i]].astype(int), 
+                            textfont_color= '#000000', 
+                            textposition= 'inside', 
+                            name= srcStd['id'] + ' ' + str(yData[i])[str(yData[i]).find('_')+1:]
                             ), row= plot['row'], col= plot['col'])
 
                 else:
                     figure.add_trace(plygo.Bar(
-                        x= xData,
-                        y= stdDF.loc[xStart:xEnd, yData[i]].tolist(),
-                        text= stdDF.loc[xStart:xEnd, yData[i]].astype(int),
-                        textfont_color= '#000000',
-                        textposition= 'inside',
+                        x= xData, 
+                        y= stdDF.loc[xStart:xEnd, yData[i]].tolist(), 
+                        text= stdDF.loc[xStart:xEnd, yData[i]].astype(int), 
+                        textfont_color= '#000000', 
+                        textposition= 'inside', 
                         name= srcStd['id'] + ' ' + str(yData[i])[str(yData[i]).find('_'):]
                         ), row= plot['row'], col= plot['col'])
 
@@ -333,11 +442,11 @@ def PlotterSelective (srcFig = dict, srcPlt = list):
                 holeSize = 0
                 
             figure.add_trace(plygo.Pie(
-                labels= labelsData,
-                values= valuesData,
-                texttemplate= templateFormat,
-                hole= holeSize,
-                pull= styleMode,
+                labels= labelsData, 
+                values= valuesData, 
+                texttemplate= templateFormat, 
+                hole= holeSize, 
+                pull= styleMode, 
             ))
 
         elif plot['tracetype'] == 'Box Plot':
@@ -356,10 +465,10 @@ def PlotterSelective (srcFig = dict, srcPlt = list):
                     xDataSeries.append(xData[i])
 
                 figure.add_trace(plygo.Box(
-                    x= xDataSeries,
-                    y= stdDF.iloc[rangeStart + i, 3:20].tolist(),
-                    boxpoints= styleMode,
-                    name= xData[i],
+                    x= xDataSeries, 
+                    y= stdDF.iloc[rangeStart + i, 3:20].tolist(), 
+                    boxpoints= styleMode, 
+                    name= xData[i], 
                     jitter= 0.3
                 ))
 
@@ -378,19 +487,19 @@ def PlotterSelective (srcFig = dict, srcPlt = list):
                 figTitlesID[cnt2] = figTitlesID[cnt2] + figTitles[cnt3][figTitles[cnt3].find('_') +1:] + ', '
 
     for cnt4 in range(len(figTitlesID)):
-        figTitlesID[cnt4] = figTitlesID[cnt4][figTitlesID[cnt4].find('_') +1:figTitlesID[cnt4].rfind(',')]
+        figTitlesID[cnt4] = figTitlesID[cnt4][figTitlesID[cnt4].find('_') +1:figTitlesID[cnt4].rfind(', ')]
 
     for title_i in range(len(figTitlesID)):
         title = figTitlesID[title_i]
         figure.layout.annotations[title_i].update(text= title)
 
     figure.update_layout(
-        uniformtext_minsize=18,
-        font_size= srcFig['font'],
-        width= srcFig['width'],
-        height= srcFig['height'],
-        title= srcFig['name'],
-        showlegend= srcFig['legend'],
+        uniformtext_minsize=18, 
+        font_size= srcFig['font'], 
+        width= srcFig['width'], 
+        height= srcFig['height'], 
+        title= srcFig['name'], 
+        showlegend= srcFig['legend'], 
         template= pio.templates['simple_white'])
 
     return figure
@@ -435,29 +544,29 @@ def PlotterCollective (srcFig = dict, srcStd = list, xDataSrc = str, traceStyle 
                 xDataSeries.append(xData[i])
 
             figure.add_trace(plygo.Box(
-                x= xDataSeries,
-                y= SumDF.iloc[i].tolist(),
-                boxpoints= styleMode,
-                name= xData[i],
+                x= xDataSeries, 
+                y= SumDF.iloc[i].tolist(), 
+                boxpoints= styleMode, 
+                name= xData[i], 
                 jitter= 0.3
             ))
             
         figure.update_yaxes({'title_text': '(TWh\Year)'})
         figure.update_layout(
-            uniformtext_minsize=18,
-            font_size= srcFig['font'],
-            width= srcFig['width'],
-            height= srcFig['height'],
-            title= srcFig['name'],
-            showlegend= srcFig['legend'],
+            uniformtext_minsize=18, 
+            font_size= srcFig['font'], 
+            width= srcFig['width'], 
+            height= srcFig['height'], 
+            title= srcFig['name'], 
+            showlegend= srcFig['legend'], 
             template= pio.templates['simple_white'])
 
         return figure
 
     elif xDataSrc == 'Installed Capacities (per Index)':
-        #SumDF = pd.DataFrame(0, index=['Condensing power plant 1','CHP plants (elect. capacity) gr.2','CHP plants (elect. capacity) gr.3','Condensing power plant 2','Nuclear','Geothermal plants','Dammed hydro','RES1','RES2','RES3','RES4','RES5','RES6','RES7','DH - Heat pump gr.2','DH - Heat pump gr.3','Electrolysers','DH - Electric boiler gr.2','DH - Electric boiler gr.3','DH - Boiler gr.2','DH - Boiler gr.3','DH - CHP (thermal capacity) gr.2','DH - CHP (thermal capacity) gr.3'], columns=['test'])
+        #SumDF = pd.DataFrame(0, index=['Condensing power plant 1', 'CHP plants (elect. capacity) gr.2', 'CHP plants (elect. capacity) gr.3', 'Condensing power plant 2', 'Nuclear', 'Geothermal plants', 'Dammed hydro', 'RES1', 'RES2', 'RES3', 'RES4', 'RES5', 'RES6', 'RES7', 'DH - Heat pump gr.2', 'DH - Heat pump gr.3', 'Electrolysers', 'DH - Electric boiler gr.2', 'DH - Electric boiler gr.3', 'DH - Boiler gr.2', 'DH - Boiler gr.3', 'DH - CHP (thermal capacity) gr.2', 'DH - CHP (thermal capacity) gr.3'], columns=['test'])
 
-        SumDF = pd.DataFrame(0, index=['InputCapPpEl','InputCapChp2El','InputCapChp3El','InputCapPp2El','InputNuclearCap','InputGeopowerCap','InputHydroCap','InputRes1Capacity','InputRes2Capacity','InputRes3Capacity','InputRes4Capacity','InputRes5Capacity','InputRes6Capacity','InputRes7Capacity','InputCapHp2El','InputCapHp3El','InputCapElttransEl','InputEh2','InputEh3','InputCapBoiler2Th','InputCapBoiler3Th','InputCapChp2Thermal','InputCapChp3Thermal'], columns=['test'])
+        SumDF = pd.DataFrame(0, index=['InputCapPpEl', 'InputCapChp2El', 'InputCapChp3El', 'InputCapPp2El', 'InputNuclearCap', 'InputGeopowerCap', 'InputHydroCap', 'InputRes1Capacity', 'InputRes2Capacity', 'InputRes3Capacity', 'InputRes4Capacity', 'InputRes5Capacity', 'InputRes6Capacity', 'InputRes7Capacity', 'InputCapHp2El', 'InputCapHp3El', 'InputCapElttransEl', 'InputEh2', 'InputEh3', 'InputCapBoiler2Th', 'InputCapBoiler3Th', 'InputCapChp2Thermal', 'InputCapChp3Thermal'], columns=['test'])
 
         for study in range(len(srcStd)):
             stdDF = pd.read_csv(srcStd[study]['path'], delimiter=',', low_memory=False, index_col='Index')
@@ -475,9 +584,9 @@ def PlotterCollective (srcFig = dict, srcStd = list, xDataSrc = str, traceStyle 
 
         SumDF.drop(['test'], axis= 1, inplace=True)
 
-        list1 = ['InputCapPpEl','InputCapChp2El','InputCapChp3El','InputCapPp2El','InputNuclearCap','InputGeopowerCap','InputHydroCap','InputRes1Capacity','InputRes2Capacity','InputRes3Capacity','InputRes4Capacity','InputRes5Capacity','InputRes6Capacity','InputRes7Capacity','InputCapHp2El','InputCapHp3El','InputCapElttransEl','InputEh2','InputEh3','InputCapBoiler2Th','InputCapBoiler3Th','InputCapChp2Thermal','InputCapChp3Thermal']
+        list1 = ['InputCapPpEl', 'InputCapChp2El', 'InputCapChp3El', 'InputCapPp2El', 'InputNuclearCap', 'InputGeopowerCap', 'InputHydroCap', 'InputRes1Capacity', 'InputRes2Capacity', 'InputRes3Capacity', 'InputRes4Capacity', 'InputRes5Capacity', 'InputRes6Capacity', 'InputRes7Capacity', 'InputCapHp2El', 'InputCapHp3El', 'InputCapElttransEl', 'InputEh2', 'InputEh3', 'InputCapBoiler2Th', 'InputCapBoiler3Th', 'InputCapChp2Thermal', 'InputCapChp3Thermal']
 
-        list2 = ['PP1','CHP2','CHP3','PP2','Nuclear','Geopower','Hydro','Res1','Res2','Res3','Res4','Res5','Res6','Res7','Heat Pump 2','Heat Pump 3','Electrolysers','Boiler 2','Boiler3 ','Boiler 2 Thermal','Boiler 3 Thermal','CHP2 Thermal','CHP3 Thermal']
+        list2 = ['PP1', 'CHP2', 'CHP3', 'PP2', 'Nuclear', 'Geopower', 'Hydro', 'Res1', 'Res2', 'Res3', 'Res4', 'Res5', 'Res6', 'Res7', 'Heat Pump 2', 'Heat Pump 3', 'Electrolysers', 'Boiler 2', 'Boiler3 ', 'Boiler 2 Thermal', 'Boiler 3 Thermal', 'CHP2 Thermal', 'CHP3 Thermal']
 
         SumDF.rename(index= dict(zip(list1, list2)), inplace= True)
 
@@ -500,21 +609,21 @@ def PlotterCollective (srcFig = dict, srcStd = list, xDataSrc = str, traceStyle 
                 xDataSeries.append(xData[i])
 
             figure.add_trace(plygo.Box(
-                x= xDataSeries,
-                y= SumDF.iloc[i].tolist(),
-                boxpoints= styleMode,
-                name= xData[i],
+                x= xDataSeries, 
+                y= SumDF.iloc[i].tolist(), 
+                boxpoints= styleMode, 
+                name= xData[i], 
                 jitter= 0.3
             ))
             
         figure.update_yaxes({'title_text': '(MW)'})
         figure.update_layout(
-            uniformtext_minsize=18,
-            font_size= srcFig['font'],
-            width= srcFig['width'],
-            height= srcFig['height'],
-            title= srcFig['name'],
-            showlegend= srcFig['legend'],
+            uniformtext_minsize=18, 
+            font_size= srcFig['font'], 
+            width= srcFig['width'], 
+            height= srcFig['height'], 
+            title= srcFig['name'], 
+            showlegend= srcFig['legend'], 
             template= pio.templates['simple_white'])
 
         return figure
@@ -547,21 +656,21 @@ def PlotterCollective (srcFig = dict, srcStd = list, xDataSrc = str, traceStyle 
 
         for i in range(len(SumDF.index.values.tolist())):
             figure.add_trace(plygo.Box(
-                #x= SumDF.index[i],
-                y= SumDF.iloc[i].tolist(),
-                boxpoints= styleMode,
-                name= SumDF.index[i],
+                #x= SumDF.index[i], 
+                y= SumDF.iloc[i].tolist(), 
+                boxpoints= styleMode, 
+                name= SumDF.index[i], 
                 jitter= 0.3
             ))
             
         figure.update_yaxes({'title_text': '(TWh\Year)'})
         figure.update_layout(
-            uniformtext_minsize=18,
-            font_size= srcFig['font'],
-            width= srcFig['width'],
-            height= srcFig['height'],
-            title= srcFig['name'],
-            showlegend= srcFig['legend'],
+            uniformtext_minsize=18, 
+            font_size= srcFig['font'], 
+            width= srcFig['width'], 
+            height= srcFig['height'], 
+            title= srcFig['name'], 
+            showlegend= srcFig['legend'], 
             template= pio.templates['simple_white'])
 
         return figure
@@ -594,21 +703,21 @@ def PlotterCollective (srcFig = dict, srcStd = list, xDataSrc = str, traceStyle 
 
         for i in range(len(SumDF.index.values.tolist())):
             figure.add_trace(plygo.Box(
-                #x= SumDF.index[i],
-                y= SumDF.iloc[i].tolist(),
-                boxpoints= styleMode,
-                name= SumDF.index[i],
+                #x= SumDF.index[i], 
+                y= SumDF.iloc[i].tolist(), 
+                boxpoints= styleMode, 
+                name= SumDF.index[i], 
                 jitter= 0.3
             ))
             
         figure.update_yaxes({'title_text': '(TWh\Year)'})
         figure.update_layout(
-            uniformtext_minsize=18,
-            font_size= srcFig['font'],
-            width= srcFig['width'],
-            height= srcFig['height'],
-            title= srcFig['name'],
-            showlegend= srcFig['legend'],
+            uniformtext_minsize=18, 
+            font_size= srcFig['font'], 
+            width= srcFig['width'], 
+            height= srcFig['height'], 
+            title= srcFig['name'], 
+            showlegend= srcFig['legend'], 
             template= pio.templates['simple_white'])
 
         return figure
