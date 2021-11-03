@@ -4,7 +4,7 @@ import plotly.graph_objects as plygo
 import plotly.io as pio
 from plotly.subplots import make_subplots
 
-def PlotterSelective (srcFig = dict, srcPlt = list):
+def PlotterSelective (srcFig= dict, srcPlt= list):
 
     figSize = srcFig['rows'] * srcFig['cols']
     figTitles = []
@@ -33,7 +33,7 @@ def PlotterSelective (srcFig = dict, srcPlt = list):
         stdDF.loc['AnnualAverage':'AnnualMinimum'] /= 1000
         
         # calc plot grid position & assign title
-        pltPos = plot['row'] * 10 + plot['col'] * 1
+        pltPos = plot['pos']
         pltTitle = str(pltPos) + '_' + srcStd['id'] + ' ' + srcStd['name']
         figTitles.append(pltTitle)
 
@@ -504,18 +504,22 @@ def PlotterSelective (srcFig = dict, srcPlt = list):
 
     return figure
 
-def PlotterCollective (srcFig = dict, srcStd = list, xDataSrc = str, traceStyle = str):
+def PlotterCollective (srcFig= dict, srcStd= list, xDataSrc= str, xStart= str, xEnd= str, traceStyle= str):
 
     if xDataSrc == 'Energy Balance (per Index)':
-        SumDF = pd.DataFrame(0, index=['Coal', 'Oil', 'N.Gas', 'Biomass', 'Renewable'], columns=['test'])
+
+        indexList = ['Coal', 'Oil', 'N.Gas', 'Biomass', 'Renewable']
+        indexList = indexList[indexList.index(xStart):indexList.index(xEnd)+1]
+
+        SumDF = pd.DataFrame(0, index= indexList, columns=['test'])
 
         for study in range(len(srcStd)):
             stdDF = pd.read_csv(srcStd[study]['path'], delimiter=',', low_memory=False, index_col='Index')
     
             rangeStart = stdDF.index.get_loc('TotalAnnualCosts')
-            rangeStart = rangeStart + stdDF.iloc[rangeStart:rangeStart+100].index.get_loc('Coal')
+            rangeStart = rangeStart + stdDF.iloc[rangeStart:rangeStart+100].index.get_loc(xStart)
                     
-            rangeEnd = stdDF.iloc[rangeStart:rangeStart+100].index.get_loc('Renewable')
+            rangeEnd = stdDF.iloc[rangeStart:rangeStart+100].index.get_loc(xEnd)
             rangeEnd = rangeEnd + rangeStart +1
     
             xData = stdDF.iloc[rangeStart:rangeEnd].index.values.tolist()
@@ -564,15 +568,30 @@ def PlotterCollective (srcFig = dict, srcStd = list, xDataSrc = str, traceStyle 
         return figure
 
     elif xDataSrc == 'Installed Capacities (per Index)':
-        #SumDF = pd.DataFrame(0, index=['Condensing power plant 1', 'CHP plants (elect. capacity) gr.2', 'CHP plants (elect. capacity) gr.3', 'Condensing power plant 2', 'Nuclear', 'Geothermal plants', 'Dammed hydro', 'RES1', 'RES2', 'RES3', 'RES4', 'RES5', 'RES6', 'RES7', 'DH - Heat pump gr.2', 'DH - Heat pump gr.3', 'Electrolysers', 'DH - Electric boiler gr.2', 'DH - Electric boiler gr.3', 'DH - Boiler gr.2', 'DH - Boiler gr.3', 'DH - CHP (thermal capacity) gr.2', 'DH - CHP (thermal capacity) gr.3'], columns=['test'])
 
-        SumDF = pd.DataFrame(0, index=['InputCapPpEl', 'InputCapChp2El', 'InputCapChp3El', 'InputCapPp2El', 'InputNuclearCap', 'InputGeopowerCap', 'InputHydroCap', 'InputRes1Capacity', 'InputRes2Capacity', 'InputRes3Capacity', 'InputRes4Capacity', 'InputRes5Capacity', 'InputRes6Capacity', 'InputRes7Capacity', 'InputCapHp2El', 'InputCapHp3El', 'InputCapElttransEl', 'InputEh2', 'InputEh3', 'InputCapBoiler2Th', 'InputCapBoiler3Th', 'InputCapChp2Thermal', 'InputCapChp3Thermal'], columns=['test'])
+        list1 = ['InputCapPpEl', 'InputCapChp2El', 'InputCapChp3El', 'InputCapPp2El', 'InputNuclearCap', 'InputGeopowerCap', 'InputHydroCap', 'InputRes1Capacity', 'InputRes2Capacity', 'InputRes3Capacity', 'InputRes4Capacity', 'InputRes5Capacity', 'InputRes6Capacity', 'InputRes7Capacity', 'InputCapHp2El', 'InputCapHp3El', 'InputCapElttransEl', 'InputEh2', 'InputEh3', 'InputCapBoiler2Th', 'InputCapBoiler3Th', 'InputCapChp2Thermal', 'InputCapChp3Thermal']
+
+        list2 = ['PP1', 'CHP2', 'CHP3', 'PP2', 'Nuclear', 'Geopower', 'Hydro', 'Res1', 'Res2', 'Res3', 'Res4', 'Res5', 'Res6', 'Res7', 'Heat Pump 2', 'Heat Pump 3', 'Electrolysers', 'Boiler 2', 'Boiler3 ', 'Boiler 2 Thermal', 'Boiler 3 Thermal', 'CHP2 Thermal', 'CHP3 Thermal']
+
+        xStartIndex = list2.index(xStart)
+        xEndIndex = list2.index(xEnd)+1
+
+        xStart = list1[xStartIndex]
+        try:
+            xEnd = list1[xEndIndex]
+        except:
+            xEnd = list1[-1]
+
+        list1 = list1[xStartIndex:xEndIndex]
+        list2 = list2[xStartIndex:xEndIndex]
+
+        SumDF = pd.DataFrame(0, index= list1, columns=['test'])
 
         for study in range(len(srcStd)):
             stdDF = pd.read_csv(srcStd[study]['path'], delimiter=',', low_memory=False, index_col='Index')
     
-            rangeStart = stdDF.index.get_loc('InputCapPpEl')   
-            rangeEnd = stdDF.index.get_loc('InputCapChp3Thermal') +1
+            rangeStart = stdDF.index.get_loc(xStart)   
+            rangeEnd = stdDF.index.get_loc(xEnd) +1
     
             #xData = stdDF.iloc[rangeStart:rangeEnd].index.values.tolist()
             
@@ -583,10 +602,6 @@ def PlotterCollective (srcFig = dict, srcStd = list, xDataSrc = str, traceStyle 
             SumDF.insert(0, 'std' + str(study), stdDF)
 
         SumDF.drop(['test'], axis= 1, inplace=True)
-
-        list1 = ['InputCapPpEl', 'InputCapChp2El', 'InputCapChp3El', 'InputCapPp2El', 'InputNuclearCap', 'InputGeopowerCap', 'InputHydroCap', 'InputRes1Capacity', 'InputRes2Capacity', 'InputRes3Capacity', 'InputRes4Capacity', 'InputRes5Capacity', 'InputRes6Capacity', 'InputRes7Capacity', 'InputCapHp2El', 'InputCapHp3El', 'InputCapElttransEl', 'InputEh2', 'InputEh3', 'InputCapBoiler2Th', 'InputCapBoiler3Th', 'InputCapChp2Thermal', 'InputCapChp3Thermal']
-
-        list2 = ['PP1', 'CHP2', 'CHP3', 'PP2', 'Nuclear', 'Geopower', 'Hydro', 'Res1', 'Res2', 'Res3', 'Res4', 'Res5', 'Res6', 'Res7', 'Heat Pump 2', 'Heat Pump 3', 'Electrolysers', 'Boiler 2', 'Boiler3 ', 'Boiler 2 Thermal', 'Boiler 3 Thermal', 'CHP2 Thermal', 'CHP3 Thermal']
 
         SumDF.rename(index= dict(zip(list1, list2)), inplace= True)
 

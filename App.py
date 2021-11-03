@@ -43,6 +43,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.lw_StdList.currentRowChanged.connect(self.UpdateStdSlct)
         self.cb_TicksX.stateChanged.connect(self.UpdateTickStateX)
         self.cb_TicksY.stateChanged.connect(self.UpdateTickStateY)
+        self.cb_Xdata.currentTextChanged.connect(self.UpdateRangeX)
 
     def SelectiveAnalysis(self):
         self.rb_HourlyVal.setEnabled(True)
@@ -124,8 +125,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 self.cb_Trace.setCurrentIndex(0)
                 self.rb_Xdata.setChecked(True)
                 self.rb_Xtime.setEnabled(False)
-                self.cb_Xstart.setEnabled(False)
-                self.cb_Xend.setEnabled(False)
+                self.cb_Xstart.setEnabled(True)
+                self.cb_Xend.setEnabled(True)
                 self.sb_Col.setEnabled(False)
                 self.sb_Row.setEnabled(False)
                 self.cb_Ydata.clear()
@@ -175,6 +176,17 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             if self.rb_AnnualVal.isChecked():
                 self.cb_Xdata.clear()
                 self.cb_Xdata.addItems(['Energy Balance (per Index)', 'Installed Capacities (per Index)', 'Total Elect. Demand', 'Total Heat Demand'])
+                self.UpdateRangeX()
+    
+    def UpdateRangeX(self):
+        self.cb_Xstart.clear()
+        self.cb_Xend.clear()
+        if self.cb_Xdata.currentText() == 'Energy Balance (per Index)':
+            self.cb_Xstart.addItems(['Coal', 'Oil', 'N.Gas', 'Biomass', 'Renewable'])
+            self.cb_Xend.addItems(['Coal', 'Oil', 'N.Gas', 'Biomass', 'Renewable'])
+        elif self.cb_Xdata.currentText() == 'Installed Capacities (per Index)':
+            self.cb_Xstart.addItems(['PP1', 'CHP2', 'CHP3', 'PP2', 'Nuclear', 'Geopower', 'Hydro', 'Res1', 'Res2', 'Res3', 'Res4', 'Res5', 'Res6', 'Res7', 'Heat Pump 2', 'Heat Pump 3', 'Electrolysers', 'Boiler 2', 'Boiler3 ', 'Boiler 2 Thermal', 'Boiler 3 Thermal', 'CHP2 Thermal', 'CHP3 Thermal'])
+            self.cb_Xend.addItems(['PP1', 'CHP2', 'CHP3', 'PP2', 'Nuclear', 'Geopower', 'Hydro', 'Res1', 'Res2', 'Res3', 'Res4', 'Res5', 'Res6', 'Res7', 'Heat Pump 2', 'Heat Pump 3', 'Electrolysers', 'Boiler 2', 'Boiler3 ', 'Boiler 2 Thermal', 'Boiler 3 Thermal', 'CHP2 Thermal', 'CHP3 Thermal'])
 
     def UpdateTickStateX(self):
         if self.cb_TicksX.isChecked():
@@ -481,11 +493,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 yTick = 'fixed'
                 yStep = int(self.txt_TicksX.text()) -1
 
-            posR = int(self.sb_Row.text())
-            posC = int(self.sb_Col.text())
-            spanR = int(self.sb_RowSpan.text())
-            spanC = int(self.sb_ColSpan.text())
-
             xTimeStart = self.cb_Xstart.currentText()
             xTimeEnd = self.cb_Xend.currentText()
 
@@ -499,10 +506,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 'tracetype': traceType, 
                 'tracestyle': traceStyle, 
                 'tracefill': traceFill, 
-                'row': posR, 
-                'rowspan': spanR, 
-                'col': posC, 
-                'colspan': spanC, 
+                'pos': (int(self.sb_Row.text()) * 10) + int(self.sb_Col.text()), 
+                'rowspan': int(self.sb_RowSpan.text()),
+                'colspan': int(self.sb_ColSpan.text()), 
                 'xstart': xTimeStart, 
                 'xend': xTimeEnd, 
                 'xdata': xData, 
@@ -513,7 +519,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 'ydata': yData, 
                 'ytitle': yTitle, 
                 'ytick': yTick, 
-                'ystep': yStep}
+                'ystep': yStep,
+                'median': self.cb_StatMedian.isChecked(),
+                'mean': self.cb_StatMean.isChecked()}
 
             pltID += 1
             pltList.append(pltCard)
@@ -583,11 +591,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
             # get X data series:
             xData = self.cb_Xdata.currentText()
-
+            xStart = self.cb_Xstart.currentText()
+            xEnd = self.cb_Xend.currentText()
             traceStyle = self.cb_Style.currentText()
 
             # process figure in plotter
-            figure = PlotterCollective(slctFig, slctStd, xData, traceStyle)
+            figure = PlotterCollective(slctFig, slctStd, xData, xStart, xEnd, traceStyle)
 
     def SaveFigure(self):
         try:
