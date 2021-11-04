@@ -504,12 +504,12 @@ def PlotterSelective (srcFig= dict, srcPlt= list):
 
     return figure
 
-def PlotterCollective (srcFig= dict, srcStd= list, xDataSrc= str, xStart= str, xEnd= str, traceStyle= str):
+def PlotterCollective (srcFig= dict, srcStd= list, xDataSrc= str, xRange= list, traceStyle= str):
 
     if xDataSrc == 'Energy Balance (per Index)':
 
         indexList = ['Coal', 'Oil', 'N.Gas', 'Biomass', 'Renewable']
-        indexList = indexList[indexList.index(xStart):indexList.index(xEnd)+1]
+        #indexList = indexList[indexList.index(xStart):indexList.index(xEnd)+1]
 
         SumDF = pd.DataFrame(0, index= indexList, columns=['test'])
 
@@ -517,9 +517,9 @@ def PlotterCollective (srcFig= dict, srcStd= list, xDataSrc= str, xStart= str, x
             stdDF = pd.read_csv(srcStd[study]['path'], delimiter=',', low_memory=False, index_col='Index')
     
             rangeStart = stdDF.index.get_loc('TotalAnnualCosts')
-            rangeStart = rangeStart + stdDF.iloc[rangeStart:rangeStart+100].index.get_loc(xStart)
+            rangeStart = rangeStart + stdDF.iloc[rangeStart:rangeStart+100].index.get_loc(indexList[0])
                     
-            rangeEnd = stdDF.iloc[rangeStart:rangeStart+100].index.get_loc(xEnd)
+            rangeEnd = stdDF.iloc[rangeStart:rangeStart+100].index.get_loc(indexList[-1])
             rangeEnd = rangeEnd + rangeStart +1
     
             xData = stdDF.iloc[rangeStart:rangeEnd].index.values.tolist()
@@ -530,6 +530,11 @@ def PlotterCollective (srcFig= dict, srcStd= list, xDataSrc= str, xStart= str, x
             SumDF.insert(0, 'std' + str(study), stdDF)
 
         SumDF.drop(['test'], axis= 1, inplace=True)
+
+        xRangeTarget = SumDF.index.values.tolist()
+        for j in range(len(xRangeTarget)):
+            if xRangeTarget[j] not in xRange:
+                SumDF.drop([xRangeTarget[j]], axis= 0, inplace=True)
 
         figure = make_subplots()
 
@@ -571,39 +576,44 @@ def PlotterCollective (srcFig= dict, srcStd= list, xDataSrc= str, xStart= str, x
 
         list1 = ['InputCapPpEl', 'InputCapChp2El', 'InputCapChp3El', 'InputCapPp2El', 'InputNuclearCap', 'InputGeopowerCap', 'InputHydroCap', 'InputRes1Capacity', 'InputRes2Capacity', 'InputRes3Capacity', 'InputRes4Capacity', 'InputRes5Capacity', 'InputRes6Capacity', 'InputRes7Capacity', 'InputCapHp2El', 'InputCapHp3El', 'InputCapElttransEl', 'InputEh2', 'InputEh3', 'InputCapBoiler2Th', 'InputCapBoiler3Th', 'InputCapChp2Thermal', 'InputCapChp3Thermal']
 
-        list2 = ['PP1', 'CHP2', 'CHP3', 'PP2', 'Nuclear', 'Geopower', 'Hydro', 'Res1', 'Res2', 'Res3', 'Res4', 'Res5', 'Res6', 'Res7', 'Heat Pump 2', 'Heat Pump 3', 'Electrolysers', 'Boiler 2', 'Boiler3 ', 'Boiler 2 Thermal', 'Boiler 3 Thermal', 'CHP2 Thermal', 'CHP3 Thermal']
+        list2 = ['PP1', 'CHP2', 'CHP3', 'PP2', 'Nuclear', 'Geopower', 'Hydro', 'Res1', 'Res2', 'Res3', 'Res4', 'Res5', 'Res6', 'Res7', 'Heat Pump 2', 'Heat Pump 3', 'Electrolysers', 'Boiler 2', 'Boiler 3 ', 'Boiler 2 Thermal', 'Boiler 3 Thermal', 'CHP2 Thermal', 'CHP3 Thermal']
 
-        xStartIndex = list2.index(xStart)
-        xEndIndex = list2.index(xEnd)+1
+        #xStartIndex = list2.index(xStart)
+        #xEndIndex = list2.index(xEnd)+1
 
-        xStart = list1[xStartIndex]
-        try:
-            xEnd = list1[xEndIndex]
-        except:
-            xEnd = list1[-1]
+        #xStart = list1[xStartIndex]
+        #try:
+        #    xEnd = list1[xEndIndex]
+        #except:
+        #    xEnd = list1[-1]
 
-        list1 = list1[xStartIndex:xEndIndex]
-        list2 = list2[xStartIndex:xEndIndex]
+        #list1 = list1[xStartIndex:xEndIndex]
+        #list2 = list2[xStartIndex:xEndIndex]
 
         SumDF = pd.DataFrame(0, index= list1, columns=['test'])
 
         for study in range(len(srcStd)):
             stdDF = pd.read_csv(srcStd[study]['path'], delimiter=',', low_memory=False, index_col='Index')
-    
-            rangeStart = stdDF.index.get_loc(xStart)   
-            rangeEnd = stdDF.index.get_loc(xEnd) +1
-    
-            #xData = stdDF.iloc[rangeStart:rangeEnd].index.values.tolist()
-            
+
+            rangeStart = stdDF.index.get_loc(list1[0])   
+            rangeEnd = stdDF.index.get_loc(list1[-1]) +1
+
             stdDF = stdDF.iloc[rangeStart:rangeEnd]
             stdDF = stdDF.loc[:, 'g0-Data1']
             stdDF = stdDF.astype(float)
-    
+
             SumDF.insert(0, 'std' + str(study), stdDF)
 
         SumDF.drop(['test'], axis= 1, inplace=True)
 
         SumDF.rename(index= dict(zip(list1, list2)), inplace= True)
+
+        xRangeTarget = SumDF.index.values.tolist()
+        for j in range(len(xRangeTarget)):
+            if xRangeTarget[j] not in xRange:
+                SumDF.drop([xRangeTarget[j]], axis= 0, inplace=True)
+
+        SumDF.sort_index(axis=0, inplace=True)
 
         xData = SumDF.index.values.tolist()
 

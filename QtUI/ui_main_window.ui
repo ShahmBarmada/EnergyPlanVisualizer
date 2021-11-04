@@ -47,7 +47,7 @@
      <enum>QFrame::Plain</enum>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="page_1">
      <widget class="QLabel" name="label_pg1">
@@ -1064,6 +1064,19 @@
         </property>
         <property name="text">
          <string>Data Series</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="btn_Xrange">
+        <property name="geometry">
+         <rect>
+          <x>290</x>
+          <y>40</y>
+          <width>50</width>
+          <height>24</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Select</string>
         </property>
        </widget>
       </widget>
