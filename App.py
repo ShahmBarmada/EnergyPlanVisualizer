@@ -51,8 +51,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.rb_HourlyVal.setEnabled(True)
         self.rb_MonthlyVal.setEnabled(True)
         self.rb_AnnualVal.setEnabled(True)
-        self.cb_StatMean.setEnabled(True)
-        self.cb_StatMedian.setEnabled(True)
         self.rb_HourlyVal.setChecked(True)
         self.btn_Xrange.setEnabled(False)
         self.UpdateDataType()
@@ -61,8 +59,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.rb_HourlyVal.setEnabled(False)
         self.rb_MonthlyVal.setEnabled(False)
         self.rb_AnnualVal.setEnabled(True)
-        self.cb_StatMean.setEnabled(False)
-        self.cb_StatMedian.setEnabled(False)
         self.rb_AnnualVal.setChecked(True)
         self.btn_Xrange.setEnabled(True)
         self.UpdateDataType()
@@ -147,6 +143,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.cb_FillArea.setEnabled(True)
             self.cb_TicksX.setEnabled(True)
             self.cb_TicksY.setEnabled(True)
+            self.cb_StatMean.setEnabled(True)
+            self.cb_StatMedian.setEnabled(True)
+            self.cb_OnlyStats.setEnabled(True)
+            self.cb_StackLines.setChecked(False)
+            self.cb_StackLines.setEnabled(True)
 
         elif self.cb_Trace.currentText() == 'Bar Chart':
             self.cb_Style.clear()
@@ -155,6 +156,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.cb_FillArea.setEnabled(False)
             self.cb_TicksX.setEnabled(False)
             self.cb_TicksY.setEnabled(False)
+            self.cb_StatMean.setEnabled(True)
+            self.cb_StatMedian.setEnabled(True)
+            self.cb_OnlyStats.setEnabled(True)
+            self.cb_StackLines.setChecked(False)
+            self.cb_StackLines.setEnabled(False)
             if self.rb_AnnualVal.isChecked():
                 self.cb_Xdata.clear()
                 self.cb_Xdata.addItems(['Energy Balance', 'Power Values - Totals', 'Power Values - Annual Average', 'Power Values - Annual Maximum', 'Power Values - Annual Minimum', 'Investment Costs - Total', 'Investment Costs - Annual', 'Investment Costs - O & M', 'Total Elect. Demand', 'Total Heat Demand', 'VRES (Renewable Fuel Balance)', 'Electricity Consumption', 'Electricity Production', 'Electricity Balance', 'District Heat Production', 'District Heat Gr.1', 'District Heat Gr.2', 'District Heat Gr.3', 'Individual (HH) Heating Production', 'Heat Balance'])
@@ -166,6 +172,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.cb_FillArea.setEnabled(False)
             self.cb_TicksX.setEnabled(False)
             self.cb_TicksY.setEnabled(False)
+            self.cb_StatMean.setEnabled(False)
+            self.cb_StatMedian.setEnabled(False)
+            self.cb_OnlyStats.setEnabled(False)
+            self.cb_StackLines.setEnabled(False)
             if self.rb_AnnualVal.isChecked():
                 self.cb_Xdata.clear()
                 self.cb_Xdata.addItems(['Annual CO2 Emissions', 'Annual Fuel Consumptions', 'Share of RES', 'Total Elect. Demand', 'Total Heat Demand', 'VRES (Renewable Fuel Balance)', 'Electricity Consumption', 'Electricity Production', 'Electricity Balance', 'District Heat Production', 'District Heat Gr.1', 'District Heat Gr.2', 'District Heat Gr.3', 'Individual (HH) Heating Production', 'Heat Balance'])
@@ -177,6 +187,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.cb_FillArea.setEnabled(False)
             self.cb_TicksX.setEnabled(False)
             self.cb_TicksY.setEnabled(False)
+            self.cb_StatMean.setEnabled(False)
+            self.cb_StatMedian.setEnabled(False)
+            self.cb_OnlyStats.setEnabled(False)
+            self.cb_StackLines.setEnabled(False)
             if self.rb_AnnualVal.isChecked():
                 self.cb_Xdata.clear()
                 self.cb_Xdata.addItems(['Energy Balance (per Index)', 'Installed Capacities (per Index)', 'Total Elect. Demand', 'Total Heat Demand'])
@@ -299,28 +313,31 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def AddStudy(self):
         global stdID
         numbering = 1
+        i = 0
 
-        filePath = QFileDialog.getOpenFileName(self, 'Select Input file', filter='*.csv')
-        stdName = filePath[0]
-        stdName = stdName[stdName.rfind('/') +1:stdName.rfind('.')]
-        
-        while len(self.lw_StdList.findItems(stdName, QtCore.Qt.MatchFlag.MatchExactly)) > 0:
-            if re.fullmatch(r'_\d{2}', stdName[-3:]) is not None:
-                stdName = stdName[:-3] + '_' + str(numbering).zfill(2)
-            else:
-                stdName = stdName + '_' + str(numbering).zfill(2)
-            numbering += 1
-
-        stdCard = {
-            'id': 'std' + str(stdID).zfill(2), 
-            'name': stdName, 
-            'path': filePath[0]}
-
-        stdID += 1
-        stdList.append(stdCard)
-        self.lw_StdList.addItem(stdName)
-        self.lw_StdList.setCurrentRow(self.lw_StdList.count() -1)
-        self.lw_StdList.sortItems()
+        filePath = QFileDialog.getOpenFileNames(self, 'Select Input file', filter='*.csv')
+        if len(filePath[0]) != 0:
+            for i in range(len(filePath[0])):
+               stdName = filePath[0][i]
+               stdName = stdName[stdName.rfind('/') +1:stdName.rfind('.')]
+   
+               while len(self.lw_StdList.findItems(stdName, QtCore.Qt.MatchFlag.MatchExactly)) > 0:
+                   if re.fullmatch(r'_\d{2}', stdName[-3:]) is not None:
+                       stdName = stdName[:-3] + '_' + str(numbering).zfill(2)
+                   else:
+                       stdName = stdName + '_' + str(numbering).zfill(2)
+                   numbering += 1
+   
+               stdCard = {
+                   'id': 'std' + str(stdID).zfill(2), 
+                   'name': stdName, 
+                   'path': filePath[0][i]}
+   
+               stdID += 1
+               stdList.append(stdCard)
+               self.lw_StdList.addItem(stdName)
+               self.lw_StdList.setCurrentRow(self.lw_StdList.count() -1)
+               self.lw_StdList.sortItems()
 
     def RemoveStudy(self):
         removeIndex = self.lw_StdList.currentRow()
@@ -363,8 +380,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                         'height': int(self.txt_FigHeight.text()), 
                         'rows': int(self.sb_FigRows.text()), 
                         'cols': int(self.sb_FigCols.text()), 
-                        'font': int(self.sb_FontSize.text()), 
-                        'legend': self.cb_Legend.isChecked()}
+                        'font': int(self.sb_FontSize.text())}
                     figID += 1
                     figList.append(figCard)
                     self.lw_FigList.addItem(figName)
@@ -519,7 +535,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 'ytick': yTick, 
                 'ystep': yStep,
                 'median': self.cb_StatMedian.isChecked(),
-                'mean': self.cb_StatMean.isChecked()}
+                'mean': self.cb_StatMean.isChecked(),
+                'statonly': self.cb_OnlyStats.isChecked(),
+                'stack': self.cb_StackLines.isChecked()}
 
             pltID += 1
             pltList.append(pltCard)
@@ -546,6 +564,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         global figure
 
+        if self.cb_Legend.isChecked:
+            showLegend = True
+
+        if self.cb_StudiesNames.isChecked:
+            showTitle = True
+
         if self.rb_Selective.isChecked():
             # get selected figure card
             slctFig = self.lbl_SlctFig.text()
@@ -569,7 +593,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                     next
 
             # process figure in plotter
-            figure = PlotterSelective(slctFig, slctPlt)
+            figure = PlotterSelective(slctFig, slctPlt, showLegend, showTitle)
 
         if self.rb_Collective.isChecked():
             # get selected figure card
@@ -593,7 +617,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             traceStyle = self.cb_Style.currentText()
 
             # process figure in plotter
-            figure = PlotterCollective(slctFig, slctStd, xData, xRange, traceStyle)
+            figure = PlotterCollective(slctFig, slctStd, xData, xRange, traceStyle, showLegend, showTitle)
 
     def SaveFigure(self):
         try:

@@ -47,7 +47,7 @@
      <enum>QFrame::Plain</enum>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>0</number>
     </property>
     <widget class="QWidget" name="page_1">
      <widget class="QLabel" name="label_pg1">
@@ -878,8 +878,8 @@
         </property>
         <property name="geometry">
          <rect>
-          <x>120</x>
-          <y>280</y>
+          <x>245</x>
+          <y>250</y>
           <width>110</width>
           <height>24</height>
          </rect>
@@ -955,6 +955,38 @@
           </widget>
          </item>
         </layout>
+       </widget>
+       <widget class="QCheckBox" name="cb_StackLines">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+        <property name="geometry">
+         <rect>
+          <x>245</x>
+          <y>280</y>
+          <width>110</width>
+          <height>24</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Stack Lines</string>
+        </property>
+       </widget>
+       <widget class="QCheckBox" name="cb_OnlyStats">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+        <property name="geometry">
+         <rect>
+          <x>120</x>
+          <y>280</y>
+          <width>121</width>
+          <height>24</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Draw Stats Only</string>
+        </property>
        </widget>
       </widget>
       <widget class="QGroupBox" name="gb_SeriesX">
@@ -1126,9 +1158,9 @@
        <property name="geometry">
         <rect>
          <x>90</x>
-         <y>185</y>
+         <y>200</y>
          <width>195</width>
-         <height>185</height>
+         <height>170</height>
         </rect>
        </property>
       </widget>
@@ -1136,7 +1168,7 @@
        <property name="geometry">
         <rect>
          <x>215</x>
-         <y>155</y>
+         <y>170</y>
          <width>70</width>
          <height>24</height>
         </rect>
@@ -1149,7 +1181,7 @@
        <property name="geometry">
         <rect>
          <x>10</x>
-         <y>185</y>
+         <y>200</y>
          <width>70</width>
          <height>24</height>
         </rect>
@@ -1165,7 +1197,7 @@
        <property name="geometry">
         <rect>
          <x>90</x>
-         <y>155</y>
+         <y>170</y>
          <width>70</width>
          <height>24</height>
         </rect>
@@ -1481,14 +1513,30 @@
        </property>
        <property name="geometry">
         <rect>
-         <x>165</x>
+         <x>160</x>
          <y>120</y>
-         <width>100</width>
+         <width>110</width>
          <height>24</height>
         </rect>
        </property>
        <property name="text">
-        <string>Show Legend</string>
+        <string>Legend</string>
+       </property>
+      </widget>
+      <widget class="QCheckBox" name="cb_StudiesNames">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="geometry">
+        <rect>
+         <x>160</x>
+         <y>145</y>
+         <width>110</width>
+         <height>24</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Studies Names</string>
        </property>
       </widget>
      </widget>
