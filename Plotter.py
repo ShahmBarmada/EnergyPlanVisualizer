@@ -72,15 +72,22 @@ def PlotterSelective (srcFig= dict, srcPlt= list, visibleLegend= bool, visibleTi
     ### build data frames
 
     i, j = 0, 0
-    sumDF = pd.read_csv(srcPlt[0]['datasrc']['path'], delimiter= ',', low_memory= False, index_col= 'Index')
-    sumDF[:] = np.NaN
-    sumDF.drop(sumDF.columns[1:], axis= 1, inplace= True)
-    sumDF.rename({sumDF.index[0]: 'ID', sumDF.index[1]: 'Pos'}, inplace= True)
-
-    #sumDF = pd.DataFrame(0, index= ['Pos', 'ID'], columns=['initial'])
+    tempDF = pd.read_csv(srcPlt[0]['datasrc']['path'], delimiter= ',', low_memory= False, index_col= 'Index')
+    tempDF[:] = np.NaN
+    tempDF.insert(0,'temp0',np.NaN)
+    tempDF.drop(tempDF.columns[1:], axis= 1, inplace= True)
+    tempDF.drop(tempDF.index[tempDF.index.get_loc('EnergyplanModel'):tempDF.index.get_loc('Calc.EconomyAndFuel')], axis=0, inplace= True)
+    sumDF = pd.DataFrame(0, ['pltid','stdid','stdname','datatype','tracetype','tracestyle','tracefill','xtick','xstep','ytick','ystep','xtitle','ytitle'],['temp0'])
+    sumDF = pd.concat([sumDF,tempDF])
 
     for i in range(len(srcPltGrouped)):
 
+        sumDF.reset_index(inplace= True)
+        sumDF['indNum'] = sumDF.index
+        sumDF.set_index('index', inplace= True, drop= True)
+        sumDF = sumDF[['indNum']]
+        print(sumDF.head(200))
+        
         statMean, statMedian, statOnly, stackLines = False, False, False, False
 
         for j in range(len(srcPltGrouped[i]['plts'])):
@@ -212,66 +219,74 @@ def PlotterSelective (srcFig= dict, srcPlt= list, visibleLegend= bool, visibleTi
                     break
 
             ### add index and columns to sumDF
+            pltDF = pd.DataFrame(0, ['pltid','stdid','stdname','datatype','tracetype','tracestyle','tracefill','xtick','xstep','ytick','ystep','xtitle','ytitle'],['test'])
+            stdDF = pd.concat([pltDF,stdDF.loc[xData, yData]])
+            stdDF.loc['pltid',:] = plot['id']
+            stdDF.loc['stdid',:] = plot['datasrc']['id']
+            stdDF.loc['stdname',:] = plot['datasrc']['name']
+            stdDF.loc['datatype',:] = plot['datatype']
+            stdDF.loc['tracetype',:] = plot['tracetype']
+            stdDF.loc['tracestyle',:] = plot['tracestyle']
+            stdDF.loc['tracefill',:] = plot['tracefill']
+            stdDF.loc['xtick',:] = plot['xtick']
+            stdDF.loc['xstep',:] = plot['xstep']
+            stdDF.loc['ytick',:] = plot['ytick']
+            stdDF.loc['ystep',:] = plot['ystep']
+            stdDF.loc['xtitle',:] = plot['xtitle']
+            stdDF.loc['ytitle',:] = plot['ytitle']
+            stdDF.drop(['test'], axis= 1, inplace=True)
+            sumDF = sumDF.join(stdDF)
 
-            sumDF = pd.merge(left= sumDF, right= stdDF.loc[xData, yData], how= 'left', left_on= 'Index', right_on= 'Index')
+        #sumDF.drop(['temp'], axis= 1, inplace=True)
+        sumDF['Index'] = sumDF.index
+        sumDF.set_index('indNum', inplace= True, drop= True)
+        sumDF.sort_index(axis= 0, ascending= True, inplace= True)
+        sumDF.set_index('Index', inplace= True, drop= True)
+        sumDF.dropna(axis= 0, how= 'all', inplace= True)
 
-    sumDF.drop(['g0-Data1'], axis= 1, inplace=True)
-    sumDF.dropna(axis= 0, how= 'all', inplace= True)
-
-    colsList = sumDF.columns.values.tolist()
+        colsList = sumDF.columns.values.tolist()
     
-    i = 0
-    for i in range(len(colsList)):
-        colsList[i] = colsList[i][5:].replace('_x','').replace('_y','') + str(i)
+        i = 0
+        for i in range(len(colsList)):
+            colsList[i] = colsList[i][5:].replace('_x','').replace('_y','') + str(i)
 
-    sumDF.columns = colsList
+        sumDF.columns = colsList
 
-    if statMean:
-        colMean = sumDF.mean(axis= 1).tolist()
-        sumDF.insert(0, 'Mean', colMean)
+        if statMean:
+            colMean = sumDF.mean(axis= 1).tolist()
+            sumDF.insert(0, 'Mean', colMean)
 
-    if statMedian:
-        colMedian = sumDF.median(axis= 1).tolist()
-        sumDF.insert(0, 'Median', colMedian)
+        if statMedian:
+            colMedian = sumDF.median(axis= 1).tolist()
+            sumDF.insert(0, 'Median', colMedian)
 
-    if statOnly and ('Mean' in sumDF.columns.values.tolist() or 'Median' in sumDF.columns.values.tolist()):
-        #if ('Mean' in sumDF.columns.values.tolist() or 'Median' in sumDF.columns.values.tolist()):
-            for col in sumDF:
-                if col == 'Median' or col == 'Mean':
-                    pass
-                else:
-                    sumDF.drop([col], axis= 1, inplace= True)
-    else:
-        print("worked")
+        if statOnly and ('Mean' in sumDF.columns.values.tolist() or 'Median' in sumDF.columns.values.tolist()):
+            #if ('Mean' in sumDF.columns.values.tolist() or 'Median' in sumDF.columns.values.tolist()):
+                for col in sumDF:
+                    if col == 'Median' or col == 'Mean':
+                        pass
+                    else:
+                        sumDF.drop([col], axis= 1, inplace= True)
 
-    xData = sumDF.index.values.tolist()
-    yData = sumDF.columns.values.tolist()
+        xData = sumDF.index.values.tolist()
+        yData = sumDF.columns.values.tolist()
 
-    count = 0
+        count = 0
 
-    for count in range(len(yData)):
-        figure.add_trace(plygo.Scatter(
-            x= xData, 
-            y= sumDF.loc[:, yData[count]], 
-            connectgaps= False, 
-            fill= 'none', 
-            mode= 'lines+markers', 
-            #line= 'linear', 
-            name= yData[count]
-            ), row= 1, col= 1)
+        for count in range(len(yData)):
+            figure.add_trace(plygo.Scatter(
+                x= xData, 
+                y= sumDF.loc[:, yData[count]], 
+                connectgaps= False, 
+                fill= 'none', 
+                mode= 'lines+markers', 
+                #line= 'linear', 
+                name= yData[count]
+                ), row= 1, col= 1)
 
-#        figure.add_trace(plygo.Bar(
-#            x= xData, 
-#            y= sumDF.loc[:, yData[count]], 
-#            #text= yData[count], 
-#            textfont_color= '#000000', 
-#            textposition= 'inside', 
-#            name= yData[count]
-#            ), row= 1, col= 1)
-
-    ### update layout & axes
-    figure.update_xaxes({'title_text': xTitle, 'tickmode': 'auto', 'tick0': 0, 'tickangle': -45}, row= 1, col= 1)
-    figure.update_yaxes({'title_text': yTitle, 'tickmode': 'auto', 'tick0': 0, 'tickangle': 0}, row= 1, col= 1)
+        ### update layout & axes
+        figure.update_xaxes({'title_text': xTitle, 'tickmode': 'auto', 'tick0': 0, 'tickangle': -45}, row= 1, col= 1)
+        figure.update_yaxes({'title_text': yTitle, 'tickmode': 'auto', 'tick0': 0, 'tickangle': 0}, row= 1, col= 1)
 
             
     figure.update_layout(
