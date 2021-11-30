@@ -77,7 +77,7 @@ def PlotterSelective (srcFig= dict, srcPlt= list, visibleLegend= bool, visibleTi
     tempDF.insert(0,'temp0',np.NaN)
     tempDF.drop(tempDF.columns[1:], axis= 1, inplace= True)
     tempDF.drop(tempDF.index[tempDF.index.get_loc('EnergyplanModel'):tempDF.index.get_loc('Calc.EconomyAndFuel')], axis=0, inplace= True)
-    sumDF = pd.DataFrame(0, ['pltid','stdid','stdname','datatype','tracetype','tracestyle','tracefill','xtick','xstep','ytick','ystep','xtitle','ytitle'],['temp0'])
+    sumDF = pd.DataFrame(0, ['pltid', 'stdid', 'stdname', 'datatype', 'tracetype', 'tracestyle', 'tracefill', 'xstart', 'xend', 'xtitle', 'ytitle', 'xtick', 'xstep', 'ytick', 'ystep'], ['temp0'])
     sumDF = pd.concat([sumDF,tempDF])
 
     for i in range(len(srcPltGrouped)):
@@ -86,7 +86,6 @@ def PlotterSelective (srcFig= dict, srcPlt= list, visibleLegend= bool, visibleTi
         sumDF['indNum'] = sumDF.index
         sumDF.set_index('index', inplace= True, drop= True)
         sumDF = sumDF[['indNum']]
-        print(sumDF.head(200))
         
         statMean, statMedian, statOnly, stackLines = False, False, False, False
 
@@ -219,7 +218,7 @@ def PlotterSelective (srcFig= dict, srcPlt= list, visibleLegend= bool, visibleTi
                     break
 
             ### add index and columns to sumDF
-            pltDF = pd.DataFrame(0, ['pltid','stdid','stdname','datatype','tracetype','tracestyle','tracefill','xtick','xstep','ytick','ystep','xtitle','ytitle'],['test'])
+            pltDF = pd.DataFrame(0, ['pltid', 'stdid', 'stdname', 'datatype', 'tracetype', 'tracestyle', 'tracefill', 'xstart', 'xend', 'xtitle', 'ytitle', 'xtick', 'xstep', 'ytick', 'ystep'], ['test'])
             stdDF = pd.concat([pltDF,stdDF.loc[xData, yData]])
             stdDF.loc['pltid',:] = plot['id']
             stdDF.loc['stdid',:] = plot['datasrc']['id']
@@ -228,16 +227,17 @@ def PlotterSelective (srcFig= dict, srcPlt= list, visibleLegend= bool, visibleTi
             stdDF.loc['tracetype',:] = plot['tracetype']
             stdDF.loc['tracestyle',:] = plot['tracestyle']
             stdDF.loc['tracefill',:] = plot['tracefill']
+            stdDF.loc['xstart',:] = plot['xstart']
+            stdDF.loc['xend',:] = plot['xend']
+            stdDF.loc['xtitle',:] = plot['xtitle']
+            stdDF.loc['ytitle',:] = plot['ytitle']
             stdDF.loc['xtick',:] = plot['xtick']
             stdDF.loc['xstep',:] = plot['xstep']
             stdDF.loc['ytick',:] = plot['ytick']
             stdDF.loc['ystep',:] = plot['ystep']
-            stdDF.loc['xtitle',:] = plot['xtitle']
-            stdDF.loc['ytitle',:] = plot['ytitle']
             stdDF.drop(['test'], axis= 1, inplace=True)
             sumDF = sumDF.join(stdDF)
 
-        #sumDF.drop(['temp'], axis= 1, inplace=True)
         sumDF['Index'] = sumDF.index
         sumDF.set_index('indNum', inplace= True, drop= True)
         sumDF.sort_index(axis= 0, ascending= True, inplace= True)
@@ -261,30 +261,53 @@ def PlotterSelective (srcFig= dict, srcPlt= list, visibleLegend= bool, visibleTi
             sumDF.insert(0, 'Median', colMedian)
 
         if statOnly and ('Mean' in sumDF.columns.values.tolist() or 'Median' in sumDF.columns.values.tolist()):
-            #if ('Mean' in sumDF.columns.values.tolist() or 'Median' in sumDF.columns.values.tolist()):
                 for col in sumDF:
                     if col == 'Median' or col == 'Mean':
                         pass
                     else:
                         sumDF.drop([col], axis= 1, inplace= True)
 
-        xData = sumDF.index.values.tolist()
-        yData = sumDF.columns.values.tolist()
+        for col in sumDF.columns.values.tolist():
+            
+            if sumDF[col].loc['tracetype'] == 'Scatter Plot':
 
-        count = 0
+                if sumDF[col].loc['tracefill']:
+                    styleFill = 'tonexty'
+                else:
+                    styleFill = 'none'
 
-        for count in range(len(yData)):
-            figure.add_trace(plygo.Scatter(
-                x= xData, 
-                y= sumDF.loc[:, yData[count]], 
-                connectgaps= False, 
-                fill= 'none', 
-                mode= 'lines+markers', 
-                #line= 'linear', 
-                name= yData[count]
-                ), row= 1, col= 1)
+                if sumDF[col].loc['tracestyle'] == 'Smooth Linear':
+                    styleMode = 'lines'
+                    styleLine = {'shape': 'spline'}
+                else:
+                    styleMode = str(sumDF[col].loc['tracestyle']).replace('Only', '').replace(' ', '').strip().lower()
+                    styleLine = {'shape': 'linear'}
+
+                figure.add_trace(plygo.Scatter(
+                    x= sumDF[col].iloc[16:].index.tolist(),
+                    y= sumDF[col].iloc[16:].values.tolist(),
+                    connectgaps= False, 
+                    fill= styleFill, 
+                    mode= styleMode, 
+                    line= styleLine, 
+                    name= col
+                    ), row= 1, col= 1)
+
+            elif sumDF[col].loc['tracetype'] == 'Bar Chart':
+                figure.add_trace(plygo.Bar(
+                    x= sumDF[col].iloc[16:].index.tolist(),
+                    y= sumDF[col].iloc[16:].values.tolist(),
+                    text= sumDF[col].iloc[16:].values.tolist(), 
+                    texttemplate= '%{y:,.2d}',
+                    textfont_color= '#000000', 
+                    textposition= 'inside',
+                    name= col
+                    ), row= 1, col= 1)
+
+                figure.update_layout({'barmode': str(sumDF[col].loc['tracestyle'])[:-2].replace(' ', '').strip().lower()})
 
         ### update layout & axes
+
         figure.update_xaxes({'title_text': xTitle, 'tickmode': 'auto', 'tick0': 0, 'tickangle': -45}, row= 1, col= 1)
         figure.update_yaxes({'title_text': yTitle, 'tickmode': 'auto', 'tick0': 0, 'tickangle': 0}, row= 1, col= 1)
 
