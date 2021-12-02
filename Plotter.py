@@ -77,7 +77,8 @@ def PlotterSelective (srcFig= dict, srcPlt= list, visibleLegend= bool, visibleTi
     tempDF.insert(0,'temp0',np.NaN)
     tempDF.drop(tempDF.columns[1:], axis= 1, inplace= True)
     tempDF.drop(tempDF.index[tempDF.index.get_loc('EnergyplanModel'):tempDF.index.get_loc('Calc.EconomyAndFuel')], axis=0, inplace= True)
-    sumDF = pd.DataFrame(0, ['pltid', 'stdid', 'stdname', 'datatype', 'tracetype', 'tracestyle', 'tracefill', 'xstart', 'xend', 'xtitle', 'ytitle', 'xtick', 'xstep', 'ytick', 'ystep'], ['temp0'])
+    pltInfoList = ['pltid', 'stdid', 'stdname', 'datatype', 'tracetype', 'tracestyle', 'tracefill', 'xstart', 'xend', 'xtitle', 'ytitle', 'xtick', 'xstep', 'ytick', 'ystep']
+    sumDF = pd.DataFrame(0, pltInfoList, ['temp0'])
     sumDF = pd.concat([sumDF,tempDF])
 
     for i in range(len(srcPltGrouped)):
@@ -88,6 +89,8 @@ def PlotterSelective (srcFig= dict, srcPlt= list, visibleLegend= bool, visibleTi
         sumDF = sumDF[['indNum']]
         
         statMean, statMedian, statOnly, stackLines = False, False, False, False
+        posRow = int(str(srcPltGrouped[i]['pos'])[:1])
+        posCol = int(str(srcPltGrouped[i]['pos'])[-1:])
 
         for j in range(len(srcPltGrouped[i]['plts'])):
             plot = srcPltGrouped[i]['plts'][j]
@@ -204,22 +207,239 @@ def PlotterSelective (srcFig= dict, srcPlt= list, visibleLegend= bool, visibleTi
 
                 yTitle = plot['ytitle'] + ' (MW)'
             
+            elif plot['datatype'] == 'annual':
+                yTitle = plot['ytitle'] + ' (TWh\Year)'
+
+                if plot['xdata'] == 'Power Values - Totals':
+                    xStart = xEnd = 'Annual'
+
+                elif plot['xdata'] == 'Power Values - Annual Average':
+                    xStart = xEnd = 'AnnualAverage'
+
+                elif plot['xdata'] == 'Power Values - Annual Maximum':
+                    xStart = xEnd = 'AnnualMaximum'
+
+                elif plot['xdata'] == 'Power Values - Annual Minimum':
+                    xStart = xEnd = 'AnnualMinimum'
+
+                elif plot['xdata'] == 'Annual CO2 Emissions':
+                    xStart = 'Co2-Emission(Total)'
+                    xEnd = 'Co2-Emission(Corrected)'
+                    labelsData = xData = stdDF.loc[xStart:xEnd].index.values.tolist()
+                    valuesData = stdDF.loc[xStart:xEnd, 'g0-Data1'].tolist()
+                    templateFormat = '%{label}<br>%{value} (MT)<br>%{percent}'
+
+                elif plot['xdata'] == 'Annual Fuel Consumptions':
+                    xStart = 'FuelConsumption(Total)'
+                    xEnd = 'V2GPreLoadHours'
+                    labelsData = xData = stdDF.loc[xStart:xEnd].index.values.tolist()
+                    valuesData = stdDF.loc[xStart:xEnd, 'g0-Data1'].tolist()
+                    templateFormat = '%{label}<br>%{value} (TWh/year)<br>%{percent}'
+
+                elif plot['xdata'] == 'Share of RES':
+                    xStart = 'ResShareOfPes'
+                    xEnd = 'ResShareOfElec.Prod.'
+                    labelsData = xData = stdDF.loc[xStart:xEnd].index.values.tolist()
+                    valuesData = stdDF.loc[xStart:xEnd, 'g0-Data1'].tolist()
+                    templateFormat = '%{label}<br>%{value}'
+
+                elif plot['xdata'] == 'Total Elect. Demand':
+                    xStart = xEnd = 'Annual'
+                    labelsData = ['Elect. Demand', 'Elect. Demand Cooling', 'Fixed Exp/Imp', 'Flexible Electr, ', 'HH-HP Elect.', 'HH-EB Elect.']
+                    valuesData = stdDF.loc['Annual', ['0001_ElectrDemand', '0002_ElecdemCooling', '0003_FixedExp/Imp', '0020_FlexibleElectr', '1802_HH-HPElectr', '1804_HH-EBElectr']].tolist()
+                    templateFormat = '%{label}<br>%{value} (TWh/year)<br>%{percent}'
+
+                elif plot['xdata'] == 'Total Heat Demand':
+                    xStart = xEnd = 'Annual'
+                    labelsData = ['DH Demand', 'HH Demand Heat']
+                    valuesData = stdDF.loc['Annual', ['0004_DHDemand', '1701_HHDemHeat']].tolist()
+                    templateFormat = '%{label}<br>%{value} (TWh/year)<br>%{percent}'
+
+                elif plot['xdata'] == 'VRES (Renewable Fuel Balance)':
+                    xStart = xEnd = 'Annual'
+                    labelsData = ['Wind Electr', 'Offshore Electr', 'PV Electr', 'River Electr', 'Tidal Electr', 'Wave Electr', 'CSP Electr', 'CSP2 Electr']
+                    valuesData = stdDF.loc['Annual', ['0101_WindElectr', '0102_OffshoreElectr', '0103_PVElectr', '0105_RiverElectr', '0107_TidalElectr', '0106_WaveElectr', '0104_CSPElectr',   '0108_CSP2Electr']].tolist()
+                    templateFormat = '%{label}<br>%{value} (TWh/year)<br>%{percent}'
+
+                elif plot['xdata'] == 'Electricity Consumption':
+                    xStart = xEnd = 'Annual'
+                    labelsData = ['Electr Demand', 'Fixed Exp/Imp', 'Flexible Electr', 'Elec. Dem Cooling', 'H2 Electr', 'V2G Charge', 'HP Electr', 'HH-EB Electr', 'Pump Electr', 'Pump2 Electr',  'Hydro Pump', 'EH3 Heat']
+                    valuesData = stdDF.loc['Annual', ['0001_ElectrDemand', '0003_FixedExp/Imp', '0020_FlexibleElectr', '0002_ElecdemCooling', '2001_H2Electr', '1302_V2GCharge', '0021_HPElectr',   '1804_HH-EBElectr', '0801_PumpElectr', '0802_Pump2Electr', '0202_Hydropump', '0016_EH3Heat']].tolist()
+                    templateFormat = '%{label}<br>%{value} (TWh/year)<br>%{percent}'
+
+                elif plot['xdata'] == 'Electricity Production':
+                    xStart = xEnd = 'Annual'
+                    labelsData = ['Wind Electr', 'Offshore Electr', 'PV Electr', 'River Electr', 'Tidal Electr', 'Wave Electr', 'CSP Electr', 'CSP2 Electr', 'HH-CHP Electr', 'Hydro Electr',   'Nuclear Electr', 'Geother. Electr', 'V2G Discharge', 'CSHP Electr', 'CHP Electr', 'Turbine Electr', 'Turbine2 Electr', 'PP Electr', 'PP2 Electr']
+                    valuesData = stdDF.loc['Annual', ['0101_WindElectr', '0102_OffshoreElectr', '0103_PVElectr', '0105_RiverElectr', '0107_TidalElectr', '0106_WaveElectr', '0104_CSPElectr',   '0108_CSP2Electr', '1801_HH-CHPElectr', '0201_HydroElectr', '0701_NuclearElectr', '0702_GeotherElectr', '1303_V2GDischa', '0022_CSHPElectr', '0023_CHPElectr',    '0901_TurbineElectr', '0902_Turbine2Electr', '0601_PPElectr', '0602_PP2Electr']].tolist()
+                    templateFormat = '%{label}<br>%{value} (TWh/year)<br>%{percent}'
+
+                elif plot['xdata'] == 'Electricity Balance':
+                    xStart = xEnd = 'Annual'
+                    labelsData = ['Import Electr', 'CEEP Electr', 'EEEP Electr']
+                    valuesData = stdDF.loc['Annual', ['0025_ImportElectr', '0027_CEEPElectr', '0028_EEEPElectr']].tolist()
+                    templateFormat = '%{label}<br>%{value} (TWh/year)<br>%{percent}'
+
+                elif plot['xdata'] == 'District Heat Production':
+                    xStart = xEnd = 'Annual'
+                    labelsData = ['CSHP 1 Heat', 'Waste 1 Heat', 'Boiler 1 Heat', 'Solar 1 Heat', 'CSHP 2 Heat', 'Waste 2 Heat', 'Geoth 2 Heat', 'CHP 2 Heat', 'HP 2 Heat', 'Boiler 2 Heat', 'EH 2  Heat', 'ELT 2 Heat', 'Solar 2 Heat', 'CSHP 3 Heat', 'Waste 3 Heat', 'Geoth 3 Heat', 'CHP 3 Heat', 'HP 3 Heat', 'Boiler 3 Heat', 'EH 3 Heat', 'ELT 3 Heat', 'Solar 3 Heat']
+                    valuesData = stdDF.loc['Annual', ['0401_CSHP1Heat', '0402_Waste1Heat', '0005_Boiler1Heat', '0302_Solar1Heat', '0403_CSHP2Heat', '0404_Waste2Heat', '0501_Geoth2Heat',   '0006_CHP2Heat', '0007_HP2Heat', '0008_Boiler2Heat', '0009_EH2Heat', '0010_ELT2Heat', '0304_Solar2Heat', '0405_CSHP3Heat', '0406_Waste3Heat', '0504_Geoth3Heat',  '0013_CHP3Heat', '0014_HP3Heat', '0015_Boiler3Heat', '0016_EH3Heat', '0017_ELT3Heat', '0306_Solar3Heat']].tolist()
+                    templateFormat = '%{label}<br>%{value} (TWh/year)<br>%{percent}'
+
+                elif plot['xdata'] == 'District Heat Gr.1':
+                    xStart = xEnd = 'Annual'
+                    labelsData = ['CSHP 1 Heat', 'Waste 1 Heat', 'Boiler 1 Heat', 'Solar 1 Heat']
+                    valuesData = stdDF.loc['Annual', ['0401_CSHP1Heat', '0402_Waste1Heat', '0005_Boiler1Heat', '0302_Solar1Heat']].tolist()
+                    templateFormat = '%{label}<br>%{value} (TWh/year)<br>%{percent}'
+
+                elif plot['xdata'] == 'District Heat Gr.2':
+                    xStart = xEnd = 'Annual'
+                    labelsData = ['CSHP 2 Heat', 'Waste 2 Heat', 'Geoth 2 Heat', 'CHP 2 Heat', 'HP 2 Heat', 'Boiler 2 Heat', 'EH 2 Heat', 'ELT 2 Heat', 'Solar 2 Heat']
+                    valuesData = stdDF.loc['Annual', ['0403_CSHP2Heat', '0404_Waste2Heat', '0501_Geoth2Heat', '0006_CHP2Heat', '0007_HP2Heat', '0008_Boiler2Heat', '0009_EH2Heat',  '0010_ELT2Heat', '0304_Solar2Heat']].tolist()
+                    templateFormat = '%{label}<br>%{value} (TWh/year)<br>%{percent}'
+
+                elif plot['xdata'] == 'District Heat Gr.3':
+                    xStart = xEnd = 'Annual'
+                    labelsData = ['CSHP 3 Heat', 'Waste 3 Heat', 'Geoth 3 Heat', 'CHP 3 Heat', 'HP 3 Heat', 'Boiler 3 Heat', 'EH 3 Heat', 'ELT 3 Heat', 'Solar 3 Heat']
+                    valuesData = stdDF.loc['Annual', ['0405_CSHP3Heat', '0406_Waste3Heat', '0504_Geoth3Heat', '0013_CHP3Heat', '0014_HP3Heat', '0015_Boiler3Heat', '0016_EH3Heat',  '0017_ELT3Heat', '0306_Solar3Heat']].tolist()
+                    templateFormat = '%{label}<br>%{value} (TWh/year)<br>%{percent}'
+
+                elif plot['xdata'] == 'Individual (HH) Heating Production':
+                    xStart = xEnd = 'Annual'
+                    labelsData = ['HH-EB Electr', 'HH CHP+HP Heat', 'HH Boil. Heat', 'HH Solar Heat']
+                    valuesData = stdDF.loc['Annual', ['1804_HH-EBElectr', '1702_HHCHP+HPHeat', '1703_HHBoilHeat', '1704_HHSolarHeat']].tolist()
+                    templateFormat = '%{label}<br>%{value} (TWh/year)<br>%{percent}'
+
+                elif plot['xdata'] == 'Heat Balance':
+                    xStart = xEnd = 'Annual'
+                    labelsData = ['HH Balan Heat', 'Boiler1 Heat', 'Balance2 Heat', 'Balance3 Heat']
+                    valuesData = stdDF.loc['Annual', ['1706_HHBalanHeat', '0005_Boiler1Heat', '0012_Balance2Heat', '0019_Balance3Heat']].tolist()
+                    templateFormat = '%{label}<br>%{value} (TWh/year)<br>%{percent}'
+
+                elif plot['xdata'][0:16] == 'Investment Costs':
+                    rangeStart = stdDF.index.get_loc('TotalAnnualCosts')
+                    rangeStart += 1
+                    rangeEnd = stdDF.iloc[rangeStart:rangeStart+100].index.get_loc('Coal')
+                    rangeEnd = rangeEnd + rangeStart
+                    xStart = stdDF.iloc[rangeStart:rangeEnd].index[0]
+                    xEnd = stdDF.iloc[rangeStart:rangeEnd].index[-1]
+
+                    if plot['xdata'] == 'Investment Costs - Total':
+                        yData = ['g0-Data1']
+
+                    elif plot['xdata'] == 'Investment Costs - Annual':
+                        yData = ['g0-Data2']
+
+                    elif plot['xdata'] == 'Investment Costs - O & M':
+                        yData = ['g0-Data3']
+
+                    yTitle = plot['xdata'] + ' (M Euro)'
+
+                elif plot['xdata'][:14] == 'Energy Balance':
+                    rangeStart = stdDF.index.get_loc('TotalAnnualCosts')
+                    rangeStart = rangeStart + stdDF.iloc[rangeStart:rangeStart+100].index.get_loc('Coal')
+                    rangeEnd = stdDF.iloc[rangeStart:rangeStart+100].index.get_loc('Renewable')
+                    rangeEnd = rangeEnd + rangeStart +1
+
+                    xData = stdDF.iloc[rangeStart:rangeEnd].index.values.tolist()
+                    xStart = stdDF.iloc[rangeStart:rangeEnd].index[0]
+                    xEnd = stdDF.iloc[rangeStart:rangeEnd].index[-1]
+
+                    yTitle = ''
+
+                elif plot['xdata'] == 'Installed Capacities':
+                    break
+
+                if plot['xdata'][:14] != 'Energy Balance':
+                    xData = stdDF.loc[xStart:xEnd].index.values.tolist()
+                xTitle = ''
+
             ### calc Y series
             
             yData = []
 
-            for yData_i, headers in enumerate(list(stdDF.columns.values)):
-                if plot['ydata'][2:4] == '00':
-                    if plot['ydata'][:2] == headers[:2]:
+            if plot['xdata'][:14] == 'Energy Balance':
+                for yData_i, headers in enumerate(list(stdDF.columns.values)):
+                    if headers[:2] == 'g1':
                         yData.append(headers)
-                        next
-                elif plot['ydata'] == headers[:4]:
-                    yData.append(headers)
-                    break
+                yData.pop()
+                yTitle = plot['xdata']
+
+            elif plot['xdata'][0:16] == 'Investment Costs':
+                if plot['xdata'] == 'Investment Costs - Total':
+                    yData = ['g0-Data1']
+                    yTitle = plot['xdata'] + ' (M Euro)'
+
+                elif plot['xdata'] == 'Investment Costs - Annual':
+                    yData = ['g0-Data2']
+                    yTitle = plot['xdata'] + ' (M Euro)'
+
+                elif plot['xdata'] == 'Investment Costs - O & M':
+                    yData = ['g0-Data3']
+                    yTitle = plot['xdata'] + ' (M Euro)'
+
+            elif plot['xdata'] == 'Total Elect. Demand':
+                yData = ['0001_ElectrDemand', '0002_ElecdemCooling', '0003_FixedExp/Imp', '0020_FlexibleElectr', '1802_HH-HPElectr', '1804_HH-EBElectr']
+                yTitle = plot['xdata'] + ' (TWh/year)'
+
+            elif plot['xdata'] == 'Total Heat Demand':
+                yData = ['0004_DHDemand', '1701_HHDemHeat']
+                yTitle = plot['xdata'] + ' (TWh/year)'
+
+            elif plot['xdata'] == 'VRES (Renewable Fuel Balance)':
+                yData = ['0101_WindElectr', '0102_OffshoreElectr', '0103_PVElectr', '0105_RiverElectr', '0107_TidalElectr', '0106_WaveElectr', '0104_CSPElectr', '0108_CSP2Electr']
+                yTitle = plot['xdata'] + ' (TWh/year)'
+
+            elif plot['xdata'] == 'Electricity Consumption':
+                yData = ['0001_ElectrDemand', '0003_FixedExp/Imp', '0020_FlexibleElectr', '0002_ElecdemCooling', '2001_H2Electr', '1302_V2GCharge', '0021_HPElectr', '1804_HH-EBElectr', '0801_PumpElectr', '0802_Pump2Electr', '0202_Hydropump', '0016_EH3Heat']
+                yTitle = plot['xdata'] + ' (TWh/year)'
+
+            elif plot['xdata'] == 'Electricity Production':
+                yData = ['0101_WindElectr', '0102_OffshoreElectr', '0103_PVElectr', '0105_RiverElectr', '0107_TidalElectr', '0106_WaveElectr', '0104_CSPElectr', '0108_CSP2Electr', '1801_HH-CHPElectr', '0201_HydroElectr', '0701_NuclearElectr', '0702_GeotherElectr', '1303_V2GDischa', '0022_CSHPElectr', '0023_CHPElectr', '0901_TurbineElectr', '0902_Turbine2Electr', '0601_PPElectr', '0602_PP2Electr']
+                yTitle = plot['xdata'] + ' (TWh/year)'
+
+            elif plot['xdata'] == 'Electricity Balance':
+                yData = ['0025_ImportElectr', '0027_CEEPElectr', '0028_EEEPElectr']
+                yTitle = plot['xdata'] + ' (TWh/year)'
+
+            elif plot['xdata'] == 'District Heat Production':
+                yData = ['0401_CSHP1Heat', '0402_Waste1Heat', '0005_Boiler1Heat', '0302_Solar1Heat', '0403_CSHP2Heat', '0404_Waste2Heat', '0501_Geoth2Heat', '0006_CHP2Heat', '0007_HP2Heat', '0008_Boiler2Heat', '0009_EH2Heat', '0010_ELT2Heat', '0304_Solar2Heat', '0405_CSHP3Heat', '0406_Waste3Heat', '0504_Geoth3Heat', '0013_CHP3Heat', '0014_HP3Heat', '0015_Boiler3Heat', '0016_EH3Heat', '0017_ELT3Heat', '0306_Solar3Heat']
+                yTitle = plot['xdata'] + ' (TWh/year)'
+
+            elif plot['xdata'] == 'District Heat Gr.1':
+                yData = ['0401_CSHP1Heat', '0402_Waste1Heat', '0005_Boiler1Heat', '0302_Solar1Heat']
+                yTitle = plot['xdata'] + ' (TWh/year)'
+
+            elif plot['xdata'] == 'District Heat Gr.2':
+                yData = ['0403_CSHP2Heat', '0404_Waste2Heat', '0501_Geoth2Heat', '0006_CHP2Heat', '0007_HP2Heat', '0008_Boiler2Heat', '0009_EH2Heat', '0010_ELT2Heat', '0304_Solar2Heat']
+                yTitle = plot['xdata'] + ' (TWh/year)'
+
+            elif plot['xdata'] == 'District Heat Gr.3':
+                yData = ['0405_CSHP3Heat', '0406_Waste3Heat', '0504_Geoth3Heat', '0013_CHP3Heat', '0014_HP3Heat', '0015_Boiler3Heat', '0016_EH3Heat', '0017_ELT3Heat', '0306_Solar3Heat']
+                yTitle = plot['xdata'] + ' (TWh/year)'
+
+            elif plot['xdata'] == 'Individual (HH) Heating Production':
+                yData = ['1804_HH-EBElectr', '1702_HHCHP+HPHeat', '1703_HHBoilHeat', '1704_HHSolarHeat']
+                yTitle = plot['xdata'] + ' (TWh/year)'
+
+            elif plot['xdata'] == 'Heat Balance':
+                yData = ['1706_HHBalanHeat', '0005_Boiler1Heat', '0012_Balance2Heat', '0019_Balance3Heat']
+                yTitle = plot['xdata'] + ' (TWh/year)'
+
+            else:
+                for yData_i, headers in enumerate(list(stdDF.columns.values)):
+                    if plot['ydata'][2:4] == '00':
+                        if plot['ydata'][:2] == headers[:2]:
+                            yData.append(headers)
+                            next
+                    elif plot['ydata'] == headers[:4]:
+                        yData.append(headers)
+                        break
 
             ### add index and columns to sumDF
-            pltDF = pd.DataFrame(0, ['pltid', 'stdid', 'stdname', 'datatype', 'tracetype', 'tracestyle', 'tracefill', 'xstart', 'xend', 'xtitle', 'ytitle', 'xtick', 'xstep', 'ytick', 'ystep'], ['test'])
+            pltDF = pd.DataFrame(0, pltInfoList, ['test'])
+
             stdDF = pd.concat([pltDF,stdDF.loc[xData, yData]])
+
             stdDF.loc['pltid',:] = plot['id']
             stdDF.loc['stdid',:] = plot['datasrc']['id']
             stdDF.loc['stdname',:] = plot['datasrc']['name']
@@ -235,41 +455,50 @@ def PlotterSelective (srcFig= dict, srcPlt= list, visibleLegend= bool, visibleTi
             stdDF.loc['xstep',:] = plot['xstep']
             stdDF.loc['ytick',:] = plot['ytick']
             stdDF.loc['ystep',:] = plot['ystep']
+
             stdDF.drop(['test'], axis= 1, inplace=True)
+
+            for col in stdDF.columns.values.tolist():
+                colName = stdDF[col].name
+                colName = colName[colName.find('_') +1:]
+                colName = stdDF[col].loc['stdname'] + ': ' + colName + str(j)
+                stdDF.rename(columns= {stdDF[col].name: colName}, inplace= True)
+
             sumDF = sumDF.join(stdDF)
 
-        sumDF['Index'] = sumDF.index
+        sumDF['index'] = sumDF.index
         sumDF.set_index('indNum', inplace= True, drop= True)
         sumDF.sort_index(axis= 0, ascending= True, inplace= True)
-        sumDF.set_index('Index', inplace= True, drop= True)
+        sumDF.set_index('index', inplace= True, drop= True)
         sumDF.dropna(axis= 0, how= 'all', inplace= True)
 
-        colsList = sumDF.columns.values.tolist()
-    
-        i = 0
-        for i in range(len(colsList)):
-            colsList[i] = colsList[i][5:].replace('_x','').replace('_y','') + str(i)
-
-        sumDF.columns = colsList
-
         if statMean:
-            colMean = sumDF.mean(axis= 1).tolist()
+            colMean = sumDF.iloc[16:].mean(axis= 1).tolist()
+            tmpList = [0] * 16
+            tmpList.extend(colMean)
+            colMean = tmpList
             sumDF.insert(0, 'Mean', colMean)
+            sumDF['Mean'].iloc[:15] = sumDF.iloc[:15, -1]
 
         if statMedian:
-            colMedian = sumDF.median(axis= 1).tolist()
+            colMedian = sumDF.iloc[16:].median(axis= 1).tolist()
+            tmpList = [0] * 16
+            tmpList.extend(colMedian)
+            colMedian = tmpList
             sumDF.insert(0, 'Median', colMedian)
+            sumDF['Median'].iloc[:15] = sumDF.iloc[:15, -1]
 
         if statOnly and ('Mean' in sumDF.columns.values.tolist() or 'Median' in sumDF.columns.values.tolist()):
-                for col in sumDF:
-                    if col == 'Median' or col == 'Mean':
-                        pass
-                    else:
-                        sumDF.drop([col], axis= 1, inplace= True)
+            for col in sumDF:
+                if col == 'Median' or col == 'Mean':
+                    pass
+                else:
+                    sumDF.drop([col], axis= 1, inplace= True)
+        
+        indexLoc = sumDF.index.get_loc('ystep') +1
 
-        for col in sumDF.columns.values.tolist():
-            
-            if sumDF[col].loc['tracetype'] == 'Scatter Plot':
+        if srcPltGrouped[i]['trace'][0] == 'Scatter Plot':
+            for col in sumDF.columns.values.tolist():
 
                 if sumDF[col].loc['tracefill']:
                     styleFill = 'tonexty'
@@ -284,33 +513,68 @@ def PlotterSelective (srcFig= dict, srcPlt= list, visibleLegend= bool, visibleTi
                     styleLine = {'shape': 'linear'}
 
                 figure.add_trace(plygo.Scatter(
-                    x= sumDF[col].iloc[16:].index.tolist(),
-                    y= sumDF[col].iloc[16:].values.tolist(),
+                    x= sumDF[col].iloc[indexLoc:].index.tolist(),
+                    y= sumDF[col].iloc[indexLoc:].values.tolist(),
                     connectgaps= False, 
                     fill= styleFill, 
                     mode= styleMode, 
                     line= styleLine, 
-                    name= col
-                    ), row= 1, col= 1)
+                    name= col[:-1]
+                    ), row= posRow, col= posCol)
 
-            elif sumDF[col].loc['tracetype'] == 'Bar Chart':
+        #elif sumDF[col].loc['tracetype'] == 'Bar Chart':
+        if srcPltGrouped[i]['trace'][0] == 'Bar Chart':
+            for col in sumDF.columns.values.tolist():
+
                 figure.add_trace(plygo.Bar(
-                    x= sumDF[col].iloc[16:].index.tolist(),
-                    y= sumDF[col].iloc[16:].values.tolist(),
-                    text= sumDF[col].iloc[16:].values.tolist(), 
+                    x= sumDF[col].iloc[indexLoc:].index.tolist(),
+                    y= sumDF[col].iloc[indexLoc:].values.tolist(),
+                    text= sumDF[col].iloc[indexLoc:].values.tolist(), 
                     texttemplate= '%{y:,.2d}',
                     textfont_color= '#000000', 
                     textposition= 'inside',
-                    name= col
-                    ), row= 1, col= 1)
+                    name= col[:-1]
+                    ), row= posRow, col= posCol)
 
-                figure.update_layout({'barmode': str(sumDF[col].loc['tracestyle'])[:-2].replace(' ', '').strip().lower()})
+            figure.update_layout({'barmode': str(sumDF[col].loc['tracestyle'])[:-2].replace(' ', '').strip().lower()})
+
+        #elif sumDF[col].loc['tracetype'] == 'Pie Chart':
+        if srcPltGrouped[i]['trace'][0] == 'Pie Chart':
+            for col in sumDF.columns.values.tolist():
+
+                if sumDF[col].loc['tracestyle'] == 'Domain':
+                    styleMode = 0
+                    holeSize = 0.1
+                else:
+                    styleMode = 0.05
+                    holeSize = 0
+
+                figure.add_trace(plygo.Pie(
+                    labels= labelsData,
+                    values= valuesData,
+                    texttemplate= templateFormat,
+                    hole= holeSize,
+                    pull= styleMode,
+                ))
+
+        #elif sumDF[col].loc['tracetype'] == 'Box Plot':
+        if srcPltGrouped[i]['trace'][0] == 'Box Plot':
+            print(sumDF)
+            break
+            for col in sumDF.columns.values.tolist():
+
+                figure.add_trace(plygo.Box(
+                    x= '',
+                    y= '',
+                    boxpoints= '',
+                    names= '',
+                    jitter= 0.3
+                ))
 
         ### update layout & axes
 
-        figure.update_xaxes({'title_text': xTitle, 'tickmode': 'auto', 'tick0': 0, 'tickangle': -45}, row= 1, col= 1)
-        figure.update_yaxes({'title_text': yTitle, 'tickmode': 'auto', 'tick0': 0, 'tickangle': 0}, row= 1, col= 1)
-
+        figure.update_xaxes({'title_text': xTitle, 'tickmode': 'auto', 'tick0': 0, 'tickangle': -45}, row= posRow, col= posCol)
+        figure.update_yaxes({'title_text': yTitle, 'tickmode': 'auto', 'tick0': 0, 'tickangle': 0}, row= posRow, col= posCol)
             
     figure.update_layout(
         uniformtext_minsize=18, 

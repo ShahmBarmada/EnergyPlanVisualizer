@@ -564,11 +564,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         global figure
 
-        if self.cb_Legend.isChecked:
-            showLegend = True
-
-        if self.cb_StudiesNames.isChecked:
-            showTitle = True
+        showLegend = self.cb_Legend.isChecked()
+        showTitle = self.cb_StudiesNames.isChecked()
 
         if self.rb_Selective.isChecked():
             # get selected figure card
