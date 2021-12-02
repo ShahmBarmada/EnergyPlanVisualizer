@@ -444,6 +444,7 @@ class Ui_MainWindow(object):
         self.cb_StudiesNames.setEnabled(True)
         self.cb_StudiesNames.setGeometry(QtCore.QRect(160, 145, 110, 24))
         self.cb_StudiesNames.setObjectName("cb_StudiesNames")
+        self.cb_StudiesNames.setVisible(False)
         self.gb_Info = QtWidgets.QGroupBox(self.page_2)
         self.gb_Info.setGeometry(QtCore.QRect(0, 460, 295, 120))
         self.gb_Info.setObjectName("gb_Info")

@@ -107,14 +107,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         if self.rb_AnnualVal.isEnabled and self.rb_AnnualVal.isChecked():
             if self.rb_Selective.isChecked():
                 self.cb_Trace.clear()
-                self.cb_Trace.addItems(['Bar Chart', 'Pie Chart', 'Box Plot'])
+                self.cb_Trace.addItems(['Bar Chart', 'Pie Chart'])
                 self.cb_Trace.setCurrentIndex(0)
                 self.rb_Xdata.setChecked(True)
                 self.rb_Xtime.setEnabled(False)
                 self.cb_Xstart.setEnabled(False)
                 self.cb_Xend.setEnabled(False)
                 self.cb_Ydata.clear()
-                self.cb_Ydata.setEnabled(True)
+                self.cb_Ydata.setEnabled(False)
                 self.cb_Ydata.addItems(dataList.keys())
                 self.cb_Ydata.insertSeparator(23)
                 self.cb_Xdata.clear()
@@ -147,7 +147,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.cb_StatMedian.setEnabled(True)
             self.cb_OnlyStats.setEnabled(True)
             self.cb_StackLines.setChecked(False)
-            self.cb_StackLines.setEnabled(True)
+            self.cb_StackLines.setEnabled(False)
 
         elif self.cb_Trace.currentText() == 'Bar Chart':
             self.cb_Style.clear()
@@ -497,15 +497,15 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 xTick = 'auto'
                 xStep = 0
             else:
-                xTick = 'fixed'
-                xStep = int(self.txt_TicksX.text()) -1
+                xTick = 'linear'
+                xStep = int(self.txt_TicksX.text())
 
             if self.cb_TicksY.isChecked():
                 yTick = 'auto'
                 yStep = 0
             else:
-                yTick = 'fixed'
-                yStep = int(self.txt_TicksX.text()) -1
+                yTick = 'linear'
+                yStep = int(self.txt_TicksX.text())
 
             xTimeStart = self.cb_Xstart.currentText()
             xTimeEnd = self.cb_Xend.currentText()

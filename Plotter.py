@@ -572,9 +572,8 @@ def PlotterSelective (srcFig= dict, srcPlt= list, visibleLegend= bool, visibleTi
                 ))
 
         ### update layout & axes
-
-        figure.update_xaxes({'title_text': xTitle, 'tickmode': 'auto', 'tick0': 0, 'tickangle': -45}, row= posRow, col= posCol)
-        figure.update_yaxes({'title_text': yTitle, 'tickmode': 'auto', 'tick0': 0, 'tickangle': 0}, row= posRow, col= posCol)
+        figure.update_xaxes({'title_text': xTitle, 'tickmode': sumDF.loc['xtick'].values.tolist()[0], 'tick0': 0, 'dtick': sumDF.loc['xstep'].values.tolist()[0], 'tickangle': -45}, row= posRow, col= posCol)
+        figure.update_yaxes({'title_text': yTitle, 'tickmode': sumDF.loc['ytick'].values.tolist()[0], 'tick0': 0, 'dtick': sumDF.loc['ystep'].values.tolist()[0], 'tickangle': 0}, row= posRow, col= posCol)
             
     figure.update_layout(
         uniformtext_minsize=18, 
