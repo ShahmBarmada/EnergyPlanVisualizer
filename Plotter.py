@@ -471,32 +471,31 @@ def PlotterSelective (srcFig= dict, srcPlt= list, visibleLegend= bool, visibleTi
         sumDF.sort_index(axis= 0, ascending= True, inplace= True)
         sumDF.set_index('index', inplace= True, drop= True)
         sumDF.dropna(axis= 0, how= 'all', inplace= True)
+        indexLoc = sumDF.index.get_loc('ystep') +1
 
         if statMean:
-            colMean = sumDF.iloc[16:].mean(axis= 1).tolist()
-            tmpList = [0] * 16
+            colMean = sumDF.iloc[indexLoc:].mean(axis= 1).tolist()
+            tmpList = [0] * indexLoc
             tmpList.extend(colMean)
             colMean = tmpList
-            sumDF.insert(0, 'Mean', colMean)
-            sumDF['Mean'].iloc[:15] = sumDF.iloc[:15, -1]
+            sumDF.insert(0, 'Mean0', colMean)
+            sumDF['Mean0'].iloc[:indexLoc -1] = sumDF.iloc[:indexLoc -1, -1]
 
         if statMedian:
-            colMedian = sumDF.iloc[16:].median(axis= 1).tolist()
-            tmpList = [0] * 16
+            colMedian = sumDF.iloc[indexLoc:].median(axis= 1).tolist()
+            tmpList = [0] * indexLoc
             tmpList.extend(colMedian)
             colMedian = tmpList
-            sumDF.insert(0, 'Median', colMedian)
-            sumDF['Median'].iloc[:15] = sumDF.iloc[:15, -1]
+            sumDF.insert(0, 'Median0', colMedian)
+            sumDF['Median0'].iloc[:indexLoc -1] = sumDF.iloc[:indexLoc -1, -1]
 
-        if statOnly and ('Mean' in sumDF.columns.values.tolist() or 'Median' in sumDF.columns.values.tolist()):
+        if statOnly and ('Mean0' in sumDF.columns.values.tolist() or 'Median0' in sumDF.columns.values.tolist()):
             for col in sumDF:
-                if col == 'Median' or col == 'Mean':
+                if col == 'Median0' or col == 'Mean0':
                     pass
                 else:
                     sumDF.drop([col], axis= 1, inplace= True)
         
-        indexLoc = sumDF.index.get_loc('ystep') +1
-
         if srcPltGrouped[i]['trace'][0] == 'Scatter Plot':
             for col in sumDF.columns.values.tolist():
 
