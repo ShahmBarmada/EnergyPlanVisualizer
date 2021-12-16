@@ -438,7 +438,10 @@ def PlotterSelective (srcFig= dict, srcPlt= list, visibleLegend= bool, visibleTi
             ### add index and columns to sumDF
             pltDF = pd.DataFrame(0, pltInfoList, ['test'])
 
-            stdDF = pd.concat([pltDF,stdDF.loc[xData, yData]])
+            if plot['xdata'][:14] == 'Energy Balance':
+                stdDF = pd.concat([pltDF, stdDF.iloc[rangeStart:rangeEnd, stdDF.columns.get_loc(yData[0]):stdDF.columns.get_loc(yData[-1]) +1]])
+            else:
+                stdDF = pd.concat([pltDF, stdDF.loc[xData, yData]])
 
             stdDF.loc['pltid',:] = plot['id']
             stdDF.loc['stdid',:] = plot['datasrc']['id']
@@ -472,6 +475,9 @@ def PlotterSelective (srcFig= dict, srcPlt= list, visibleLegend= bool, visibleTi
         sumDF.set_index('index', inplace= True, drop= True)
         sumDF.dropna(axis= 0, how= 'all', inplace= True)
         indexLoc = sumDF.index.get_loc('ystep') +1
+        #sumDF.drop_duplicates(inplace= True)
+        sumDF = sumDF[~sumDF.index.duplicated(keep='first')]
+        print(sumDF)
 
         if statMean:
             colMean = sumDF.iloc[indexLoc:].mean(axis= 1).tolist()
