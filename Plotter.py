@@ -475,9 +475,7 @@ def PlotterSelective (srcFig= dict, srcPlt= list, visibleLegend= bool, visibleTi
         sumDF.set_index('index', inplace= True, drop= True)
         sumDF.dropna(axis= 0, how= 'all', inplace= True)
         indexLoc = sumDF.index.get_loc('ystep') +1
-        #sumDF.drop_duplicates(inplace= True)
-        sumDF = sumDF[~sumDF.index.duplicated(keep='first')]
-        print(sumDF)
+        sumDF = sumDF[~sumDF.index.duplicated(keep='last')]
 
         if statMean:
             colMean = sumDF.iloc[indexLoc:].mean(axis= 1).tolist()
