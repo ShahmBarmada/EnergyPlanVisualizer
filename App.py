@@ -254,7 +254,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.btn_Xrange.clicked.connect(self.OpenRangeWindow)
 
     def openAboutDialog(self):
-        QMessageBox.about(self, 'About', 'Hi, I\'m developer')
+        QMessageBox.about(self, 'About', 'Developed by Load Tafran & Shahm Barmada')
 
     def ChangePage(self):
         if self.stackedWidget.currentIndex() == 0:
